@@ -18,29 +18,34 @@ const db = getFirestore(app);
 const $ = s => document.querySelector(s);
 const toast = (m) => { const t=$("#toast"); t.textContent=m; t.classList.remove("hidden"); setTimeout(()=>t.classList.add("hidden"),2500); };
 
+const ADMIN_EMAIL = "jjrv.0093@gmail.com";
 let currentTab = "planes";
 
 $("#loginBtn").onclick = async () => {
   const email = $("#email").value.trim();
   const pass = $("#pass").value.trim();
-  $("#msg").textContent = "Entrando...";
-  try{
-    await signInWithEmailAndPassword(auth, email, pass);
-    $("#msg").textContent = "";
-  }catch(e){
-    $("#msg").textContent = e.code + ": " + e.message;
-  }
+  $("#loginNote").textContent = "";
+  if(!email || !pass) return $("#loginNote").textContent = "Completa email y pass";
+  try{ await signInWithEmailAndPassword(auth, email, pass); }
+  catch(e){ $("#loginNote").textContent = e.message; }
 };
+
 $("#logoutBtn").onclick = ()=> signOut(auth);
 
 onAuthStateChanged(auth, async (user)=>{
-  if(!user){
-    $("#loginWrap").classList.remove("hidden");
+  if(!user){ 
+    $("#loginBox").classList.remove("hidden"); 
     $("#panelBox").classList.add("hidden");
-    return;
+    $("#logoutBtn").classList.add("hidden");
+    return; 
   }
-  $("#loginWrap").classList.add("hidden");
+  if(user.email !== ADMIN_EMAIL){ 
+    $("#loginNote").textContent = "No sos admin"; 
+    await signOut(auth); return; 
+  }
+  $("#loginBox").classList.add("hidden");
   $("#panelBox").classList.remove("hidden");
+  $("#logoutBtn").classList.remove("hidden");
   loadAll();
 });
 
@@ -57,7 +62,7 @@ $("#guardarHoras").onclick = async ()=>{
   const h = parseInt($("#horasPlan").value);
   if(!h) return toast("Horas inválidas");
   await setDoc(doc(db,"config","planes"), { horasDefault: h }, {merge:true});
-  toast("Guardado "+h+"h");
+  toast("Horas guardadas: "+h);
 };
 
 async function loadAll(){
@@ -68,13 +73,13 @@ async function loadAll(){
       const horasDoc = await getDoc(doc(db,"config","planes"));
       if(horasDoc.exists()) $("#horasPlan").value = horasDoc.data().horasDefault || 48;
       const snap = await getDocs(collection(db,"planes"));
-      if(snap.empty){ grid.innerHTML="<div class='card'>No hay planes todavía. Cuando alguien pague, aparece acá.</div>"; return; }
+      if(snap.empty){ grid.innerHTML="<div class='card'>No hay planes aún.</div>"; return; }
       grid.innerHTML="";
       snap.forEach(d=>{
         const p=d.data();
         const div=document.createElement("div");
         div.className="card";
-        div.innerHTML=`<b>${p.nombre||d.id}</b><br>$${p.monto||0} - ${p.estado||"pendiente"}<br><small>${p.userId||""}</small><div style="margin-top:10px;display:flex;gap:6px"><button class="btn btn-small ok">Aprobar</button><button class="btn btn-small warn">Rechazar</button></div>`;
+        div.innerHTML=`<b>${p.nombre||d.id}</b><br>Monto: $${p.monto||0}<br>Estado: ${p.estado||"pendiente"}<br><small>${p.userId||""}</small><br><br><button class="btn small ok">Aprobar</button> <button class="btn small warn">Rechazar</button>`;
         div.querySelector(".ok").onclick=async()=>{ await updateDoc(doc(db,"planes",d.id), {estado:"aprobado"}); toast("Aprobado"); loadAll(); };
         div.querySelector(".warn").onclick=async()=>{ await updateDoc(doc(db,"planes",d.id), {estado:"rechazado"}); toast("Rechazado"); loadAll(); };
         grid.appendChild(div);
@@ -82,21 +87,27 @@ async function loadAll(){
     } else if(currentTab==="soporte"){
       const snap = await getDocs(collection(db,"soporte"));
       if(snap.empty){ grid.innerHTML="<div class='card'>Sin tickets</div>"; return; }
-      grid.innerHTML=""; snap.forEach(d=>{
-        const s=d.data(); const div=document.createElement("div"); div.className="card";
-        div.innerHTML=`<b>${s.asunto||"Consulta"}</b><p>${s.mensaje||""}</p><small>${s.email||""}</small><br><button class="btn btn-small ok">Resolver</button>`;
-        div.querySelector("button").onclick=async()=>{ await updateDoc(doc(db,"soporte",d.id), {estado:"resuelto"}); loadAll(); };
+      grid.innerHTML="";
+      snap.forEach(d=>{
+        const s=d.data();
+        const div=document.createElement("div");
+        div.className="card";
+        div.innerHTML=`<b>${s.asunto||"Consulta"}</b><br>${s.mensaje||""}<br><small>${s.email||""}</small><br><br><button class="btn small ok">Resolver</button>`;
+        div.querySelector("button").onclick=async()=>{ await updateDoc(doc(db,"soporte",d.id), {estado:"resuelto"}); toast("Resuelto"); loadAll(); };
         grid.appendChild(div);
       });
     } else if(currentTab==="usuarios"){
       const snap = await getDocs(collection(db,"users"));
-      if(snap.empty){ grid.innerHTML="<div class='card'>No hay usuarios en ADM. Tus usuarios reales están en el proyecto reservar original. Si querés, migramos todo a este proyecto.</div>"; return; }
-      grid.innerHTML=""; snap.forEach(d=>{
-        const u=d.data(); const div=document.createElement("div"); div.className="card";
-        div.innerHTML=`<b>${u.email||d.id}</b><br>Plan: ${u.plan||"free"}<br><button class="btn btn-small warn">Borrar</button>`;
-        div.querySelector("button").onclick=async()=>{ if(confirm("Borrar?")){ await deleteDoc(doc(db,"users",d.id)); loadAll(); } };
+      if(snap.empty){ grid.innerHTML="<div class='card'>No hay usuarios en este proyecto.</div>"; return; }
+      grid.innerHTML="";
+      snap.forEach(d=>{
+        const u=d.data();
+        const div=document.createElement("div");
+        div.className="card";
+        div.innerHTML=`<b>${u.email||d.id}</b><br>Plan: ${u.plan||"free"}<br><button class="btn small warn">Borrar</button>`;
+        div.querySelector("button").onclick=async()=>{ if(confirm("Borrar?")){ await deleteDoc(doc(db,"users",d.id)); toast("Borrado"); loadAll(); } };
         grid.appendChild(div);
       });
     }
-  }catch(e){ grid.innerHTML="Error: "+e.message; console.error(e); }
+  }catch(e){ grid.innerHTML="Error: "+e.message; }
 }
