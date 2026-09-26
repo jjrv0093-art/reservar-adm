@@ -3,62 +3,64 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reservar ADM</title>
+<title>reservAR ADMI</title>
 <style>
-:root{--bg:#0f1115;--card:#1a1d24;--muted:#2a2d36;--accent:#7c3aed;--ok:#22c55e;--warn:#ef4444}
-*{box-sizing:border-box}body{margin:0;font-family:Inter,Arial;background:var(--bg);color:#fff}
-header{padding:16px 20px;background:var(--card);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
-.card{background:var(--card);border-radius:12px;padding:16px;margin:12px 0}
-input,select,textarea{width:100%;padding:12px;border-radius:8px;border:1px solid var(--muted);background:#111319;color:#fff;margin:6px 0}
-.btn{padding:10px 14px;border-radius:8px;border:none;cursor:pointer;font-weight:700}
-.btn-primary{background:var(--accent);color:#fff;width:100%}
-.btn-small{padding:6px 10px;font-size:13px}
-.ok{background:var(--ok);color:#000}.warn{background:var(--warn);color:#fff}
-.tabs{display:flex;gap:8px;padding:12px 20px;overflow:auto}
-.tab{padding:8px 14px;border-radius:20px;background:var(--muted);cursor:pointer;white-space:nowrap}
-.tab.active{background:var(--accent)}
-.wrap{max-width:900px;margin:0 auto;padding:20px}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Inter,Arial,sans-serif;background:linear-gradient(180deg,#7c3aed 0%,#5b21b6 40%,#1e0e45 100%);color:#fff}
+header{padding:18px 20px;display:flex;justify-content:space-between;align-items:center}
+header b{font-size:22px}
+.tabs{display:flex;gap:8px;padding:0 20px 12px}
+.tab{padding:8px 16px;border-radius:20px;background:rgba(255,255,255,0.15);cursor:pointer;font-size:14px}
+.tab.active{background:#a78bfa;color:#fff}
+.wrap{padding:16px;max-width:900px;margin:0 auto}
+.card{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.18);border-radius:18px;padding:20px}
+input{width:100%;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);margin:6px 0;font-size:16px;outline:none}
+#email{background:#eef2ff;color:#111}
+#pass{background:rgba(0,0,0,0.18);color:#fff}
+.btn{padding:12px 16px;border-radius:12px;border:none;font-weight:800;cursor:pointer}
+.btn-primary{width:100%;background:#a78bfa;color:#fff;margin-top:8px}
+.btn.small{width:auto;padding:8px 14px;font-size:13px}
+.ok{background:#22c55e;color:#fff} .warn{background:#ef4444;color:#fff}
 .hidden{display:none!important}
+#loginBox{max-width:400px;margin:40px auto}
+#loginNote{color:#ffb4b4;font-size:13px;margin-top:10px;min-height:18px;word-break:break-word}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
+#grid .card{background:rgba(0,0,0,0.25)}
 #toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;color:#000;padding:10px 18px;border-radius:20px;font-weight:700;z-index:99}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
-#loginWrap{min-height:100vh;display:flex;align-items:center;justify-content:center}
-#loginBox{width:90%;max-width:360px}
-#msg{color:#ff8a8a;font-size:13px;margin-top:8px;min-height:18px}
 </style>
 </head>
 <body>
-<div id="loginWrap">
-<div class="card" id="loginBox">
-<h2>Reservar ADM</h2>
+
+<header>
+<div><b>reservAR</b> ADMI - tu lugar, tu momento.</div>
+<button id="logoutBtn" class="btn small warn hidden">Salir</button>
+</header>
+
+<div id="loginBox" class="wrap">
+<div class="card">
+<h2 style="margin:0 0 16px 0;font-size:28px">Ingresá ADMI</h2>
 <input id="email" type="email" value="jjrv.0093@gmail.com">
-<input id="pass" type="password" placeholder="Contraseña">
+<input id="pass" type="password" placeholder="••••••••">
 <button id="loginBtn" class="btn btn-primary">Entrar</button>
-<div id="msg"></div>
+<div id="loginNote"></div>
 </div>
 </div>
 
 <div id="panelBox" class="hidden">
-<header>
-<b>RESERVAR ADM</b>
-<button id="logoutBtn" class="btn btn-small warn">Salir</button>
-</header>
 <div class="tabs">
 <div class="tab active" data-tab="planes">Planes</div>
 <div class="tab" data-tab="soporte">Soporte</div>
 <div class="tab" data-tab="usuarios">Usuarios</div>
 </div>
 <div class="wrap">
-<div class="card">
-<h3>Config global</h3>
-<label>Horas por defecto para planes</label>
-<div style="display:flex;gap:8px">
-<input id="horasPlan" type="number" value="48" style="flex:1">
-<button id="guardarHoras" class="btn ok btn-small">Guardar</button>
+<div class="card" style="display:flex;gap:8px;align-items:center">
+<input id="horasPlan" type="number" value="48" style="flex:1;background:#fff;color:#000;margin:0">
+<button id="guardarHoras" class="btn small ok">Guardar horas</button>
+</div>
+<div id="grid"></div>
 </div>
 </div>
-<div id="grid" class="grid"></div>
-</div>
-</div>
+
 <div id="toast" class="hidden"></div>
 <script type="module" src="./app.js"></script>
 </body>
