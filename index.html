@@ -2,41 +2,35 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>reservAR ADMI</title>
-<link rel="stylesheet" href="style.css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reservar ADM</title>
+<style>
+body{font-family:Arial;background:#0f1115;color:#fff;display:flex;justify-content:center;align-items:center;min-height:100vh;margin:0}
+.card{background:#1a1d24;padding:24px;border-radius:12px;width:90%;max-width:360px}
+input{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:none;background:#2a2d36;color:#fff;box-sizing:border-box}
+button{width:100%;padding:12px;background:#7c3aed;color:#fff;border:none;border-radius:8px;font-weight:bold;cursor:pointer;margin-top:10px}
+button:hover{opacity:.9}
+.hidden{display:none!important}
+#msg{margin-top:10px;font-size:13px;color:#ff8a8a;min-height:18px}
+#ok{color:#8aff8a}
+</style>
 </head>
 <body>
-<div class="header-reservar"><h1>reservAR <span>ADMI - tu lugar, tu momento.</span></h1></div>
-
-<div id="loginBox" class="auth">
-<h2>Ingresá ADMI</h2>
-<input id="email" placeholder="Email admi" type="email">
-<input id="pass" placeholder="Contraseña" type="password">
-<button id="loginBtn" class="btn full">Entrar</button>
-<small id="loginNote" class="note"></small>
+<div class="card">
+<h2>ADM Login</h2>
+<div id="loginBox">
+<input id="email" type="email" placeholder="Email" value="jjrv.0093@gmail.com">
+<input id="pass" type="password" placeholder="Contraseña">
+<button id="loginBtn">Entrar</button>
+<div id="msg"></div>
 </div>
-
-<div id="panelBox" class="wrap hidden">
-  <div class="card" style="display:flex; justify-content:space-between; align-items:center;">
-    <div class="tabs">
-      <button class="tab active" data-tab="planes">Planes</button>
-      <button class="tab" data-tab="soporte">Soporte</button>
-      <button class="tab" data-tab="usuarios">Usuarios</button>
-    </div>
-    <button id="logoutBtn" class="btn small">Salir</button>
-  </div>
-
-  <div class="card row">
-    <label>Horas plan por defecto: <input id="horasPlan" type="number" value="48" style="width:80px"></label>
-    <button id="guardarHoras" class="btn small">Guardar horas</button>
-  </div>
-
-  <div id="grid" class="grid">Cargando...</div>
+<div id="panelBox" class="hidden">
+<div id="ok">Logueado como <span id="userEmail"></span></div>
+<button id="logoutBtn">Salir</button>
+<h3 style="margin-top:20px">Panel funcionando ✅</h3>
+<p>Si ves esto, ya entraste. Ahora armamos el resto.</p>
 </div>
-
-<div id="toast" class="hidden" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%); background:#111; color:#fff; padding:10px 16px; border-radius:10px; z-index:99;"></div>
-
-<script type="module" src="app.js"></script>
+</div>
+<script type="module" src="./app.js"></script>
 </body>
 </html>
