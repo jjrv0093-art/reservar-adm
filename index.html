@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>reservAR - Panel ADMI</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="header-reservar"><h1>reservAR <span>ADMI - tu lugar, tu momento.</span></h1></div>
+
+<section id="auth" class="auth">
+  <h2>Ingresá ADMI</h2>
+  <input id="email" type="email" placeholder="Email admi">
+  <input id="password" type="password" placeholder="Contraseña">
+  <button id="loginBtn" class="btn full" style="margin-top:12px">Entrar</button>
+  <p id="loginMsg" class="note"></p>
+</section>
+
+<section id="app" class="hidden wrap">
+  <div class="tabs">
+    <button class="tab active" data-tab="negocio">Negocio</button>
+    <button class="tab" data-tab="gente">Gente & Soporte</button>
+    <button class="tab" data-tab="sistema">Sistema</button>
+  </div>
+
+  <div id="tab-negocio">
+    <div class="grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="card"><b id="statActivos">0</b><br><span style="font-size:12px;color:var(--mute)">Activos</span></div>
+      <div class="card"><b id="statVencidos">0</b><br><span style="font-size:12px;color:var(--mute)">Vencidos</span></div>
+      <div class="card"><b id="statDest">0</b><br><span style="font-size:12px;color:var(--mute)">Destacados</span></div>
+      <div class="card"><b id="statResHoy">0</b><br><span style="font-size:12px;color:var(--mute)">Reservas hoy</span></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3>Gestión de Locales</h3>
+      <input id="buscLocal" placeholder="🔍 Buscar local...">
+      <div id="localesAdmiList" style="margin-top:12px"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h3>Configuración de Planes</h3>
+      <label>Horas de plan gratis</label><input id="cfgHoras" type="number" value="48">
+      <label style="margin-top:8px;display:block">Precio destacado por día $</label><input id="cfgPrecioDest" type="number">
+      <button id="savePlanes" class="btn full" style="margin-top:12px">Guardar planes</button>
+    </div>
+  </div>
+
+  <div id="tab-gente" class="hidden">
+    <div class="card"><h3>Soporte - Reclamos</h3><div id="soporteList"></div></div>
+    <div class="card" style="margin-top:12px"><h3>Usuarios - Clientes que reservan</h3><input id="buscUser" placeholder="Buscar por email, DNI, nombre..."><div id="usersList" style="margin-top:12px"></div></div>
+    <div class="card" style="margin-top:12px"><h3>Dueños de Locales</h3><div id="ownersList" style="margin-top:12px"></div></div>
+  </div>
+
+  <div id="tab-sistema" class="hidden">
+    <div class="card"><h3>Mensaje Global y Saludo</h3><label>Saludo portada cliente</label><input id="cfgSaludo"><label style="margin-top:8px;display:block">Banner global</label><input id="cfgBanner"><button id="saveTextos" class="btn full" style="margin-top:12px">Guardar textos</button></div>
+    <div class="card" style="margin-top:12px"><h3>Bases y Condiciones</h3><label>Para Locales</label><textarea id="cfgByCLocales" rows="6"></textarea><label style="margin-top:8px;display:block">Para Clientes de Locales</label><textarea id="cfgByCClientes" rows="6"></textarea><button id="saveByC" class="btn full" style="margin-top:12px">Guardar Bases y Condiciones</button></div>
+    <div class="card" style="margin-top:12px"><h3>Configuración Global</h3><label><input id="cfgPideDniDefault" type="checkbox"> Locales nuevos piden DNI por defecto</label><br><label style="margin-top:8px;display:block"><input id="cfgFotoDniOn" type="checkbox" checked> Permitir subir foto DNI</label><br><label style="margin-top:8px;display:block"><input id="cfgSenaOn" type="checkbox"> Permitir seña global</label><button id="saveGlobal" class="btn full" style="margin-top:12px">Guardar global</button></div>
+    <div class="card" style="margin-top:12px"><h3>Mi Perfil Admi</h3><p id="pEmail" style="color:var(--mute)"></p><label>Nombre</label><input id="pNombre"><button id="savePerfil" class="btn full" style="margin-top:12px">Guardar perfil</button><button id="logout" class="btn ghost full" style="margin-top:8px; border-color:#ff5ab3; color:#ff5ab3">Cerrar sesión</button></div>
+  </div>
+</section>
+
+<div id="modal" class="modal hidden"><div class="modalBox"><button id="closeModal" class="x">✕</button><div id="modalContent"></div></div></div>
+<div id="toast" class="toast hidden"></div>
+<script src="app.js"></script>
+</body>
+</html>
+:root{ --violeta:#6a11cb; --rosa:#ff5ab3; --card:#1f0736; --text:#fff; --mute:#cfc9e6; --stroke:#ffffff26;}
+*{box-sizing:border-box}
+body{margin:0; font-family:system-ui; color:var(--text); background:linear-gradient(160deg,var(--violeta),#7b1fa2 40%,#3a0f6e 70%,#0a0933); min-height:100vh; background-attachment:fixed;}
+.hidden{display:none!important}
+.wrap{max-width:1200px; margin:0 auto; padding:24px 16px 48px}
+.grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); margin-top:12px}
+.auth{max-width:460px; margin:80px auto 0; background:#ffffff12; border:1px solid var(--stroke); border-radius:14px; padding:18px}
+.card{background:#ffffff12; border:1px solid var(--stroke); border-radius:16px; padding:16px}
+.note{color:#ff9a9a; font-size:13px; min-height:1.2em; margin-top:8px}
+.header-reservar{position:absolute; top:14px; left:16px}
+.header-reservar h1{margin:0; font-size:20px}
+.header-reservar span{font-weight:300; font-size:14px; margin-left:5px; color:var(--mute)}
+.btn{background:#a855f7; border:none; color:#fff; padding:.7rem .9rem; border-radius:10px; cursor:pointer; font:inherit; font-weight:600}
+.btn.full{width:100%}
+.btn.ghost{background:transparent; border:1px solid var(--stroke)}
+.btn.small{padding:.4rem .7rem; font-size:12px}
+input, select, textarea{width:100%; padding:.75rem; border-radius:10px; border:1px solid #ffffff22; background:#ffffff08; color:#fff; font:inherit; margin-top:6px}
+textarea{resize:vertical}
+.tabs{display:flex; gap:8px; margin:70px 0 16px; background:#ffffff10; padding:6px; border-radius:12px; width:fit-content}
+.tab{background:transparent; border:none; color:var(--mute); padding:8px 16px; border-radius:8px; cursor:pointer}
+.tab.active{background:var(--rosa); color:#fff; font-weight:600}
+.toast{position:fixed; left:50%; bottom:24px; transform:translateX(-50%); z-index:9999; background:#1f0736; border:1px solid var(--rosa); border-radius:12px; padding:10px 16px; font-size:14px}
+.item{padding:12px; border:1px solid var(--stroke); border-radius:12px; background:#ffffff0f; margin-bottom:8px}
+.item.destac
+const firebaseConfig = { apiKey:"AIzaSyC57wshaJ2EuIBoBdXv18opL4u_Vuw2bAQ", authDomain:"reservar-cb70d.firebaseapp.com", projectId:"reservar-cb70d", storageBucket:"reservar-cb70d.firebasestorage.app", messagingSenderId:"630908928696", appId:"1:630908928696:web:5e89f5f2b2cc2b240e6a4d" };
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth(), db=firebase.firestore();
+const $=s=>document.querySelector(s);
+const toast=m=>{const t=$('#toast'); t.textContent=m; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),3500);};
+
+let todosLocales=[], todosUsers=[], cfg={};
+
+$('#loginBtn').onclick=async()=>{
+  try{ await auth.signInWithEmailAndPassword($('#email').value.trim().toLowerCase(), $('#password').value); }
+  catch{ $('#loginMsg').textContent='Email o contraseña incorrectos'; }
+};
+$('#closeModal').onclick=()=>$('#modal').classList.add('hidden');
+$('#logout').onclick=()=>auth.signOut();
+
+auth.onAuthStateChanged(async u=>{
+  if(!u){ $('#auth').classList.remove('hidden'); $('#app').classList.add('hidden'); return; }
+  const udoc=await db.collection('users').doc(u.uid).get();
+  $('#auth').classList.add('hidden'); $('#app').classList.remove('hidden');
+  $('#pEmail').textContent=u.email; 
+  $('#pNombre').value=udoc.exists?udoc.data().name||'':'';
+  cargarTodo();
+});
+
+async function cargarTodo(){
+  await Promise.all([cargarConfig(), cargarLocales(), cargarSoporte(), cargarUsers(), cargarStats()]);
+}
+
+async function cargarConfig(){
+  const d=await db.collection('config').doc('global').get();
+  if(d.exists){
+    cfg=d.data();
+    $('#cfgHoras').value=cfg.horasPlan||48;
+    $('#cfgPrecioDest').value=cfg.precioDest||0;
+    $('#cfgSaludo').value=cfg.saludo||'reservAR tu lugar, tu momento.';
+    $('#cfgBanner').value=cfg.banner||'';
+    $('#cfgByCLocales').value=cfg.bycLocales||'';
+    $('#cfgByCClientes').value=cfg.bycClientes||'';
+    $('#cfgPideDniDefault').checked=cfg.pideDniDefault||false;
+    $('#cfgFotoDniOn').checked=cfg.fotoDniOn!==false;
+    $('#cfgSenaOn').checked=cfg.senaOn||false;
+  }
+}
+
+function estaActivo(l){
+  if(l.planActivo===false) return false;
+  if(l.visible===false) return false;
+  if(!l.planVence) return true;
+  let v=l.planVence.toDate?l
