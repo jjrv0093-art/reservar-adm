@@ -1,121 +1,95 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs, doc, updateDoc, deleteDoc, getDoc, setDoc, query, orderBy, where, addDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyA6a4zq7V4K5Q5e4v4a9a0b0c0d0e0f0a0b",
-  authDomain: "reservar-b1b1a.firebaseapp.com",
-  projectId: "reservar-b1b1a",
-  storageBucket: "reservar-b1b1a.appspot.com",
-  messagingSenderId: "123456789",
-  appId: "1:123456789:web:abcdef123456"
+  apiKey: "AIzaSyC4vXWnSW2dX-rjm1Lc93LEh09oE6ftdgc",
+  authDomain: "reservar-adm.firebaseapp.com",
+  projectId: "reservar-adm",
+  storageBucket: "reservar-adm.firebasestorage.app",
+  messagingSenderId: "557571104394",
+  appId: "1:557571104394:web:18c596d6190b2d013fd773"
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
 const $ = s => document.querySelector(s);
-const grid = $("#grid");
-const tabs = document.querySelectorAll(".tab");
-const loginBox = $("#loginBox");
-const panelBox = $("#panelBox");
-const emailI = $("#email");
-const passI = $("#pass");
-const loginBtn = $("#loginBtn");
-const logoutBtn = $("#logoutBtn");
-const horasInput = $("#horasPlan");
-const guardarHorasBtn = $("#guardarHoras");
-const toast = $("#toast");
+const toast = (m) => { const t=$("#toast"); t.textContent=m; t.classList.remove("hidden"); setTimeout(()=>t.classList.add("hidden"),2500); };
 
-function showToast(m){
-  toast.textContent=m; toast.classList.remove("hidden");
-  setTimeout(()=>toast.classList.add("hidden"),3000);
-}
+const ADMIN_EMAIL = "jjrv.0093@gmail.com";
 
-let currentTab="planes";
-let horasPlanGlobal=48;
+let currentTab = "planes";
 
-onAuthStateChanged(auth, async user=>{
-  if(user){
-    loginBox.classList.add("hidden");
-    panelBox.classList.remove("hidden");
-    const cfg = await getDoc(doc(db,"config","global"));
-    if(cfg.exists()){ horasPlanGlobal=cfg.data().horasPlan||48; horasInput.value=horasPlanGlobal; }
-    loadData();
-  }else{
-    loginBox.classList.remove("hidden");
-    panelBox.classList.add("hidden");
+// LOGIN
+$("#loginBtn").onclick = async () => {
+  const email = $("#email").value.trim();
+  const pass = $("#pass").value.trim();
+  if(!email || !pass) return toast("Completa email y pass");
+  try{
+    await signInWithEmailAndPassword(auth, email, pass);
+  }catch(e){
+    $("#loginNote").textContent = e.message;
+    toast("Error login");
   }
-});
-
-loginBtn.onclick=async()=>{
-  try{ await signInWithEmailAndPassword(auth,emailI.value,passI.value); }
-  catch(e){ $("#loginNote").textContent=e.message; }
-};
-logoutBtn.onclick=()=>signOut(auth);
-
-guardarHorasBtn.onclick=async()=>{
-  const v = parseInt(horasInput.value);
-  if(!v) return showToast("Poné horas");
-  await setDoc(doc(db,"config","global"),{horasPlan:v},{merge:true});
-  horasPlanGlobal=v;
-  showToast("Guardado: "+v+"hs");
 };
 
-tabs.forEach(t=>t.onclick=()=>{
-  tabs.forEach(x=>x.classList.remove("active"));
-  t.classList.add("active");
-  currentTab=t.dataset.tab;
-  loadData();
+$("#logoutBtn").onclick = ()=> signOut(auth);
+
+onAuthStateChanged(auth, async (user)=>{
+  if(!user){ $("#loginBox").classList.remove("hidden"); $("#panelBox").classList.add("hidden"); return; }
+  if(user.email !== ADMIN_EMAIL){ toast("No sos admin"); await signOut(auth); return; }
+  $("#loginBox").classList.add("hidden");
+  $("#panelBox").classList.remove("hidden");
+  loadAll();
 });
 
-async function loadData(){
-  grid.innerHTML="Cargando...";
-  if(currentTab==="planes"){
-    const snap = await getDocs(query(collection(db,"planes"), orderBy("creadoEn","desc")));
-    grid.innerHTML="";
-    snap.forEach(d=>{
-      const p=d.data();
-      const id=d.id;
-      const div=document.createElement("div");
-      div.className="item"+(p.destacado?" destacado":"");
-      div.innerHTML=`
-        <div class="row" style="justify-content:space-between">
-          <b>${p.nombre||"Sin nombre"}</b>
-          <span class="badge ${p.activo?"ok":"no"}">${p.activo?"Activo":"Pausado"}</span>
-        </div>
-        <small>${p.localidad||""} - ${p.categoria||""} - $${p.precio||0}</small><br>
-        <small>Saludo: ${p.saludo? "SI":"NO"} | ByC: ${p.byc? "SI":"NO"}</small><br><br>
-        <div class="row">
-          <button class="btn small ghost" data-a="toggle">${p.activo?"Pausar":"Activar"}</button>
-          <button class="btn small ghost" data-a="dest">${p.destacado?"Quitar destacado":"Destacar"}</button>
-          <button class="btn small ghost" data-a="borrar">Borrar</button>
-        </div>`;
-      div.querySelector('[data-a="toggle"]').onclick=async()=>{ await updateDoc(doc(db,"planes",id),{activo:!p.activo}); loadData(); };
-      div.querySelector('[data-a="dest"]').onclick=async()=>{ await updateDoc(doc(db,"planes",id),{destacado:!p.destacado}); loadData(); };
-      div.querySelector('[data-a="borrar"]').onclick=async()=>{ if(confirm("¿Borrar?")){ await deleteDoc(doc(db,"planes",id)); loadData(); } };
-      grid.appendChild(div);
-    });
-  }else if(currentTab==="soporte"){
-    const snap = await getDocs(query(collection(db,"soporte"), orderBy("fecha","desc")));
-    grid.innerHTML="";
-    if(snap.empty) grid.innerHTML="<div class='card'>Sin mensajes</div>";
-    snap.forEach(d=>{
-      const s=d.data(); const id=d.id;
-      const div=document.createElement("div"); div.className="item";
-      div.innerHTML=`<b>${s.email||""}</b> - ${s.asunto||""}<br><small>${s.mensaje||""}</small><br><small>${s.fecha?.toDate? s.fecha.toDate().toLocaleString(): ""}</small><br><br><button class="btn small ghost">Borrar</button>`;
-      div.querySelector("button").onclick=async()=>{ await deleteDoc(doc(db,"soporte",id)); loadData(); };
-      grid.appendChild(div);
-    });
-  }else if(currentTab==="usuarios"){
-    const snap = await getDocs(collection(db,"usuarios"));
-    grid.innerHTML="";
-    snap.forEach(d=>{
-      const u=d.data();
-      const div=document.createElement("div"); div.className="item";
-      div.innerHTML=`<b>${u.email||d.id}</b><br><small>Planes: ${u.planesCount||0}</small>`;
-      grid.appendChild(div);
-    });
-  }
-}
+// TABS
+document.querySelectorAll(".tab").forEach(b=>{
+  b.onclick = ()=>{
+    document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+    b.classList.add("active");
+    currentTab = b.dataset.tab;
+    loadAll();
+  };
+});
+
+// HORAS PLAN
+$("#guardarHoras").onclick = async ()=>{
+  const h = parseInt($("#horasPlan").value);
+  if(!h) return toast("Horas inválidas");
+  await setDoc(doc(db,"config","planes"), { horasDefault: h }, {merge:true});
+  toast("Horas guardadas: "+h);
+};
+
+async function loadAll(){
+  const grid = $("#grid");
+  grid.innerHTML = "Cargando...";
+  try{
+    if(currentTab==="planes"){
+      const horasDoc = await getDoc(doc(db,"config","planes"));
+      if(horasDoc.exists()) $("#horasPlan").value = horasDoc.data().horasDefault || 48;
+      const snap = await getDocs(collection(db,"planes"));
+      if(snap.empty){ grid.innerHTML="<div class='card'>No hay planes aún. Crea planes desde la app principal o acá se verán los pagos.</div>"; return; }
+      grid.innerHTML="";
+      snap.forEach(d=>{
+        const p=d.data();
+        const div=document.createElement("div");
+        div.className="card";
+        div.innerHTML=`<b>${p.nombre||d.id}</b><br>Monto: $${p.monto||0}<br>Estado: ${p.estado||"pendiente"}<br><small>${p.userId||""}</small><br><br>
+        <button class="btn small ok">Aprobar</button> <button class="btn small warn">Rechazar</button>`;
+        div.querySelector(".ok").onclick=async()=>{ await updateDoc(doc(db,"planes",d.id), {estado:"aprobado"}); toast("Aprobado"); loadAll(); };
+        div.querySelector(".warn").onclick=async()=>{ await updateDoc(doc(db,"planes",d.id), {estado:"rechazado"}); toast("Rechazado"); loadAll(); };
+        grid.appendChild(div);
+      });
+    } else if(currentTab==="soporte"){
+      const snap = await getDocs(collection(db,"soporte"));
+      if(snap.empty){ grid.innerHTML="<div class='card'>Sin tickets</div>"; return; }
+      grid.innerHTML="";
+      snap.forEach(d=>{
+        const s=d.data();
+        const div=document.createElement("div");
+        div.className="card";
+        div.innerHTML=`<b>${s.asunto||"Consulta"}</b><br>${s.mensaje||""}<br><small>${s.email||""}</small><br><br><button class="btn small">Resolver</button>`;
+        div.querySelector("button").onclick=async()=>{ await updateDoc(doc(db,"soporte",d.id), {estado:"resuelto
