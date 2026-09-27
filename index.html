@@ -1,111 +1,71 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>reservAR ADMI</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Inter,system-ui;background:linear-gradient(180deg,#7c3aed 0%,#5b21b6 45%,#1e0e45 100%);color:#fff;background-attachment:fixed}
-header{padding:18px 20px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(10px);background:rgba(0,0,0,.15)}
-header b{font-size:22px;letter-spacing:.5px}
-.tabs{display:flex;gap:8px;padding:12px 20px}
-.tab{padding:10px 18px;border-radius:24px;background:rgba(255,255,255,.14);cursor:pointer;font-size:14px;font-weight:600;transition:.2s;border:1px solid rgba(255,255,255,.1)}
-.tab.active{background:#a78bfa;color:#fff;box-shadow:0 6px 18px rgba(167,139,250,.5)}
-.wrap{padding:16px;max-width:1000px;margin:0 auto}
-.card{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:18px;backdrop-filter:blur(12px)}
-input{width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.2);margin:6px 0;font-size:15px;outline:none}
-#email{background:#eef2ff;color:#111;font-weight:600}
-#pass{background:rgba(0,0,0,.25);color:#fff}
-.btn{padding:12px 16px;border-radius:14px;border:none;font-weight:800;cursor:pointer;transition:.2s}
-.btn:active{transform:scale(.97)}
-.btn-primary{width:100%;background:#a78bfa;color:#fff;margin-top:10px;font-size:16px;box-shadow:0 8px 20px rgba(167,139,250,.4)}
-.btn.small{padding:8px 14px;font-size:12px;border-radius:20px}
-.ok{background:#22c55e;color:#fff} .warn{background:#ef4444;color:#fff} .ghost{background:rgba(255,255,255,.15);color:#fff}
-.hidden{display:none!important}
-#loginBox{max-width:400px;margin:50px auto}
-#loginNote{color:#ffb4b4;font-size:13px;margin-top:10px;min-height:18px}
-#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:14px}
-.local-name{font-size:17px;font-weight:800;margin-bottom:6px}
-.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800}
-#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;color:#000;padding:12px 20px;border-radius:24px;font-weight:800;z-index:99;box-shadow:0 10px 30px rgba(0,0,0,.4)}
-.config-row{display:flex;gap:10px;align-items:center;background:#fff;border-radius:16px;padding:8px 12px}
-.config-row input{margin:0;background:#fff;color:#000;font-weight:700;border:none}
-</style>
-</head>
-<body>
-
-<header>
-<div><b>reservAR</b> <span style="font-weight:300;opacity:.9">ADMI</span> <span style="font-size:13px;opacity:.6">— tu lugar, tu momento.</span></div>
-<button id="logoutBtn" class="btn small warn hidden">Salir</button>
-</header>
-
-<div id="loginBox" class="wrap">
-<div class="card">
-<h2 style="margin:0 0 16px 0;font-size:28px;font-weight:800">Ingresá ADMI</h2>
-<input id="email" type="email" value="jjrv.0093@gmail.com">
-<input id="pass" type="password" placeholder="••••••••">
-<button id="loginBtn" class="btn btn-primary">Entrar</button>
-<div id="loginNote"></div>
-</div>
-</div>
-
-<div id="panelBox" class="hidden">
-<div class="tabs">
-<div class="tab active" data-tab="planes">Planes</div>
-<div class="tab" data-tab="soporte">Soporte</div>
-<div class="tab" data-tab="usuarios">Usuarios</div>
-</div>
-<div class="wrap">
-<div class="config-row">
-<span style="color:#000;font-weight:800;font-size:13px;white-space:nowrap">GRACIA:</span>
-<input id="horasPlan" type="number" value="48"><span style="color:#000;font-weight:700">hs</span>
-<button id="guardarHoras" class="btn small ok">Guardar</button>
-</div>
-<div id="grid"></div>
-</div>
-</div>
-
-<div id="toast" class="hidden"></div>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, collection, getDocs, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC4vXWnSW2dX-rjm1Lc93LEh09oE6ftdgc",
-  authDomain: "reservar-adm.firebaseapp.com",
-  projectId: "reservar-adm",
-  storageBucket: "reservar-adm.firebasestorage.app",
-  messagingSenderId: "557571104394",
-  appId: "1:557571104394:web:18c596d6190b2d013fd773"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-const $ = s => document.querySelector(s);
-const toast = m => { const t=$('#toast'); t.textContent=m; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),3000); };
-
+<!DOCTYPE html><html lang='es'><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1.0'><title>reservAR ADMI</title><style>:root{--stroke:#ffffff26}*{box-sizing:border-box}body{margin:0;font-family:system-ui;color:#fff;background:linear-gradient(160deg,#6a11cb,#7b1fa2 40%,#3a0f6e 70%,#0a0933);background-attachment:fixed}.hidden{display:none!important}.wrap{max-width:1100px;margin:0 auto;padding:16px}.row{display:flex;gap:8px;flex-wrap:wrap}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:700px){.formgrid{grid-template-columns:1fr}}.topbar{position:sticky;top:0;z-index:20;display:flex;flex-direction:column;gap:8px;padding:10px 12px;background:rgba(31,7,54,.98);border-bottom:1px solid var(--stroke);backdrop-filter:blur(12px)}.topbar-main{display:flex;justify-content:space-between;align-items:center;width:100%}.logo{font-weight:900;font-size:18px}.right{display:flex;gap:6px;align-items:center}.tabs{display:flex;gap:10px;overflow-x:auto;width:100%;padding:6px 2px 8px;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap}.tabs::-webkit-scrollbar{display:none}.tab{border:1px solid var(--stroke);background:#ffffff12;color:#fff;padding:12px 20px;border-radius:999px;cursor:pointer;font-weight:700;white-space:nowrap;font-size:14px;min-height:44px;display:flex;align-items:center;flex:0 0 auto}.tab.active{background:#fff;color:#3a0f6e}.btn{background:#a855f7;border:none;color:#fff;padding:.6rem .9rem;border-radius:10px;cursor:pointer;font-weight:700}.btn.ghost{background:transparent;border:1px solid var(--stroke)}.btn.full{width:100%}.btn.small{padding:.35rem .6rem;font-size:12px}.auth{max-width:420px;margin:30px auto;background:#ffffff12;border:1px solid var(--stroke);border-radius:14px;padding:16px}.auth input{width:100%;padding:.6rem .7rem;border-radius:10px;border:1px solid #ffffff22;background:#ffffff08;color:#fff;margin-bottom:8px}.screen{display:none}.screen.active{display:block}.card{background:#ffffff12;border:1px solid var(--stroke);border-radius:16px;padding:16px;margin-bottom:12px}.list{list-style:none;margin:0;padding:0}.item{display:flex;justify-content:space-between;gap:8px;padding:10px;border:1px solid var(--stroke);border-radius:12px;background:#ffffff0f;margin-bottom:8px}input,select,textarea{width:100%;padding:.6rem .7rem;border-radius:10px;border:1px solid #ffffff22;background:#ffffff08;color:#fff}.pill{padding:6px 10px;border-radius:999px;border:1px solid var(--stroke);background:#ffffff18;font-size:12px}.hint{font-size:12px;color:#fde68a}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1f0736;border:1px solid #ffffff33;padding:10px 16px;border-radius:12px;z-index:9999}#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px;margin-top:12px}@media(max-width:700px){#grid{grid-template-columns:1fr}}.aviso{padding:12px;border-radius:12px;margin-bottom:12px;border:1px solid #fca5a5;background:#ef444422}</style><script src='https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js'></script><script src='https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js'></script><script src='https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js'></script></head><body><div id="headerRes" style="padding:12px 20px"><h1 style="margin:0;font-size:18px">reservAR <span style="font-weight:300;font-size:14px;color:#cfc9e6">ADMI — tu lugar, tu momento.</span></h1></div><section id="auth" class="auth"><h2>Ingresá ADMI</h2><input id="email" type="email" value="jjrv.0093@gmail.com"><input id="password" type="password" placeholder="Contraseña"><p id="loginMsg" style="color:#fca5a5;min-height:18px"></p><button id="loginBtn" class="btn full">Entrar</button></section><section id="register" class="auth hidden"><h2>Crear cuenta</h2><input id="regNombre" placeholder="Nombre"><input id="regApellido" placeholder="Apellido"><input id="regEmail" type="email" placeholder="Correo"><input id="regPass" type="password" placeholder="Contraseña"><input id="regPass2" type="password" placeholder="Repetir"><label style="font-size:13px"><input id="regTerminos" type="checkbox" style="width:auto"> Acepto términos</label><p id="regMsg" style="color:#fca5a5"></p><button id="registerBtn" class="btn full">Registrarme</button><p><a href="#" id="goLogin" style="color:#ff5ab3">Iniciar sesión</a></p></section><section id="forgot" class="auth hidden"><h2>Recuperar contraseña</h2><input id="forgotEmail" type="email" placeholder="tu correo"><p id="forgotMsg" style="color:#fca5a5"></p><p id="forgotOk" style="color:#86efac"></p><button id="forgotBtn" class="btn full">Enviar link</button><p><a href="#" id="goBackLogin" style="color:#ff5ab3">Volver</a></p></section><section id="app" class="hidden"><div class="topbar"><div class="topbar-main"><div class="logo">reservAR ADMI</div><div class="right"><span id="estadoPill" class="pill">ADMI</span><button id="btnLogout" class="btn small ghost">Salir</button></div></div><div class="tabs"><button class="tab active" data-screen="dashboard">Inicio</button><button class="tab" data-screen="planes">Planes</button><button class="tab" data-screen="soporte">Soporte</button><button class="tab" data-screen="usuarios">Usuarios</button><button class="tab" data-screen="ajustes">Ajustes</button></div></div><div class="wrap"><section id="dashboard" class="screen active"><div class="card"><h2 id="saludo">Panel ADMI</h2><div id="kpis" style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap"></div></div><div class="card"><h3>Resumen rápido</h3><p class="hint">Acá ves todo lo del ADMI. Planes controla los vencimientos de los locales.</p><div id="resumenRapido"></div></div></section><section id="planes" class="screen"><div class="card"><h3>Planes — Locales</h3><div class="row"><input id="buscador" placeholder="Buscar local por nombre..." style="max-width:300px"><button id="btnRecargar" class="btn small ghost">Recargar</button></div><div id="grid"></div></div></section><section id="soporte" class="screen"><div class="card"><h3>Soporte — Reclamos</h3><ul id="listaSoporte" class="list"></ul></div></section><section id="usuarios" class="screen"><div class="card"><h3>Usuarios — Todos los registros</h3><ul id="listaUsuarios" class="list"></ul></div></section><section id="ajustes" class="screen"><div class="card"><h3>Ajustes ADMI — Horas de gracia</h3><div class="formgrid"><div><label>Horas de gracia después de vencido</label><input id="horasPlan" type="number" value="48"></div></div><div class="row" style="margin-top:10px"><button id="btnGuardarHoras" class="btn">Guardar horas</button><span id="cfgMsg" style="color:#86efac"></span></div><p class="hint">Si un local vence, sigue ACTIVO por estas horas. Después pasa a VENCIDO.</p></div></section></div></section><div id="toast" class="toast hidden"></div><script>
+const firebaseConfig={apiKey:"AIzaSyC4vXWnSW2dX-rjm1Lc93LEh09oE6ftdgc",authDomain:"reservar-adm.firebaseapp.com",projectId:"reservar-adm",storageBucket:"reservar-adm.firebasestorage.app",messagingSenderId:"557571104394",appId:"1:557571104394:web:18c596d6190b2d013fd773"};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
+document.addEventListener('DOMContentLoaded',()=>{
+const $=id=>document.getElementById(id);
+const $$=s=>Array.from(document.querySelectorAll(s));
+const toast=m=>{const t=$('toast');t.textContent=m;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),3000)};
 let cfg={horasPlan:48};
+let allLocales=[];
 
-$('#loginBtn').onclick=async()=>{
-  try{ await signInWithEmailAndPassword(auth,$('#email').value.trim(),$('#pass').value.trim()); }
-  catch(e){ $('#loginNote').textContent=e.message; }
-};
-$('#logoutBtn').onclick=()=>signOut(auth);
+function goScreen(n){$$('.tab').forEach(t=>t.classList.toggle('active',t.dataset.screen===n));$$('.screen').forEach(s=>s.classList.toggle('active',s.id===n));if(n==='planes')cargarLocales();if(n==='soporte')cargarSoporte();if(n==='usuarios')cargarUsuarios();}
+$$('.tab').forEach(t=>t.addEventListener('click',()=>goScreen(t.dataset.screen)));
 
-onAuthStateChanged(auth, async u=>{
-  if(!u){ $('#loginBox').classList.remove('hidden'); $('#panelBox').classList.add('hidden'); $('#logoutBtn').classList.add('hidden'); return; }
-  if(u.email.toLowerCase()!=="jjrv.0093@gmail.com"){ $('#loginNote').textContent="No sos ADMI"; await signOut(auth); return; }
-  $('#loginBox').classList.add('hidden'); $('#panelBox').classList.remove('hidden'); $('#logoutBtn').classList.remove('hidden');
-  const c=await getDoc(doc(db,"config","adm")); if(c.exists()){ cfg=c.data(); $('#horasPlan').value=cfg.horasPlan||48; }
-  cargarLocales();
+$('btnLogout').addEventListener('click',()=>auth.signOut());
+$('loginBtn').addEventListener('click',async()=>{try{await auth.signInWithEmailAndPassword($('email').value.trim(),$('password').value.trim());$('loginMsg').textContent='';}catch(e){$('loginMsg').textContent='Correo o pass mal o no existe en reservar-adm';}});
+$('goLogin')?.addEventListener('click',e=>{e.preventDefault();$('register').classList.add('hidden');$('auth').classList.remove('hidden')});
+$('btnRecargar')?.addEventListener('click',()=>cargarLocales());
+$('buscador')?.addEventListener('input',e=>{const q=e.target.value.toLowerCase();const f=allLocales.filter(l=>(l.nombre||'').toLowerCase().includes(q));renderLocales(f)});
+
+auth.onAuthStateChanged(async u=>{
+if(!u){$('auth').classList.remove('hidden');$('app').classList.add('hidden');$('headerRes').style.display='block';return}
+if(u.email.toLowerCase()!=='jjrv.0093@gmail.com'){toast('No sos ADMI');await auth.signOut();return}
+$('auth').classList.add('hidden');$('register').classList.add('hidden');$('forgot').classList.add('hidden');$('app').classList.remove('hidden');$('headerRes').style.display='none';$('saludo').textContent='Hola ADMI — '+u.email;
+try{const c=await db.collection('config').doc('adm').get();if(c.exists){cfg=c.data();$('horasPlan').value=cfg.horasPlan||48;}}catch(e){}
+cargarLocales();
 });
 
 function estaActivo(l){
-  if(l.planActivo===false) return false;
-  if(l.visible===false) return false;
-  if(!l.planVence) return true;
-  let v=l.planVence.toDate?l.planVence.toDate():new Date(l.plan
+if(l.planActivo===false) return false;
+if(l.visible===false) return false;
+if(!l.planVence) return true;
+let v=null;
+try{if(l.planVence.toDate) v=l.planVence.toDate(); else if(l.planVence.seconds) v=new Date(l.planVence.seconds*1000); else v=new Date(l.planVence);}catch(e){v=null}
+if(!v) return true;
+return (new Date()-v)/36e5 <= (cfg.horasPlan||48);
+}
+
+async function cargarLocales(){
+const g=$('grid');if(!g)return;g.innerHTML='<div class="card">Cargando locales...</div>';
+try{
+const snap=await db.collection('locales').get();
+allLocales=snap.docs.map(d=>({id:d.id,...d.data()}));
+renderLocales(allLocales);
+renderKPIs();
+}catch(e){g.innerHTML='<div class="card">Error: '+e.message+' — Creá la colección locales</div>';}
+}
+
+function renderKPIs(){
+const k=$('kpis');const r=$('resumenRapido');if(!k)return;
+const total=allLocales.length;
+const activos=allLocales.filter(estaActivo).length;
+const vencidos=total-activos;
+const destacados=allLocales.filter(l=>l.destacado).length;
+k.innerHTML=`<div class="pill">Total locales: ${total}</div><div class="pill" style="background:#22c55e33;border-color:#22c55e">Activos: ${activos}</div><div class="pill" style="background:#ef444433;border-color:#ef4444">Vencidos: ${vencidos}</div><div class="pill">Destacados: ${destacados}</div><div class="pill">Gracia: ${cfg.horasPlan||48}hs</div>`;
+if(r) r.innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap"><div class="pill">Activos ${activos}/${total}</div><div class="pill">Vencidos ${vencidos}</div></div>`;
+}
+
+function renderLocales(arr){
+const g=$('grid');g.innerHTML='';if(!arr.length){g.innerHTML='<div class="card">Sin locales</div>';return;}
+arr.forEach(l=>{
+const a=estaActivo(l);
+let venceTxt='—';try{if(l.planVence){if(l.planVence.toDate) venceTxt=l.planVence.toDate().toLocaleDateString('es-AR'); else if(l.planVence.seconds) venceTxt=new Date(l.planVence.seconds*1000).toLocaleDateString('es-AR'); else venceTxt=new Date(l.planVence).toLocaleDateString('es-AR');}}catch(e){}
+const card=document.createElement('div');card.className='card';
+card.innerHTML=`<div style="font-weight:900;font-size:17px">${l.nombre||'Local sin nombre'}</div><div style="font-size:12px;color:#cfc9e6;margin:6px 0">${l.email||l.uid||l.id}</div><div style="margin:8px 0"><span class="pill" style="background:${a?'#22c55e33':'#ef444433'};border-color:${a?'#22c55e':'#ef4444'}">${a?'ACTIVO':'VENCIDO'}</span> <span class="pill">Vence ${venceTxt}</span> ${l.destacado?'<span class="pill" style="background:#facc1533">★ Destacado</span>':''} ${l.visible===false?'<span class="pill" style="background:#fff2">Oculto</span>':''}</div><div class="row" style="margin-top:10px"><button class="btn small" onclick="activar48('${l.id}')">Activar 48hs</button><button class="btn small ghost" onclick="toggleDest('${l.id}',${!l.destacado})">${l.destacado?'Quitar ★':'Destacar ★'}</button><button class="btn small ghost" onclick="toggleVis('${l.id}',${l.visible===false?true:false})">${l.visible===false?'Mostrar':'Ocultar'}</button></div>`;
+g.appendChild(card);
+});
+}
+
+window.activar48=async id=>{try{await db.collection('locales').doc(id).update({planVence:firebase.firestore.FieldValue.serverTimestamp(),planActivo:true,visible:true});toast('Activado
