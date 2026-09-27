@@ -13,7 +13,7 @@
 .card{background:linear-gradient(180deg,#ffffff14,#ffffff0c);border:1px solid var(--stroke);border-radius:20px;padding:18px;margin-bottom:14px;backdrop-filter:blur(6px)}
 .card h3{margin:0 0 12px 0}.kpi{display:flex;gap:8px;flex-wrap:wrap}
 .pill{padding:7px 12px;border-radius:999px;border:1px solid var(--stroke);background:#ffffff18;font-size:12px;font-weight:700}
-input,select{width:100%;padding:.65rem .8rem;border-radius:12px;border:1px solid #ffffff22;background:#1a1033cc;color:#fff;outline:none}
+input,select,textarea{width:100%;padding:.65rem .8rem;border-radius:12px;border:1px solid #ffffff22;background:#1a1033cc;color:#fff;outline:none}
 label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}@media(max-width:900px){.grid3{grid-template-columns:1fr}}
 .planCard{border-radius:20px;padding:16px;background:linear-gradient(180deg,#ffffff18,#ffffff0a);border:1px solid var(--stroke)}
@@ -23,6 +23,7 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 .screen{display:none}.screen.active{display:block}
 .auth{max-width:400px;margin:60px auto;background:#ffffff12;border:1px solid var(--stroke);border-radius:20px;padding:20px}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;color:#111;padding:12px 18px;border-radius:999px;font-weight:900;z-index:99}
+.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:700px){.formgrid{grid-template-columns:1fr}}
 </style>
 <script src='https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js'></script>
 <script src='https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js'></script>
@@ -47,60 +48,59 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 <div id="perfil" class="screen"><div class="card"><h3>Mi perfil</h3><label>Email</label><input id="perfilEmail" disabled><label style="margin-top:8px">Nueva contraseña</label><input id="newPass" type="password"><div style="display:flex;gap:8px;margin-top:10px"><button id="btnCambiarPass" class="btn">Cambiar</button><button id="btnResetEmail" class="btn ghost">Enviar link</button></div><p id="perfilMsg"></p></div></div>
 
 <div id="ajustes" class="screen">
-<div class="card"><h3>Horas de gracia</h3><label>Horas después de vencido sigue activo</label><input id="horasPlan" type="number" value="48" style="max-width:200px"><div style="margin-top:10px"><button id="btnGuardarHoras" class="btn">Guardar</button> <span id="ajMsg" style="color:#86efac"></span></div></div>
-<div class="card"><h3>Saludos editables</h3><label>Saludo Panel Local</label><input id="saludoLocal" placeholder="tu lugar, tu momento."><label style="margin-top:8px">Saludo Panel Cliente</label><input id="saludoCliente" placeholder="reservá en segundos"><label style="margin-top:8px">Título ADMI</label><input id="tituloAdmi" value="reservAR ADMI"><div style="margin-top:10px"><button id="btnGuardarSaludos" class="btn">Guardar saludos</button> <span id="saludoMsg" style="color:#86efac"></span></div></div>
+<div class="card" style="border:2px solid #facc15">
+<h3>💸 MIS DATOS DE COBRO - Donde me pagan los planes</h3>
+<p style="font-size:12px;color:#fde68a">Esto es lo que ven los LOCALES cuando tocan "Contratar plan" - es TU alias</p>
+<div class="formgrid">
+<div><label>Alias (MP / Ualá)</label><input id="jonaAlias" placeholder="ej: reservar.mp"></div>
+<div><label>CBU</label><input id="jonaCbu"></div>
+<div><label>Titular</label><input id="jonaTitular"></div>
+<div><label>WhatsApp comprobantes</label><input id="jonaWsp" placeholder="11 1234 5678"></div>
+<div class="full"><label>Instrucciones</label><textarea id="jonaInstr"></textarea></div>
 </div>
-
-</div></section><div id="toast" class="toast hidden"></div>
+<div style="margin-top:12px;display:flex;gap:8px"><button id="btnGuardarCobrosJona" class="btn">Guardar mis datos</button><span id="msgCobrosJona" style="color:#86efac"></span></div>
+</div>
+<div class="card"><h3>Horas de gracia</h3><label>Horas después de vencido sigue activo</label><input id="horasPlan" type="number" value="48" style="max-width:200px"><div style="margin-top:10px"><button id="btnGuardarHoras" class="btn">Guardar</button> <span id="ajMsg" style="color:#86efac"></span></div></div>
+<div class="card"><h3>Saludos editables</h3><label>Saludo Panel Local</label><input id="saludoLocal"><label style="margin-top:8px">Saludo Panel Cliente</label><input id="saludoCliente"><label style="margin-top:8px">Título ADMI</label><input id="tituloAdmi" value="reservAR ADMI"><div style="margin-top:10px"><button id="btnGuardarSaludos" class="btn">Guardar saludos</button> <span id="saludoMsg" style="color:#86efac"></span></div></div>
+</div></div></section><div id="toast" class="toast hidden"></div>
 <script>
 const firebaseConfig={apiKey:"AIzaSyC4vXWnSW2dX-rjm1Lc93LEh09oE6ftdgc",authDomain:"reservar-adm.firebaseapp.com",projectId:"reservar-adm",storageBucket:"reservar-adm.firebasestorage.app",messagingSenderId:"557571104394",appId:"1:557571104394:web:18c596d6190b2d013fd773"};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth(); const db=firebase.firestore();
 const $=id=>document.getElementById(id);
 const toast=m=>{const t=$('toast');t.textContent=m;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),2500)};
-$('loginBtn').onclick=async()=>{ const e=$('email').value.trim(); const p=$('password').value.trim(); $('err').textContent='Conectando...'; try{ await auth.signInWithEmailAndPassword(e,p); $('err').textContent=''; }catch(er){ $('err').textContent=er.message; } };
+$('loginBtn').onclick=async()=>{ const e=$('email').value.trim(); const p=$('password').value.trim(); $('err').textContent='Conectando...'; try{ await auth.signInWithEmailAndPassword(e,p);}catch(er){ $('err').textContent=er.message; } };
 $('logout').onclick=()=>auth.signOut();
-document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(t.dataset.s).classList.add('active'); if(t.dataset.s==='planes') load(); });
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); $(t.dataset.s).classList.add('active'); if(t.dataset.s==='planes') load(); if(t.dataset.s==='soporte') loadSoporte(); if(t.dataset.s==='users') loadUsers(); });
 let all=[]; let cfg={horasPlan:48};
+async function cargarCobrosJona(){ try{ const d=await db.collection('config').doc('cobros').get(); if(d.exists){ const c=d.data(); $('jonaAlias').value=c.alias||''; $('jonaCbu').value=c.cbu||''; $('jonaTitular').value=c.titular||''; $('jonaWsp').value=c.whatsapp||''; $('jonaInstr').value=c.instrucciones||''; } }catch(e){} }
 auth.onAuthStateChanged(async u=>{
   if(!u){ $('auth').classList.remove('hidden'); $('app').classList.add('hidden'); return; }
   if(u.email.toLowerCase()!=='jjrv.0093@gmail.com'){ toast('No sos ADMI'); await auth.signOut(); return; }
   $('auth').classList.add('hidden'); $('app').classList.remove('hidden'); $('sal').textContent='Hola ADMI '+u.email; $('perfilEmail').value=u.email;
   try{
     const c=await db.collection('config').doc('adm').get(); if(c.exists){ cfg=c.data(); $('horasPlan').value=cfg.horasPlan||48; }
-    const pt=await db.collection('config').doc('planes').get(); if(pt.exists){ const d=pt.data(); $('pBaseNombre').value=d.base?.nombre||'Básico'; $('pBaseLim').value=d.base?.limite||100; $('pBasePrecio').value=d.base?.precio||5000; $('pMedioNombre').value=d.medio?.nombre||'Medio'; $('pMedioLim').value=d.medio?.limite||300; $('pMedioPrecio').value=d.medio?.precio||9000; $('pPremNombre').value=d.premium?.nombre||'Premium'; $('pPremLim').value=d.premium?.limite||999999; $('pPremPrecio').value=d.premium?.precio||15000; $('tBase').textContent=d.base?.nombre||'Básico'; $('tMedio').textContent=d.medio?.nombre||'Medio'; $('tPrem').textContent=d.premium?.nombre||'Premium'; }
+    const pt=await db.collection('config').doc('planes').get(); if(pt.exists){ const d=pt.data(); $('pBaseNombre').value=d.base?.nombre||'Básico'; $('pBaseLim').value=d.base?.limite||100; $('pBasePrecio').value=d.base?.precio||5000; $('pMedioNombre').value=d.medio?.nombre||'Medio'; $('pMedioLim').value=d.medio?.limite||300; $('pMedioPrecio').value=d.medio?.precio||9000; $('pPremNombre').value=d.premium?.nombre||'Premium'; $('pPremLim').value=d.premium?.limite||999999; $('pPremPrecio').value=d.premium?.precio||15000; }
     const br=await db.collection('config').doc('branding').get(); if(br.exists){ const b=br.data(); $('saludoLocal').value=b.saludoLocal||''; $('saludoCliente').value=b.saludoCliente||''; $('tituloAdmi').value=b.tituloAdmi||'reservAR ADMI'; }
   }catch(e){}
-  load();
+  cargarCobrosJona(); load();
 });
 function estaActivo(l){ if(l.planActivo===false) return false; if(l.visible===false) return false; if(!l.planVence) return true; let v=null; try{ if(l.planVence.toDate) v=l.planVence.toDate(); else if(l.planVence.seconds) v=new Date(l.planVence.seconds*1000); else v=new Date(l.planVence);}catch(e){} if(!v) return true; return (new Date()-v)/36e5 <= (cfg.horasPlan||48); }
-async function load(){
-  try{
-    const s=await db.collection('locales').get(); all=s.docs.map(d=>({id:d.id,...d.data()}));
-    const activos=all.filter(estaActivo).length; $('kpis').innerHTML=`<span class="pill">Total ${all.length}</span><span class="pill" style="background:#22c55e33">Activos ${activos}</span><span class="pill" style="background:#ef444433">Vencidos ${all.length-activos}</span>`;
-    $('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span>`;
-    const g=$('grid'); g.innerHTML=''; if(!all.length){ g.innerHTML='<div class="card">Sin locales aún</div>'; return; }
-    all.forEach(l=>{
-      let vence='-'; try{ if(l.planVence?.toDate) vence=l.planVence.toDate().toLocaleDateString('es-AR'); }catch(e){}
-      const a=estaActivo(l); const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">GRATIS hasta ${l.promoHasta||''}</span>`:'';
-      const d=document.createElement('div'); d.className='planCard';
-      d.innerHTML=`<div class="planHead"><b>${l.nombre||'Local'}</b><span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}</span></div><div style="font-size:12px;color:#cfc9e6;margin-bottom:8px">${l.email||''} — ${l.plan||'sin plan'} ${promo}</div><div style="font-size:12px;margin-bottom:10px">Vence: ${vence} ${l.promoMotivo?`— ${l.promoMotivo}`:''}</div><div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" onclick="act('${l.id}')">48hs</button><button class="btn small ghost" onclick="gratis('${l.id}',60)">Gratis 60d</button><button class="btn small ghost" onclick="gratis('${l.id}',30)">30d</button><button class="btn small ghost" onclick="togDest('${l.id}',${!l.destacado})">${l.destacado?'Quitar ★':'★ Destacar'}</button><button class="btn small ghost" onclick="togVis('${l.id}',${l.visible===false})">${l.visible===false?'Mostrar':'Ocultar'}</button></div>`;
-      g.appendChild(d);
-    });
-  }catch(e){ toast(e.message); }
-}
-window.act=async id=>{ await db.collection('locales').doc(id).update({planVence:firebase.firestore.FieldValue.serverTimestamp(),planActivo:true,visible:true,promoGratis:firebase.firestore.FieldValue.delete(),promoHasta:firebase.firestore.FieldValue.delete()}); toast('Activado 48hs'); load(); };
-window.gratis=async(id,dias)=>{ const motivo=prompt(`Dar ${dias} días gratis - Motivo (promo / error / canje):`,'promo'); if(motivo===null) return; const hasta=new Date(); hasta.setDate(hasta.getDate()+dias); await db.collection('locales').doc(id).update({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,promoDias:dias}); toast(`Gratis ${dias} días`); load(); };
-window.togDest=async(id,v)=>{ await db.collection('locales').doc(id).update({destacado:v}); toast(v?'Destacado':'Quitado'); load(); };
-window.togVis=async(id,v)=>{ await db.collection('locales').doc(id).update({visible:v}); toast(v?'Visible':'Oculto'); load(); };
-$('bus').oninput=e=>{ const q=e.target.value.toLowerCase(); const f=all.filter(l=>(l.nombre||'').toLowerCase().includes(q)); const g=$('grid'); g.innerHTML=''; f.forEach(l=>{ const d=document.createElement('div'); d.className='planCard'; d.innerHTML=`<b>${l.nombre||'Local'}</b><div style="margin-top:8px"><button class="btn small" onclick="act('${l.id}')">48hs</button> <button class="btn small ghost" onclick="gratis('${l.id}',60)">Gratis 60d</button></div>`; g.appendChild(d); }); };
+async function load(){ try{ const s=await db.collection('locales').get(); all=s.docs.map(d=>({id:d.id,...d.data()})); const activos=all.filter(estaActivo).length; $('kpis').innerHTML=`<span class="pill">Total ${all.length}</span><span class="pill" style="background:#22c55e33">Activos ${activos}</span><span class="pill" style="background:#ef444433">Vencidos ${all.length-activos}</span>`; $('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span>`; const g=$('grid'); g.innerHTML=''; if(!all.length){ g.innerHTML='<div class="card">Sin locales aún</div>'; return; } all.forEach(l=>{ let vence='-'; try{ if(l.planVence?.toDate) vence=l.planVence.toDate().toLocaleDateString('es-AR'); }catch(e){} const a=estaActivo(l); const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">GRATIS hasta ${l.promoHasta||''}</span>`:'';
+      const d=document.createElement('div'); d.className='planCard'; d.innerHTML=`<div class="planHead"><b>${l.nombre||'Local'}</b><span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}</span></div><div style="font-size:12px;color:#cfc9e6;margin-bottom:8px">${l.email||''} — ${l.plan||'sin plan'} ${promo}</div><div style="font-size:12px;margin-bottom:10px">Vence: ${vence}</div><div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" onclick="act('${l.id}')">48hs</button><button class="btn small ghost" onclick="gratis('${l.id}',60)">Gratis 60d</button><button class="btn small ghost" onclick="gratis('${l.id}',30)">30d</button><button class="btn small ghost" onclick="togDest('${l.id}',${!l.destacado})">${l.destacado?'Quitar ★':'★ Destacar'}</button><button class="btn small ghost" onclick="togVis('${l.id}',${l.visible===false})">${l.visible===false?'Mostrar':'Ocultar'}</button></div>`; g.appendChild(d); }); }catch(e){ toast(e.message); } }
+window.act=async id=>{ await db.collection('locales').doc(id).update({planVence:firebase.firestore.FieldValue.serverTimestamp(),planActivo:true,visible:true}); toast('Activado'); load(); };
+window.gratis=async(id,dias)=>{ const motivo=prompt(`Dar ${dias} días gratis - Motivo:`,'promo'); if(motivo===null) return; const hasta=new Date(); hasta.setDate(hasta.getDate()+dias); await db.collection('locales').doc(id).update({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo}); toast(`Gratis ${dias} días`); load(); };
+window.togDest=async(id,v)=>{ await db.collection('locales').doc(id).update({destacado:v}); load(); };
+window.togVis=async(id,v)=>{ await db.collection('locales').doc(id).update({visible:v}); load(); };
+$('bus').oninput=e=>{ const q=e.target.value.toLowerCase(); const f=all.filter(l=>(l.nombre||'').toLowerCase().includes(q)); const g=$('grid'); g.innerHTML=''; f.forEach(l=>{ const d=document.createElement('div'); d.className='planCard'; d.innerHTML=`<b>${l.nombre||'Local'}</b><div style="margin-top:8px"><button class="btn small" onclick="act('${l.id}')">48hs</button></div>`; g.appendChild(d); }); };
 $('reload').onclick=load;
-$('btnGuardarTarifas').onclick=async()=>{ const data={ base:{nombre:$('pBaseNombre').value, limite:Number($('pBaseLim').value), precio:Number($('pBasePrecio').value)}, medio:{nombre:$('pMedioNombre').value, limite:Number($('pMedioLim').value), precio:Number($('pMedioPrecio').value)}, premium:{nombre:$('pPremNombre').value, limite:Number($('pPremLim').value), precio:Number($('pPremPrecio').value)}, updated:firebase.firestore.FieldValue.serverTimestamp() }; await db.collection('config').doc('planes').set(data,{merge:true}); $('tarifaMsg').textContent='Guardado'; $('tBase').textContent=data.base.nombre; $('tMedio').textContent=data.medio.nombre; $('tPrem').textContent=data.premium.nombre; toast('Tarifas guardadas'); };
-$('btnGuardarHoras').onclick=async()=>{ const h=Number($('horasPlan').value)||48; await db.collection('config').doc('adm').set({horasPlan:h},{merge:true}); cfg.horasPlan=h; $('ajMsg').textContent='Guardado'; toast('Guardado'); load(); };
-$('btnGuardarSaludos').onclick=async()=>{ const data={ saludoLocal:$('saludoLocal').value, saludoCliente:$('saludoCliente').value, tituloAdmi:$('tituloAdmi').value, updated:firebase.firestore.FieldValue.serverTimestamp() }; await db.collection('config').doc('branding').set(data,{merge:true}); $('saludoMsg').textContent='Guardado'; toast('Saludos'); };
+$('btnGuardarTarifas').onclick=async()=>{ const data={ base:{nombre:$('pBaseNombre').value, limite:Number($('pBaseLim').value), precio:Number($('pBasePrecio').value)}, medio:{nombre:$('pMedioNombre').value, limite:Number($('pMedioLim').value), precio:Number($('pMedioPrecio').value)}, premium:{nombre:$('pPremNombre').value, limite:Number($('pPremLim').value), precio:Number($('pPremPrecio').value)}, updated:firebase.firestore.FieldValue.serverTimestamp() }; await db.collection('config').doc('planes').set(data,{merge:true}); $('tarifaMsg').textContent='Guardado'; toast('Tarifas'); };
+$('btnGuardarHoras').onclick=async()=>{ const h=Number($('horasPlan').value)||48; await db.collection('config').doc('adm').set({horasPlan:h},{merge:true}); cfg.horasPlan=h; $('ajMsg').textContent='Guardado'; load(); };
+$('btnGuardarSaludos').onclick=async()=>{ const data={ saludoLocal:$('saludoLocal').value, saludoCliente:$('saludoCliente').value, tituloAdmi:$('tituloAdmi').value }; await db.collection('config').doc('branding').set(data,{merge:true}); $('saludoMsg').textContent='Guardado'; };
+$('btnGuardarCobrosJona').onclick=async()=>{ try{ await db.collection('config').doc('cobros').set({ alias:$('jonaAlias').value.trim(), cbu:$('jonaCbu').value.trim(), titular:$('jonaTitular').value.trim(), whatsapp:$('jonaWsp').value.trim(), instrucciones:$('jonaInstr').value.trim(), actualizado:firebase.firestore.FieldValue.serverTimestamp() },{merge:true}); $('msgCobrosJona').textContent='✅ Guardado'; toast('Cobros guardados'); }catch(e){ toast(e.message); } };
 async function loadSoporte(){ const ul=$('sList'); ul.innerHTML='<li class="item">Cargando...</li>'; try{ const s=await db.collection('soporte').orderBy('ts','desc').limit(100).get(); if(s.empty){ ul.innerHTML='<li class="item">Sin quejas</li>'; return; } ul.innerHTML=''; s.forEach(d=>{ const x=d.data(); const li=document.createElement('li'); li.className='item'; li.innerHTML=`<div><b>${x.email||''}</b><div style="font-size:12px">${x.mensaje||''}</div></div><div><button class="btn small ghost" onclick="delSoporte('${d.id}')">Borrar</button></div>`; ul.appendChild(li); }); }catch(e){ ul.innerHTML='<li class="item">Sin soporte</li>'; } }
 window.delSoporte=async id=>{ if(confirm('Borrar?')){ await db.collection('soporte').doc(id).delete(); toast('Borrado'); loadSoporte(); } };
-async function loadUsers(){ const ul=$('uList'); ul.innerHTML='<li class="item">Cargando...</li>'; try{ const s=await db.collection('usuarios').limit(200).get(); if(s.empty){ ul.innerHTML='<li class="item">Sin usuarios</li>'; return; } ul.innerHTML=''; s.forEach(d=>{ const x=d.data(); ul.innerHTML+=`<li class="item"><b>${x.email||d.id}</b></li>`; }); }catch(e){ ul.innerHTML='<li class="item">'+e.message+'</li>'; } }
+async function loadUsers(){ const ul=$('uList'); ul.innerHTML='<li class="item">Cargando...</li>'; try{ const s=await db.collection('usuarios').limit(200).get(); ul.innerHTML=''; s.forEach(d=>{ const x=d.data(); ul.innerHTML+=`<li class="item"><b>${x.email||d.id}</b></li>`; }); }catch(e){ ul.innerHTML='<li class="item">'+e.message+'</li>'; } }
 $('btnCambiarPass').onclick=async()=>{ const np=$('newPass').value.trim(); if(np.length<6){ toast('6 min'); return; } try{ await auth.currentUser.updatePassword(np); toast('Cambiada'); }catch(e){ toast(e.message); } };
 $('btnResetEmail').onclick=async()=>{ try{ await auth.sendPasswordResetEmail(auth.currentUser.email); toast('Email enviado'); }catch(e){ toast(e.message); } };
 </script></body></html>
