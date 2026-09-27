@@ -3,65 +3,58 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>reservAR ADMI</title>
-<style>
-*{box-sizing:border-box}
-body{margin:0;min-height:100vh;font-family:Inter,Arial,sans-serif;background:linear-gradient(180deg,#7c3aed 0%,#5b21b6 40%,#1e0e45 100%);color:#fff}
-header{padding:18px 20px;display:flex;justify-content:space-between;align-items:center}
-header b{font-size:22px}
-.tabs{display:flex;gap:8px;padding:0 20px 12px}
-.tab{padding:8px 16px;border-radius:20px;background:rgba(255,255,255,0.15);cursor:pointer;font-size:14px}
-.tab.active{background:#a78bfa;color:#fff}
-.wrap{padding:16px;max-width:900px;margin:0 auto}
-.card{background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.18);border-radius:18px;padding:20px}
-input{width:100%;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);margin:6px 0;font-size:16px;outline:none}
-#email{background:#eef2ff;color:#111}
-#pass{background:rgba(0,0,0,0.18);color:#fff}
-.btn{padding:12px 16px;border-radius:12px;border:none;font-weight:800;cursor:pointer}
-.btn-primary{width:100%;background:#a78bfa;color:#fff;margin-top:8px}
-.btn.small{width:auto;padding:8px 14px;font-size:13px}
-.ok{background:#22c55e;color:#fff} .warn{background:#ef4444;color:#fff}
-.hidden{display:none!important}
-#loginBox{max-width:400px;margin:40px auto}
-#loginNote{color:#ffb4b4;font-size:13px;margin-top:10px;min-height:18px;word-break:break-word}
-#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:12px}
-#grid .card{background:rgba(0,0,0,0.25)}
-#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;color:#000;padding:10px 18px;border-radius:20px;font-weight:700;z-index:99}
-</style>
+<title>Reservar ADM - Panel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>body{font-family:sans-serif;background:#f5f3ff}.violet{background:#6d28d9}.violet-light{background:#ede9fe}.tab-active{background:#6d28d9;color:white}.tab{background:#ede9fe;color:#6d28d9}.card{border-radius:16px;box-shadow:0 4px 12px rgba(109,40,217,.1)}</style>
 </head>
 <body>
-
-<header>
-<div><b>reservAR</b> ADMI - tu lugar, tu momento.</div>
-<button id="logoutBtn" class="btn small warn hidden">Salir</button>
-</header>
-
-<div id="loginBox" class="wrap">
-<div class="card">
-<h2 style="margin:0 0 16px 0;font-size:28px">Ingresá ADMI</h2>
-<input id="email" type="email" value="jjrv.0093@gmail.com">
-<input id="pass" type="password" placeholder="••••••••">
-<button id="loginBtn" class="btn btn-primary">Entrar</button>
-<div id="loginNote"></div>
-</div>
+<header class="violet text-white p-4 sticky top-0 z-50"><div class="max-w-6xl mx-auto flex justify-between"><h1 class="font-bold">💈 Reservar ADM - Panel Admin</h1><span id="statusFirebase" class="text-xs">Conectando...</span></div></header>
+<div class="max-w-6xl mx-auto p-3">
+<div class="flex gap-2 overflow-x-auto py-3">
+<button onclick="showTab('config')" id="t-config" class="tab-active px-4 py-2 rounded-full text-sm font-bold">⚙️ Config ADM</button>
+<button onclick="showTab('servicios')" id="t-servicios" class="tab px-4 py-2 rounded-full text-sm font-bold">✂️ Servicios</button>
+<button onclick="showTab('reservas')" id="t-reservas" class="tab px-4 py-2 rounded-full text-sm font-bold">📅 Reservas</button>
+<button onclick="showTab('calendario')" id="t-calendario" class="tab px-4 py-2 rounded-full text-sm font-bold">🗓️ Calendario</button>
+<button onclick="showTab('clientes')" id="t-clientes" class="tab px-4 py-2 rounded-full text-sm font-bold">👥 Clientes</button>
+<button onclick="showTab('facturacion')" id="t-facturacion" class="tab px-4 py-2 rounded-full text-sm font-bold">💰 Facturación</button>
 </div>
 
-<div id="panelBox" class="hidden">
-<div class="tabs">
-<div class="tab active" data-tab="planes">Planes</div>
-<div class="tab" data-tab="soporte">Soporte</div>
-<div class="tab" data-tab="usuarios">Usuarios</div>
-</div>
-<div class="wrap">
-<div class="card" style="display:flex;gap:8px;align-items:center">
-<input id="horasPlan" type="number" value="48" style="flex:1;background:#fff;color:#000;margin:0">
-<button id="guardarHoras" class="btn small ok">Guardar horas</button>
-</div>
-<div id="grid"></div>
-</div>
+<div id="tab-config"><div class="bg-white card p-5"><h2 class="font-bold mb-4">Configuración ADM</h2>
+<input id="cfg-nombre" placeholder="Nombre del negocio ADM" class="border rounded-xl p-3 w-full mb-2">
+<input id="cfg-wsp" placeholder="WhatsApp" class="border rounded-xl p-3 w-full mb-2">
+<input id="cfg-dire" placeholder="Dirección" class="border rounded-xl p-3 w-full mb-2">
+<div id="horarios" class="grid gap-2"></div>
+<button onclick="guardarConfig()" class="violet text-white w-full mt-4 p-3 rounded-xl font-bold">💾 Guardar en ADM</button><p id="msgConfig" class="text-center text-sm mt-2"></p></div></div>
+
+<div id="tab-servicios" class="hidden"><div class="bg-white card p-5"><h2 class="font-bold mb-4">Servicios ADM</h2><div class="flex gap-2"><input id="srv-nombre" placeholder="Corte" class="border rounded-xl p-3 flex-1"><input id="srv-precio" type="number" placeholder="$" class="border rounded-xl p-3 w-20"><input id="srv-duracion" type="number" placeholder="min" class="border rounded-xl p-3 w-20"><button onclick="addServicio()" class="violet text-white px-4 rounded-xl">+</button></div><div id="listaServicios" class="mt-4 space-y-2"></div></div></div>
+<div id="tab-reservas" class="hidden"><div class="bg-white card p-5"><h2 class="font-bold">Reservas hoy - ADM</h2><div id="listaReservas" class="mt-3"></div></div></div>
+<div id="tab-calendario" class="hidden"><div class="bg-white card p-5"><input id="fechaCal" type="date" onchange="cargarReservas()" class="border rounded-xl p-3 w-full"><div id="listaCalendario" class="mt-3"></div></div></div>
+<div id="tab-clientes" class="hidden"><div class="bg-white card p-5"><div id="listaClientes">Clientes ADM...</div></div></div>
+<div id="tab-facturacion" class="hidden"><div class="bg-white card p-5"><h2 class="font-bold">Facturación ADM</h2><div class="grid grid-cols-3 gap-3 mt-3"><div class="violet-light p-4 rounded-xl text-center"><div class="text-xs">Hoy</div><div id="fac-hoy" class="font-bold">$0</div></div><div class="violet-light p-4 rounded-xl text-center"><div class="text-xs">Semana</div><div id="fac-sem" class="font-bold">$0</div></div><div class="violet-light p-4 rounded-xl text-center"><div class="text-xs">Mes</div><div id="fac-mes" class="font-bold">$0</div></div></div></div></div>
 </div>
 
-<div id="toast" class="hidden"></div>
-<script type="module" src="./app.js"></script>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, collection, addDoc, onSnapshot, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyC4vXWnSW2dX-rjm1Lc93LEh09oE6ftdgc",
+  authDomain: "reservar-adm.firebaseapp.com",
+  projectId: "reservar-adm",
+  storageBucket: "reservar-adm.firebasestorage.app",
+  messagingSenderId: "557571104394",
+  appId: "1:557571104394:web:18c596d6190b2d013fd773"
+};
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const dias=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
+const divH=document.getElementById('horarios'); dias.forEach(d=>{divH.innerHTML+=`<div class="flex gap-2 text-sm items-center"><span class="w-20 font-semibold">${d}</span><input id="h-${d}-ini" type="time" value="09:00" class="border rounded-lg p-2 flex-1"><input id="h-${d}-fin" type="time" value="20:00" class="border rounded-lg p-2 flex-1"><label><input type="checkbox" id="h-${d}-off"> Cerrado</label></div>`});
+window.showTab=(n)=>{document.querySelectorAll('[id^=tab-]').forEach(e=>e.classList.add('hidden'));document.getElementById('tab-'+n).classList.remove('hidden');document.querySelectorAll('[id^=t-]').forEach(b=>{b.className='tab px-4 py-2 rounded-full text-sm font-bold'});document.getElementById('t-'+n).className='tab-active px-4 py-2 rounded-full text-sm font-bold'};
+async function init(){try{const s=await getDoc(doc(db,"config","adm"));if(s.exists()){const c=s.data();document.getElementById('cfg-nombre').value=c.nombre||'';document.getElementById('cfg-wsp').value=c.wsp||'';document.getElementById('cfg-dire').value=c.direccion||'';document.getElementById('statusFirebase').textContent="✅ ADM Conectado: "+c.nombre;}else{document.getElementById('statusFirebase').textContent="✅ ADM Conectado - reservar-adm"} cargarServicios();}catch(e){document.getElementById('statusFirebase').textContent="❌ "+e.message;}}init();
+window.guardarConfig=async()=>{const h={};dias.forEach(d=>{h[d]={ini:document.getElementById(`h-${d}-ini`).value,fin:document.getElementById(`h-${d}-fin`).value,off:document.getElementById(`h-${d}-off`).checked}});await setDoc(doc(db,"config","adm"),{nombre:document.getElementById('cfg-nombre').value,wsp:document.getElementById('cfg-wsp').value,direccion:document.getElementById('cfg-dire').value,horarios:h,updated:new Date()});document.getElementById('msgConfig').textContent="✅ Guardado en ADM";};
+window.addServicio=async()=>{const n=document.getElementById('srv-nombre').value,p=document.getElementById('srv-precio').value,d=document.getElementById('srv-duracion').value;if(!n)return;await addDoc(collection(db,"servicios"),{nombre:n,precio:Number(p),duracion:Number(d),created:new Date()});document.getElementById('srv-nombre').value='';};
+function cargarServicios(){onSnapshot(collection(db,"servicios"),snap=>{const l=document.getElementById('listaServicios');l.innerHTML='';snap.forEach(d=>{const s=d.data();l.innerHTML+=`<div class="flex justify-between violet-light p-3 rounded-xl"><span><b>${s.nombre}</b> $${s.precio} ${s.duracion}min</span><button onclick="borrarServ('${d.id}')">✕</button></div>`})})}
+window.borrarServ=async(id)=>{await deleteDoc(doc(db,"servicios",id))};
+window.cargarReservas=async()=>{const f=document.getElementById('fechaCal').value||new Date().toISOString().split('T')[0];const q=query(collection(db,"reservas"),where("fecha","==",f));const snap=await getDocs(q);const l=document.getElementById('listaCalendario');l.innerHTML=snap.empty?'Sin reservas':'';snap.forEach(d=>{const r=d.data();l.innerHTML+=`<div class="violet-light p-2 rounded-xl mt-2">${r.hora} ${r.cliente} ${r.servicio}</div>`})};
+</script>
 </body>
 </html>
