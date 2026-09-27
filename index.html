@@ -3,39 +3,76 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reservar ADM - Panel</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<style>body{font-family:sans-serif;background:#f5f3ff}.violet{background:#6d28d9}.violet-light{background:#ede9fe}.tab-active{background:#6d28d9;color:white}.tab{background:#ede9fe;color:#6d28d9}.card{border-radius:16px;box-shadow:0 4px 12px rgba(109,40,217,.1)}</style>
+<title>reservAR ADMI</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Inter,system-ui;background:linear-gradient(180deg,#7c3aed 0%,#5b21b6 45%,#1e0e45 100%);color:#fff;background-attachment:fixed}
+header{padding:18px 20px;display:flex;justify-content:space-between;align-items:center;backdrop-filter:blur(10px);background:rgba(0,0,0,.15)}
+header b{font-size:22px;letter-spacing:.5px}
+.tabs{display:flex;gap:8px;padding:12px 20px}
+.tab{padding:10px 18px;border-radius:24px;background:rgba(255,255,255,.14);cursor:pointer;font-size:14px;font-weight:600;transition:.2s;border:1px solid rgba(255,255,255,.1)}
+.tab.active{background:#a78bfa;color:#fff;box-shadow:0 6px 18px rgba(167,139,250,.5)}
+.wrap{padding:16px;max-width:1000px;margin:0 auto}
+.card{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.18);border-radius:20px;padding:18px;backdrop-filter:blur(12px)}
+input{width:100%;padding:14px 16px;border-radius:14px;border:1px solid rgba(255,255,255,.2);margin:6px 0;font-size:15px;outline:none}
+#email{background:#eef2ff;color:#111;font-weight:600}
+#pass{background:rgba(0,0,0,.25);color:#fff}
+.btn{padding:12px 16px;border-radius:14px;border:none;font-weight:800;cursor:pointer;transition:.2s}
+.btn:active{transform:scale(.97)}
+.btn-primary{width:100%;background:#a78bfa;color:#fff;margin-top:10px;font-size:16px;box-shadow:0 8px 20px rgba(167,139,250,.4)}
+.btn.small{padding:8px 14px;font-size:12px;border-radius:20px}
+.ok{background:#22c55e;color:#fff} .warn{background:#ef4444;color:#fff} .ghost{background:rgba(255,255,255,.15);color:#fff}
+.hidden{display:none!important}
+#loginBox{max-width:400px;margin:50px auto}
+#loginNote{color:#ffb4b4;font-size:13px;margin-top:10px;min-height:18px}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:14px}
+.local-name{font-size:17px;font-weight:800;margin-bottom:6px}
+.badge{padding:4px 10px;border-radius:20px;font-size:11px;font-weight:800}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#fff;color:#000;padding:12px 20px;border-radius:24px;font-weight:800;z-index:99;box-shadow:0 10px 30px rgba(0,0,0,.4)}
+.config-row{display:flex;gap:10px;align-items:center;background:#fff;border-radius:16px;padding:8px 12px}
+.config-row input{margin:0;background:#fff;color:#000;font-weight:700;border:none}
+</style>
 </head>
 <body>
-<header class="violet text-white p-4 sticky top-0 z-50"><div class="max-w-6xl mx-auto flex justify-between"><h1 class="font-bold">💈 Reservar ADM - Panel Admin</h1><span id="statusFirebase" class="text-xs">Conectando...</span></div></header>
-<div class="max-w-6xl mx-auto p-3">
-<div class="flex gap-2 overflow-x-auto py-3">
-<button onclick="showTab('config')" id="t-config" class="tab-active px-4 py-2 rounded-full text-sm font-bold">⚙️ Config ADM</button>
-<button onclick="showTab('servicios')" id="t-servicios" class="tab px-4 py-2 rounded-full text-sm font-bold">✂️ Servicios</button>
-<button onclick="showTab('reservas')" id="t-reservas" class="tab px-4 py-2 rounded-full text-sm font-bold">📅 Reservas</button>
-<button onclick="showTab('calendario')" id="t-calendario" class="tab px-4 py-2 rounded-full text-sm font-bold">🗓️ Calendario</button>
-<button onclick="showTab('clientes')" id="t-clientes" class="tab px-4 py-2 rounded-full text-sm font-bold">👥 Clientes</button>
-<button onclick="showTab('facturacion')" id="t-facturacion" class="tab px-4 py-2 rounded-full text-sm font-bold">💰 Facturación</button>
+
+<header>
+<div><b>reservAR</b> <span style="font-weight:300;opacity:.9">ADMI</span> <span style="font-size:13px;opacity:.6">— tu lugar, tu momento.</span></div>
+<button id="logoutBtn" class="btn small warn hidden">Salir</button>
+</header>
+
+<div id="loginBox" class="wrap">
+<div class="card">
+<h2 style="margin:0 0 16px 0;font-size:28px;font-weight:800">Ingresá ADMI</h2>
+<input id="email" type="email" value="jjrv.0093@gmail.com">
+<input id="pass" type="password" placeholder="••••••••">
+<button id="loginBtn" class="btn btn-primary">Entrar</button>
+<div id="loginNote"></div>
+</div>
 </div>
 
-<div id="tab-config"><div class="bg-white card p-5"><h2 class="font-bold mb-4">Configuración ADM</h2>
-<input id="cfg-nombre" placeholder="Nombre del negocio ADM" class="border rounded-xl p-3 w-full mb-2">
-<input id="cfg-wsp" placeholder="WhatsApp" class="border rounded-xl p-3 w-full mb-2">
-<input id="cfg-dire" placeholder="Dirección" class="border rounded-xl p-3 w-full mb-2">
-<div id="horarios" class="grid gap-2"></div>
-<button onclick="guardarConfig()" class="violet text-white w-full mt-4 p-3 rounded-xl font-bold">💾 Guardar en ADM</button><p id="msgConfig" class="text-center text-sm mt-2"></p></div></div>
-
-<div id="tab-servicios" class="hidden"><div class="bg-white card p-5"><h2 class="font-bold mb-4">Servicios ADM</h2><div class="flex gap-2"><input id="srv-nombre" placeholder="Corte" class="border rounded-xl p-3 flex-1"><input id="srv-precio" type="number" placeholder="$" class="border rounded-xl p-3 w-20"><input id="srv-duracion" type="number" placeholder="min" class="border rounded-xl p-3 w-20"><button onclick="addServicio()" class="violet text-white px-4 rounded-xl">+</button></div><div id="listaServicios" class="mt-4 space-y-2"></div></div></div>
-<div id="tab-reservas" class="hidden"><div class="bg-white card p-5"><h2 class="font-bold">Reservas hoy - ADM</h2><div id="listaReservas" class="mt-3"></div></div></div>
-<div id="tab-calendario" class="hidden"><div class="bg-white card p-5"><input id="fechaCal" type="date" onchange="cargarReservas()" class="border rounded-xl p-3 w-full"><div id="listaCalendario" class="mt-3"></div></div></div>
-<div id="tab-clientes" class="hidden"><div class="bg-white card p-5"><div id="listaClientes">Clientes ADM...</div></div></div>
-<div id="tab-facturacion" class="hidden"><div class="bg-white card p-5"><h2 class="font-bold">Facturación ADM</h2><div class="grid grid-cols-3 gap-3 mt-3"><div class="violet-light p-4 rounded-xl text-center"><div class="text-xs">Hoy</div><div id="fac-hoy" class="font-bold">$0</div></div><div class="violet-light p-4 rounded-xl text-center"><div class="text-xs">Semana</div><div id="fac-sem" class="font-bold">$0</div></div><div class="violet-light p-4 rounded-xl text-center"><div class="text-xs">Mes</div><div id="fac-mes" class="font-bold">$0</div></div></div></div></div>
+<div id="panelBox" class="hidden">
+<div class="tabs">
+<div class="tab active" data-tab="planes">Planes</div>
+<div class="tab" data-tab="soporte">Soporte</div>
+<div class="tab" data-tab="usuarios">Usuarios</div>
 </div>
+<div class="wrap">
+<div class="config-row">
+<span style="color:#000;font-weight:800;font-size:13px;white-space:nowrap">GRACIA:</span>
+<input id="horasPlan" type="number" value="48"><span style="color:#000;font-weight:700">hs</span>
+<button id="guardarHoras" class="btn small ok">Guardar</button>
+</div>
+<div id="grid"></div>
+</div>
+</div>
+
+<div id="toast" class="hidden"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, getDoc, setDoc, collection, addDoc, onSnapshot, query, where, getDocs, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
 const firebaseConfig = {
   apiKey: "AIzaSyC4vXWnSW2dX-rjm1Lc93LEh09oE6ftdgc",
   authDomain: "reservar-adm.firebaseapp.com",
@@ -44,17 +81,31 @@ const firebaseConfig = {
   messagingSenderId: "557571104394",
   appId: "1:557571104394:web:18c596d6190b2d013fd773"
 };
+
 const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 const db = getFirestore(app);
-const dias=['Lunes','Martes','Miércoles','Jueves','Viernes','Sábado','Domingo'];
-const divH=document.getElementById('horarios'); dias.forEach(d=>{divH.innerHTML+=`<div class="flex gap-2 text-sm items-center"><span class="w-20 font-semibold">${d}</span><input id="h-${d}-ini" type="time" value="09:00" class="border rounded-lg p-2 flex-1"><input id="h-${d}-fin" type="time" value="20:00" class="border rounded-lg p-2 flex-1"><label><input type="checkbox" id="h-${d}-off"> Cerrado</label></div>`});
-window.showTab=(n)=>{document.querySelectorAll('[id^=tab-]').forEach(e=>e.classList.add('hidden'));document.getElementById('tab-'+n).classList.remove('hidden');document.querySelectorAll('[id^=t-]').forEach(b=>{b.className='tab px-4 py-2 rounded-full text-sm font-bold'});document.getElementById('t-'+n).className='tab-active px-4 py-2 rounded-full text-sm font-bold'};
-async function init(){try{const s=await getDoc(doc(db,"config","adm"));if(s.exists()){const c=s.data();document.getElementById('cfg-nombre').value=c.nombre||'';document.getElementById('cfg-wsp').value=c.wsp||'';document.getElementById('cfg-dire').value=c.direccion||'';document.getElementById('statusFirebase').textContent="✅ ADM Conectado: "+c.nombre;}else{document.getElementById('statusFirebase').textContent="✅ ADM Conectado - reservar-adm"} cargarServicios();}catch(e){document.getElementById('statusFirebase').textContent="❌ "+e.message;}}init();
-window.guardarConfig=async()=>{const h={};dias.forEach(d=>{h[d]={ini:document.getElementById(`h-${d}-ini`).value,fin:document.getElementById(`h-${d}-fin`).value,off:document.getElementById(`h-${d}-off`).checked}});await setDoc(doc(db,"config","adm"),{nombre:document.getElementById('cfg-nombre').value,wsp:document.getElementById('cfg-wsp').value,direccion:document.getElementById('cfg-dire').value,horarios:h,updated:new Date()});document.getElementById('msgConfig').textContent="✅ Guardado en ADM";};
-window.addServicio=async()=>{const n=document.getElementById('srv-nombre').value,p=document.getElementById('srv-precio').value,d=document.getElementById('srv-duracion').value;if(!n)return;await addDoc(collection(db,"servicios"),{nombre:n,precio:Number(p),duracion:Number(d),created:new Date()});document.getElementById('srv-nombre').value='';};
-function cargarServicios(){onSnapshot(collection(db,"servicios"),snap=>{const l=document.getElementById('listaServicios');l.innerHTML='';snap.forEach(d=>{const s=d.data();l.innerHTML+=`<div class="flex justify-between violet-light p-3 rounded-xl"><span><b>${s.nombre}</b> $${s.precio} ${s.duracion}min</span><button onclick="borrarServ('${d.id}')">✕</button></div>`})})}
-window.borrarServ=async(id)=>{await deleteDoc(doc(db,"servicios",id))};
-window.cargarReservas=async()=>{const f=document.getElementById('fechaCal').value||new Date().toISOString().split('T')[0];const q=query(collection(db,"reservas"),where("fecha","==",f));const snap=await getDocs(q);const l=document.getElementById('listaCalendario');l.innerHTML=snap.empty?'Sin reservas':'';snap.forEach(d=>{const r=d.data();l.innerHTML+=`<div class="violet-light p-2 rounded-xl mt-2">${r.hora} ${r.cliente} ${r.servicio}</div>`})};
-</script>
-</body>
-</html>
+const $ = s => document.querySelector(s);
+const toast = m => { const t=$('#toast'); t.textContent=m; t.classList.remove('hidden'); setTimeout(()=>t.classList.add('hidden'),3000); };
+
+let cfg={horasPlan:48};
+
+$('#loginBtn').onclick=async()=>{
+  try{ await signInWithEmailAndPassword(auth,$('#email').value.trim(),$('#pass').value.trim()); }
+  catch(e){ $('#loginNote').textContent=e.message; }
+};
+$('#logoutBtn').onclick=()=>signOut(auth);
+
+onAuthStateChanged(auth, async u=>{
+  if(!u){ $('#loginBox').classList.remove('hidden'); $('#panelBox').classList.add('hidden'); $('#logoutBtn').classList.add('hidden'); return; }
+  if(u.email.toLowerCase()!=="jjrv.0093@gmail.com"){ $('#loginNote').textContent="No sos ADMI"; await signOut(auth); return; }
+  $('#loginBox').classList.add('hidden'); $('#panelBox').classList.remove('hidden'); $('#logoutBtn').classList.remove('hidden');
+  const c=await getDoc(doc(db,"config","adm")); if(c.exists()){ cfg=c.data(); $('#horasPlan').value=cfg.horasPlan||48; }
+  cargarLocales();
+});
+
+function estaActivo(l){
+  if(l.planActivo===false) return false;
+  if(l.visible===false) return false;
+  if(!l.planVence) return true;
+  let v=l.planVence.toDate?l.planVence.toDate():new Date(l.plan
