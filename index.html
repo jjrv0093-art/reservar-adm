@@ -299,6 +299,8 @@ margin-top:8px">
 Toca Total / Activos / Vencidos para filtrar
 </p>
 </div>
+</p>
+</div>
 <div
 class="card">
 <h3>
@@ -504,6 +506,11 @@ class="card">
 <h3>
 Usuarios
 </h3>
+<p
+style="font-size:11px;
+color:#d9ccff">
+Clientes: solo Ver/Bloquear sin dias
+</p>
 <div
 style="display:flex;
 gap:8px;
@@ -593,7 +600,7 @@ style="color:#86efac">
 </div>
 </div>
 </section>
- <div
+<div
 id="userModal"
 style="position:fixed;
 inset:0;
@@ -971,7 +978,7 @@ trialUsado:true
 toast(`Custom ${dias}d`);
 load();
 };
-async function loadUsers(){
+ async function loadUsers(){
 const ul=$('uList');
 ul.innerHTML='<li class="item">Cargando...</li>';
 try{
