@@ -5,7 +5,7 @@
 <meta name="viewport"
 content="width=device-width,initial-scale=1">
 <title>
-reservAR ADMI V2
+reservAR ADM
 </title>
 <style>
 :root{
@@ -184,13 +184,13 @@ padding:20px">
 <div
 class="brand"
 style="font-size:22px">
-reservAR ADMI V2
+reservAR ADM
 </div>
 <div
 style="color:#d9ccff;
 font-size:12px;
 margin-bottom:14px">
-Trial 30d unico - BASE64 - V3
+Trial 30d unico
 </div>
 <input
 id="email"
@@ -218,14 +218,14 @@ class="hidden">
 class="topbar">
 <div
 class="brand">
-reservAR ADMI V2 - V3
+reservAR ADM
 </div>
 <div
 style="display:flex;
 gap:8px">
 <span
 class="pill">
-KPI click + custom dias
+Trial unico
 </span>
 <button
 id="logout"
@@ -299,8 +299,6 @@ margin-top:8px">
 Toca Total / Activos / Vencidos para filtrar
 </p>
 </div>
-</p>
-</div>
 <div
 class="card">
 <h3>
@@ -309,12 +307,6 @@ class="card">
 <div
 id="resumen">
 </div>
-<p
-style="font-size:12px;
-color:#d9ccff">
-• Nuevo: 30d auto + trialUsado=true<br>
-• KPI click + boton +N custom
-</p>
 </div>
 </div>
 <div
@@ -512,11 +504,6 @@ class="card">
 <h3>
 Usuarios
 </h3>
-<p
-style="font-size:11px;
-color:#d9ccff">
-Clientes: solo Ver/Bloquear sin dias
-</p>
 <div
 style="display:flex;
 gap:8px;
@@ -606,7 +593,7 @@ style="color:#86efac">
 </div>
 </div>
 </section>
-<div
+ <div
 id="userModal"
 style="position:fixed;
 inset:0;
@@ -712,7 +699,7 @@ return;
 $('auth').classList.add('hidden');
 $('app').classList.remove('hidden');
 $('sal').textContent='Hola ADMI '+u.email;
- try{
+try{
 const c=await db.collection('config').doc('adm').get();
 if(c.exists){
 cfg=c.data();
@@ -744,7 +731,7 @@ $('jonaInstr').value=c.instrucciones||'';
 load();
 loadPagos();
 });
-function estaActivo(l){
+ function estaActivo(l){
 if(l.planActivo===false) return false;
 if(l.visible===false) return false;
 if(!l.planVence) return true;
@@ -781,7 +768,7 @@ $('kpis').innerHTML=`
 <span class="pill click" onclick="filtrarKpi('activos')" style="background:#22c55e33;cursor:pointer">Activos ${activos}</span>
 <span class="pill click" onclick="filtrarKpi('vencidos')" style="background:#ef444433;cursor:pointer">Vencidos ${all.length-activos}</span>
 `;
-$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span><span class="pill">KPI click</span><span class="pill">+N custom</span>`;
+$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span><span class="pill">Trial unico</span>`;
 renderLocalesFiltrados();
 }catch(e){
 toast(e.message);
@@ -854,7 +841,7 @@ Ver
 g.appendChild(d);
 });
 }
-async function loadPagos(){
+ async function loadPagos(){
 const ul=$('pagosList');
 ul.innerHTML='<li class="item">Cargando...</li>';
 try{
@@ -984,7 +971,7 @@ trialUsado:true
 toast(`Custom ${dias}d`);
 load();
 };
- async function loadUsers(){
+async function loadUsers(){
 const ul=$('uList');
 ul.innerHTML='<li class="item">Cargando...</li>';
 try{
@@ -1192,5 +1179,4 @@ toast('Cobros');
 };
 </script>
 </body>
-</html> 
- 
+</html>
