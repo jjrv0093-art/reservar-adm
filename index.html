@@ -2,17 +2,14 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta
-name="viewport"
+<meta name="viewport"
 content="width=device-width,initial-scale=1">
 <title>
-reservAR ADMI
+reservAR ADMI V2
 </title>
 <style>
 :root{
 --stroke:#ffffff20;
---bg1:#6a11cb;
---bg2:#3a0f6e
 }
 *{
 box-sizing:border-box
@@ -24,8 +21,8 @@ color:#fff;
 background:linear-gradient(
 160deg,
 #6a11cb,
-#7b1fa2 40%,
-#3a0f6e 70%,
+#7b1fa2,
+#3a0f6e,
 #0a0933
 );
 background-attachment:fixed
@@ -40,7 +37,7 @@ display:none
 display:block
 }
 .wrap{
-max-width:1150px;
+max-width:1200px;
 margin:0 auto;
 padding:16px
 }
@@ -53,12 +50,10 @@ justify-content:space-between;
 align-items:center;
 padding:14px 18px;
 background:rgba(20,8,45,.9);
-backdrop-filter:blur(10px);
 border-bottom:1px solid var(--stroke)
 }
 .brand{
-font-weight:900;
-letter-spacing:.2px
+font-weight:900
 }
 .tabs{
 display:flex;
@@ -79,8 +74,7 @@ white-space:nowrap
 }
 .tab.active{
 background:#fff;
-color:#3a0f6e;
-box-shadow:0 8px 20px #0003
+color:#3a0f6e
 }
 .btn{
 background:#a855f7;
@@ -94,36 +88,21 @@ font-size:14px
 }
 .btn.ghost{
 background:transparent;
-border:1px solid var(--stroke);
-color:#fff
+border:1px solid var(--stroke)
 }
 .btn.small{
 padding:.4rem .7rem;
-font-size:12px;
-border-radius:10px
+font-size:12px
 }
 .btn.full{
 width:100%
 }
 .card{
-background:linear-gradient(
-180deg,
-#ffffff14,
-#ffffff0c
-);
+background:#ffffff14;
 border:1px solid var(--stroke);
 border-radius:20px;
 padding:18px;
-margin-bottom:14px;
-backdrop-filter:blur(6px)
-}
-.card h3{
-margin:0 0 12px 0
-}
-.kpi{
-display:flex;
-gap:8px;
-flex-wrap:wrap
+margin-bottom:14px
 }
 .pill{
 padding:7px 12px;
@@ -133,42 +112,19 @@ background:#ffffff18;
 font-size:12px;
 font-weight:700
 }
-input,
-select,
-textarea{
+input,select,textarea{
 width:100%;
 padding:.65rem .8rem;
 border-radius:12px;
 border:1px solid #ffffff22;
 background:#1a1033cc;
-color:#fff;
-outline:none
+color:#fff
 }
 label{
 font-size:12px;
 color:#d9ccff;
 margin-bottom:6px;
 display:block
-}
-.grid3{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:12px
-}
-@media(max-width:900px){
-.grid3{
-grid-template-columns:1fr
-}
-}
-.planCard{
-border-radius:20px;
-padding:16px;
-background:linear-gradient(
-180deg,
-#ffffff18,
-#ffffff0a
-);
-border:1px solid var(--stroke)
 }
 .list{
 list-style:none;
@@ -188,12 +144,6 @@ justify-content:space-between;
 align-items:center;
 flex-wrap:wrap;
 gap:8px
-}
-.badge{
-padding:4px 8px;
-border-radius:999px;
-font-size:10px;
-background:#ffffff22
 }
 .toast{
 position:fixed;
@@ -216,10 +166,8 @@ z-index:99
 </script>
 </head>
 <body>
-
 <section
 id="auth"
-class="auth"
 style="max-width:400px;
 margin:60px auto;
 background:#ffffff12;
@@ -228,15 +176,14 @@ border-radius:20px;
 padding:20px">
 <div
 class="brand"
-style="font-size:22px;
-margin-bottom:6px">
-reservAR ADMI
+style="font-size:22px">
+reservAR ADMI V2
 </div>
 <div
 style="color:#d9ccff;
-font-size:13px;
+font-size:12px;
 margin-bottom:14px">
-Panel administrador
+Trial 30d unico - BASE64
 </div>
 <input
 id="email"
@@ -264,14 +211,14 @@ class="hidden">
 class="topbar">
 <div
 class="brand">
-reservAR ADMI
+reservAR ADMI V2
 </div>
 <div
 style="display:flex;
 gap:8px">
 <span
 class="pill">
-ADMI
+Trial unico
 </span>
 <button
 id="logout"
@@ -280,7 +227,6 @@ Salir
 </button>
 </div>
 </div>
-
 <div
 class="wrap">
 <div
@@ -295,12 +241,12 @@ class="tab"
 data-s="pagos"
 style="background:#facc15;
 color:#000">
-💸 Pagos 48hs
+💸 Pagos
 </button>
 <button
 class="tab"
 data-s="planes">
-Planes
+Locales
 </button>
 <button
 class="tab"
@@ -319,16 +265,10 @@ Usuarios
 </button>
 <button
 class="tab"
-data-s="perfil">
-Perfil
-</button>
-<button
-class="tab"
 data-s="ajustes">
 Ajustes
 </button>
 </div>
-
 <div
 id="dash"
 class="screen active">
@@ -346,15 +286,20 @@ class="kpi">
 <div
 class="card">
 <h3>
-Resumen
+30 dias por unica vez
 </h3>
 <div
-id="resumen"
-class="kpi">
+id="resumen">
+</div>
+<p
+style="font-size:12px;
+color:#d9ccff">
+• Nuevo: 30d auto + trialUsado=true
+<br>
+• Luego solo vos das promo
+</p>
 </div>
 </div>
-</div>
-
 <div
 id="pagos"
 class="screen">
@@ -362,17 +307,8 @@ class="screen">
 class="card"
 style="border:2px solid #facc15">
 <h3>
-💸 Solicitudes de Pago - Pendientes
+💸 Solicitudes Pendientes
 </h3>
-<p
-style="font-size:12px;
-color:#fde68a">
-Acá aparecen los que tocaron
-"Ya pagué, activar 48hs"
-en LOCAL.
-Si no verificás en 48hs
-se corta solo.
-</p>
 <button
 id="btnReloadPagos"
 class="btn small ghost"
@@ -386,7 +322,6 @@ style="margin-top:12px">
 </ul>
 </div>
 </div>
-
 <div
 id="planes"
 class="screen">
@@ -408,45 +343,37 @@ Recargar
 id="grid"
 style="margin-top:14px;
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(310px,1fr));
+grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
 gap:12px">
 </div>
 </div>
 </div>
- <div
+<div
 id="tarifas"
 class="screen">
 <div
-class="grid3">
+style="display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px">
 <div
-class="planCard">
-<div
-class="planHead">
-<b
-id="tBase">
+class="card">
+<b>
 Básico
 </b>
-<span
-class="badge">
-BASE
-</span>
-</div>
 <label>
-Nombre del plan
+Nombre
 </label>
 <input
 id="pBaseNombre"
 value="Básico">
-<label
-style="margin-top:8px">
-Límite reservas / mes
+<label>
+Limite/mes
 </label>
 <input
 id="pBaseLim"
 type="number"
 value="100">
-<label
-style="margin-top:8px">
+<label>
 Precio $
 </label>
 <input
@@ -455,35 +382,24 @@ type="number"
 value="5000">
 </div>
 <div
-class="planCard">
-<div
-class="planHead">
-<b
-id="tMedio">
+class="card">
+<b>
 Medio
 </b>
-<span
-class="badge"
-style="background:#e9d5ff">
-MEDIO
-</span>
-</div>
 <label>
-Nombre del plan
+Nombre
 </label>
 <input
 id="pMedioNombre"
 value="Medio">
-<label
-style="margin-top:8px">
-Límite reservas
+<label>
+Limite
 </label>
 <input
 id="pMedioLim"
 type="number"
 value="300">
-<label
-style="margin-top:8px">
+<label>
 Precio $
 </label>
 <input
@@ -492,35 +408,24 @@ type="number"
 value="9000">
 </div>
 <div
-class="planCard">
-<div
-class="planHead">
-<b
-id="tPrem">
+class="card">
+<b>
 Premium
 </b>
-<span
-class="badge"
-style="background:#facc15">
-PREMIUM
-</span>
-</div>
 <label>
-Nombre del plan
+Nombre
 </label>
 <input
 id="pPremNombre"
 value="Premium">
-<label
-style="margin-top:8px">
-Límite reservas
+<label>
+Limite
 </label>
 <input
 id="pPremLim"
 type="number"
 value="999999">
-<label
-style="margin-top:8px">
+<label>
 Precio $
 </label>
 <input
@@ -543,79 +448,67 @@ margin-left:8px">
 </span>
 </div>
 </div>
-
 <div
 id="soporte"
 class="screen">
 <div
 class="card">
 <h3>
-Soporte
+Soporte LOCAL vs CLIENTE
 </h3>
+<div
+style="display:flex;
+gap:6px;
+margin-bottom:10px">
+<button
+class="btn small ghost"
+onclick="loadSoporte('todos')">
+Todos
+</button>
+<button
+class="btn small ghost"
+onclick="loadSoporte('local')">
+Solo Locales
+</button>
+<button
+class="btn small ghost"
+onclick="loadSoporte('cliente')">
+Solo Clientes
+</button>
+</div>
 <ul
 id="sList"
 class="list">
 </ul>
 </div>
 </div>
-
 <div
 id="users"
 class="screen">
 <div
 class="card">
 <h3>
-Usuarios
+Usuarios - Gestion completa
 </h3>
+<div
+style="display:flex;
+gap:8px;
+margin-bottom:12px">
+<input
+id="busUsers"
+placeholder="Buscar usuario...">
+<button
+id="reloadUsers"
+class="btn small ghost">
+Recargar
+</button>
+</div>
 <ul
 id="uList"
 class="list">
 </ul>
 </div>
 </div>
-
-<div
-id="perfil"
-class="screen">
-<div
-class="card">
-<h3>
-Mi perfil
-</h3>
-<label>
-Email
-</label>
-<input
-id="perfilEmail"
-disabled>
-<label
-style="margin-top:8px">
-Nueva contraseña
-</label>
-<input
-id="newPass"
-type="password">
-<div
-style="display:flex;
-gap:8px;
-margin-top:10px">
-<button
-id="btnCambiarPass"
-class="btn">
-Cambiar
-</button>
-<button
-id="btnResetEmail"
-class="btn ghost">
-Enviar link
-</button>
-</div>
-<p
-id="perfilMsg">
-</p>
-</div>
-</div>
-
 <div
 id="ajustes"
 class="screen">
@@ -625,65 +518,36 @@ style="border:2px solid #facc15">
 <h3>
 💸 MIS DATOS DE COBRO
 </h3>
-<p
-style="font-size:12px;
-color:#fde68a">
-Esto es lo que ven los LOCALES
-cuando tocan "Contratar plan"
-- es TU alias
-</p>
-<div
-class="formgrid"
-style="display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px">
-<div>
 <label>
-Alias (MP / Ualá)
+Alias
 </label>
 <input
-id="jonaAlias"
-placeholder="ej: reservar.mp">
-</div>
-<div>
+id="jonaAlias">
 <label>
 CBU
 </label>
 <input
 id="jonaCbu">
-</div>
-<div>
 <label>
 Titular
 </label>
 <input
 id="jonaTitular">
-</div>
-<div>
 <label>
-WhatsApp comprobantes
+WhatsApp
 </label>
 <input
-id="jonaWsp"
-placeholder="11 1234 5678">
-</div>
-<div
-style="grid-column:1/-1">
+id="jonaWsp">
 <label>
 Instrucciones
 </label>
 <textarea
 id="jonaInstr">
 </textarea>
-</div>
-</div>
-<div
-style="margin-top:12px;
-display:flex;
-gap:8px">
 <button
 id="btnGuardarCobrosJona"
-class="btn">
+class="btn"
+style="margin-top:10px">
 Guardar mis datos
 </button>
 <span
@@ -691,27 +555,20 @@ id="msgCobrosJona"
 style="color:#86efac">
 </span>
 </div>
-</div>
-
 <div
 class="card">
 <h3>
 Horas de gracia
 </h3>
-<label>
-Horas después de vencido
-sigue activo
-</label>
 <input
 id="horasPlan"
 type="number"
 value="48"
 style="max-width:200px">
-<div
-style="margin-top:10px">
 <button
 id="btnGuardarHoras"
-class="btn">
+class="btn small"
+style="margin-top:8px">
 Guardar
 </button>
 <span
@@ -720,53 +577,60 @@ style="color:#86efac">
 </span>
 </div>
 </div>
-
-<div
-class="card">
-<h3>
-Saludos editables
-</h3>
-<label>
-Saludo Panel Local
-</label>
-<input
-id="saludoLocal">
-<label
-style="margin-top:8px">
-Saludo Panel Cliente
-</label>
-<input
-id="saludoCliente">
-<label
-style="margin-top:8px">
-Título ADMI
-</label>
-<input
-id="tituloAdmi"
-value="reservAR ADMI">
-<div
-style="margin-top:10px">
-<button
-id="btnGuardarSaludos"
-class="btn">
-Guardar saludos
-</button>
-<span
-id="saludoMsg"
-style="color:#86efac">
-</span>
-</div>
-</div>
-</div>
-
 </div>
 </section>
-
+<div
+id="userModal"
+style="position:fixed;
+inset:0;
+background:#0009;
+z-index:50;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:16px"
+class="hidden">
+<div
+class="card"
+style="max-width:500px;
+width:100%;
+background:#1a1033">
+<h3
+id="modalTitle">
+Ficha
+</h3>
+<div
+id="modalBody"
+style="font-size:13px;
+line-height:1.6">
+</div>
+<div
+style="display:flex;
+gap:8px;
+margin-top:14px;
+flex-wrap:wrap">
+<button
+id="modalClose"
+class="btn ghost">
+Cerrar
+</button>
+<button
+id="modalDar30"
+class="btn small">
++30 dias promo
+</button>
+<button
+id="modalBloq"
+class="btn small ghost">
+Bloquear
+</button>
+</div>
+</div>
+</div>
 <div
 id="toast"
 class="toast hidden">
 </div>
-
 <script>
 const firebaseConfig={
 apiKey:"AIzaSyC57wshaJ2EuIBoBdXv18opL4u_Vuw2bAQ",
@@ -786,7 +650,6 @@ t.textContent=m;
 t.classList.remove('hidden');
 setTimeout(()=>t.classList.add('hidden'),2500);
 };
-
 $('loginBtn').onclick=async()=>{
 const e=$('email').value.trim();
 const p=$('password').value.trim();
@@ -797,9 +660,7 @@ await auth.signInWithEmailAndPassword(e,p);
 $('err').textContent=er.message;
 }
 };
-
 $('logout').onclick=()=>auth.signOut();
-
 document.querySelectorAll('.tab').forEach(t=>{
 t.onclick=()=>{
 document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
@@ -808,33 +669,13 @@ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 $(t.dataset.s).classList.add('active');
 if(t.dataset.s==='planes') load();
 if(t.dataset.s==='pagos') loadPagos();
-if(t.dataset.s==='soporte') loadSoporte();
+if(t.dataset.s==='soporte') loadSoporte('todos');
 if(t.dataset.s==='users') loadUsers();
 };
 });
-
 let all=[];
 let cfg={horasPlan:48};
-
-async function cargarCobrosJona(){
-try{
-const d=await db.collection('config').doc('cobros').get();
-if(d.exists){
-const c=d.data();
-$('jonaAlias').value=c.alias||'';
-$('jonaCbu').value=c.cbu||'';
-$('jonaTitular').value=c.titular||'';
-$('jonaWsp').value=c.whatsapp||c.wsp||'';
-$('jonaInstr').value=c.instrucciones||'';
-}
-const d2=await db.collection('jona_config').doc('cobros').get();
-if(d2.exists&&!$('jonaAlias').value){
-const c=d2.data();
-$('jonaAlias').value=c.alias||'';
-}
-}catch(e){}
-}
-
+let selectedUid=null;
 auth.onAuthStateChanged(async u=>{
 if(!u){
 $('auth').classList.remove('hidden');
@@ -849,7 +690,6 @@ return;
 $('auth').classList.add('hidden');
 $('app').classList.remove('hidden');
 $('sal').textContent='Hola ADMI '+u.email;
-$('perfilEmail').value=u.email;
 try{
 const c=await db.collection('config').doc('adm').get();
 if(c.exists){
@@ -869,19 +709,19 @@ $('pPremNombre').value=d.premium?.nombre||'Premium';
 $('pPremLim').value=d.premium?.limite||999999;
 $('pPremPrecio').value=d.premium?.precio||15000;
 }
-const br=await db.collection('config').doc('branding').get();
-if(br.exists){
-const b=br.data();
-$('saludoLocal').value=b.saludoLocal||'';
-$('saludoCliente').value=b.saludoCliente||'';
-$('tituloAdmi').value=b.tituloAdmi||'reservAR ADMI';
+const cob=await db.collection('config').doc('cobros').get();
+if(cob.exists){
+const c=cob.data();
+$('jonaAlias').value=c.alias||'';
+$('jonaCbu').value=c.cbu||'';
+$('jonaTitular').value=c.titular||'';
+$('jonaWsp').value=c.whatsapp||c.wsp||'';
+$('jonaInstr').value=c.instrucciones||'';
 }
 }catch(e){}
-cargarCobrosJona();
 load();
 loadPagos();
 });
-
 function estaActivo(l){
 if(l.planActivo===false) return false;
 if(l.visible===false) return false;
@@ -895,42 +735,68 @@ else v=new Date(l.planVence);
 if(!v) return true;
 return (new Date()-v)/36e5<=(cfg.horasPlan||48);
 }
-
+function fmtVence(l){
+try{
+if(l.planVence?.toDate) return l.planVence.toDate().toLocaleDateString('es-AR');
+if(l.planVence?.seconds) return new Date(l.planVence.seconds*1000).toLocaleDateString('es-AR');
+return new Date(l.planVence).toLocaleDateString('es-AR');
+}catch(e){
+return '-';
+}
+}
 async function load(){
 try{
-const s=await db.collection('locales').get();
-all=s.docs.map(d=>({id:d.id,...d.data()}));
+const s=await db.collection('config').get();
+all=s.docs.filter(d=>d.id!=='cobros'&&d.id!=='planes'&&d.id!=='adm'&&d.id!=='branding').map(d=>({id:d.id,...d.data()}));
 const activos=all.filter(estaActivo).length;
 $('kpis').innerHTML=`<span class="pill">Total ${all.length}</span><span class="pill" style="background:#22c55e33">Activos ${activos}</span><span class="pill" style="background:#ef444433">Vencidos ${all.length-activos}</span>`;
-$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span>`;
+$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span><span class="pill">Trial unico</span>`;
 const g=$('grid');
 g.innerHTML='';
 if(!all.length){
-g.innerHTML='<div class="card">Sin locales aún</div>';
+g.innerHTML='<div class="card">Sin locales</div>';
 return;
 }
 all.forEach(l=>{
-let vence='-';
-try{
-if(l.planVence?.toDate) vence=l.planVence.toDate().toLocaleDateString('es-AR');
-}catch(e){}
+let vence=fmtVence(l);
 const a=estaActivo(l);
-const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">GRATIS hasta ${l.promoHasta||''}</span>`:'';
+const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${l.promoMotivo||'PROMO'} ${l.promoHasta||vence}</span>`:'';
+const trialBadge=l.trialUsado?`<span class="pill" style="background:#a855f733">Trial usado</span>`:`<span class="pill" style="background:#22c55e33">Trial 30d</span>`;
+const logo=l.logoUrl?`<img src="${l.logoUrl}" style="width:40px;height:40px;border-radius:12px;object-fit:cover">`:'';
 const d=document.createElement('div');
-d.className='planCard';
+d.className='card';
 d.innerHTML=`
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+<div style="display:flex;justify-content:space-between">
+<div style="display:flex;gap:8px;align-items:center">
+${logo}
 <b>${l.nombre||'Local'}</b>
-<span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}</span>
 </div>
-<div style="font-size:12px;color:#cfc9e6;margin-bottom:8px">${l.email||''} — ${l.plan||'sin plan'} ${promo}</div>
-<div style="font-size:12px;margin-bottom:10px">Vence: ${vence}</div>
+<span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">
+${a?'ACTIVO':'VENCIDO'}
+</span>
+</div>
+<div style="font-size:12px;color:#cfc9e6;margin:8px 0">
+${l.email||''} - ${l.plan||'Basico'} ${promo} ${trialBadge}
+</div>
+<div style="font-size:12px;margin-bottom:8px">
+Vence: ${vence}
+</div>
 <div style="display:flex;flex-wrap:wrap;gap:6px">
-<button class="btn small" onclick="act('${l.id}')">48hs</button>
-<button class="btn small ghost" onclick="gratis('${l.id}',60)">Gratis 60d</button>
-<button class="btn small ghost" onclick="gratis('${l.id}',30)">30d</button>
-<button class="btn small ghost" onclick="togDest('${l.id}',${!l.destacado})">${l.destacado?'Quitar ★':'★ Destacar'}</button>
-<button class="btn small ghost" onclick="togVis('${l.id}',${l.visible===false})">${l.visible===false?'Mostrar':'Ocultar'}</button>
+<button class="btn small" onclick="activar48('${l.id}')">
+48hs
+</button>
+<button class="btn small ghost" onclick="darPromo('${l.id}',7)">
++7
+</button>
+<button class="btn small ghost" onclick="darPromo('${l.id}',15)">
++15
+</button>
+<button class="btn small ghost" onclick="darPromo('${l.id}',30)">
++30 promo
+</button>
+<button class="btn small ghost" onclick="verFicha('${l.id}')">
+Ver
+</button>
 </div>
 `;
 g.appendChild(d);
@@ -939,24 +805,18 @@ g.appendChild(d);
 toast(e.message);
 }
 }
-
-async function loadPagos(){
+ async function loadPagos(){
 const ul=$('pagosList');
-ul.innerHTML='<li class="item">Cargando solicitudes...</li>';
+ul.innerHTML='<li class="item">Cargando...</li>';
 try{
-const snap=await db.collection('solicitudes').where('estado','==','pendiente').orderBy('ts','desc').limit(100).get();
+const snap=await db.collection('solicitudes').where('estado','==','pendiente').limit(100).get();
 if(snap.empty){
-ul.innerHTML='<li class="item">No hay pagos pendientes ✅</li>';
+ul.innerHTML='<li class="item">No hay pagos ✅</li>';
 return;
 }
 ul.innerHTML='';
 snap.forEach(doc=>{
 const x=doc.data();
-const id=doc.id;
-let venceTxt='';
-try{
-if(x.vence48hs?.toDate) venceTxt=x.vence48hs.toDate().toLocaleString('es-AR');
-}catch(e){}
 const li=document.createElement('li');
 li.className='item';
 li.style.flexDirection='column';
@@ -964,189 +824,297 @@ li.style.alignItems='flex-start';
 li.innerHTML=`
 <div style="width:100%;display:flex;justify-content:space-between">
 <b>${x.nombreLocal||'Local'}</b>
-<span class="pill" style="background:#facc15;color:#000">${x.plan||''} $${x.precio||''}</span>
+<span class="pill" style="background:#facc15;color:#000">
+${x.plan||''} $${x.precio||''}
+</span>
 </div>
 <div style="font-size:12px;color:#cfc9e6;margin:6px 0">
-${x.email||''} — UID: ${x.uid||''}<br>
-Solicitado: ${x.ts?.toDate?x.ts.toDate().toLocaleString('es-AR'):''}<br>
-Vence 48hs: ${venceTxt}
+${x.email||''} - UID:${x.uid||''}
 </div>
-<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
-<button class="btn small" style="background:#22c55e" onclick="aprobarPago('${id}','${x.uid}','${x.plan}')">✅ Aprobar 30 días</button>
-<button class="btn small ghost" onclick="rechazarPago('${id}','${x.uid}')">❌ Rechazar</button>
-<button class="btn small ghost" onclick="extender48('${x.uid}')">⏱ +48hs</button>
+<div style="display:flex;gap:6px">
+<button class="btn small" style="background:#22c55e" onclick="aprobarPago('${doc.id}','${x.uid}','${x.plan}')">
+Aprobar 30d
+</button>
+<button class="btn small ghost" onclick="rechazarPago('${doc.id}','${x.uid}')">
+Rechazar
+</button>
 </div>
 `;
 ul.appendChild(li);
 });
 }catch(e){
-try{
-const snap2=await db.collection('solicitudes').where('estado','==','pendiente').limit(100).get();
-const ul2=$('pagosList');
-ul2.innerHTML='';
-if(snap2.empty){
-ul2.innerHTML='<li class="item">No hay pagos pendientes ✅</li>';
-return;
-}
-snap2.forEach(doc=>{
-const x=doc.data();
-const li=document.createElement('li');
-li.className='item';
-li.innerHTML=`<b>${x.nombreLocal||''}</b> - ${x.plan||''} - <button class="btn small" style="background:#22c55e" onclick="aprobarPago('${doc.id}','${x.uid}','${x.plan}')">Aprobar 30d</button>`;
-ul2.appendChild(li);
-});
-}catch(e2){
 $('pagosList').innerHTML='<li class="item">Error: '+e.message+'</li>';
 }
 }
-}
-
 $('btnReloadPagos').onclick=loadPagos;
-
 window.aprobarPago=async(solicId,uid,plan)=>{
-if(!confirm('Aprobar 30 días?')) return;
+if(!confirm('Aprobar 30 dias?')) return;
 const vence=new Date();
 vence.setDate(vence.getDate()+30);
-const tsVence=firebase.firestore.Timestamp.fromDate(vence);
 await db.collection('config').doc(uid).set({
 plan:plan,
 planActivo:true,
 visible:true,
-planVence:tsVence,
+planVence:firebase.firestore.Timestamp.fromDate(vence),
 plan_estado:'aprobado',
-plan_aprobado_en:firebase.firestore.FieldValue.serverTimestamp()
-},{merge:true});
-await db.collection('locales').doc(uid).set({
-plan:plan,
-planActivo:true,
-visible:true,
-planVence:tsVence
+trialUsado:true
 },{merge:true});
 await db.collection('solicitudes').doc(solicId).update({
 estado:'aprobado',
 aprobado_en:firebase.firestore.FieldValue.serverTimestamp()
 });
-toast('✅ Aprobado 30 días');
+toast('Aprobado 30d');
 loadPagos();
 load();
+loadUsers();
 };
-
 window.rechazarPago=async(solicId,uid)=>{
-if(!confirm('Rechazar y cortar?')) return;
+if(!confirm('Rechazar?')) return;
 await db.collection('config').doc(uid).set({
 planActivo:false,
 visible:false,
 plan_estado:'rechazado'
 },{merge:true});
-await db.collection('locales').doc(uid).set({
-planActivo:false,
-visible:false
-},{merge:true});
-await db.collection('solicitudes').doc(solicId).update({estado:'rechazado'});
+await db.collection('solicitudes').doc(solicId).update({
+estado:'rechazado'
+});
 toast('Rechazado');
 loadPagos();
 load();
 };
-
-window.extender48=async(uid)=>{
+window.activar48=async id=>{
 const vence=new Date();
 vence.setHours(vence.getHours()+48);
-await db.collection('config').doc(uid).set({
+await db.collection('config').doc(id).set({
 planVence:firebase.firestore.Timestamp.fromDate(vence),
 planActivo:true,
 visible:true
 },{merge:true});
-await db.collection('locales').doc(uid).set({
-planVence:firebase.firestore.Timestamp.fromDate(vence),
-planActivo:true,
-visible:true
-},{merge:true});
-toast('+48hs dado');
+toast('48hs');
 load();
 };
-
-window.act=async id=>{
-await db.collection('locales').doc(id).update({
-planVence:firebase.firestore.FieldValue.serverTimestamp(),
-planActivo:true,
-visible:true
-});
-toast('Activado');
-load();
-};
-
-window.gratis=async(id,dias)=>{
-const motivo=prompt(`Dar ${dias} días gratis - Motivo:`,'promo');
+window.darPromo=async(id,dias)=>{
+const motivo=prompt(`Dar ${dias} dias - Motivo:`,dias==30?'Gentileza':'Promo');
 if(motivo===null) return;
 const hasta=new Date();
 hasta.setDate(hasta.getDate()+dias);
-await db.collection('locales').doc(id).update({
+await db.collection('config').doc(id).set({
 planVence:firebase.firestore.Timestamp.fromDate(hasta),
 planActivo:true,
 visible:true,
 promoGratis:true,
 promoHasta:hasta.toLocaleDateString('es-AR'),
-promoMotivo:motivo
+promoMotivo:motivo,
+trialUsado:true
+},{merge:true});
+toast(`Promo ${dias}d`);
+load();
+loadUsers();
+};
+async function loadUsers(){
+const ul=$('uList');
+ul.innerHTML='<li class="item">Cargando...</li>';
+try{
+let usersSnap=await db.collection('users').limit(200).get();
+if(usersSnap.empty){
+usersSnap=await db.collection('config').limit(200).get();
+}
+ul.innerHTML='';
+usersSnap.forEach(d=>{
+if(['cobros','planes','adm','branding'].includes(d.id)) return;
+const x=d.data();
+const cfgData=all.find(a=>a.id==d.id)||{};
+const activo=estaActivo(cfgData);
+const vence=cfgData.planVence?fmtVence(cfgData):'-';
+const li=document.createElement('li');
+li.className='item';
+li.innerHTML=`
+<div>
+<b>${x.nombre||cfgData.nombre||'Local'}</b>
+<div style="font-size:12px;color:#cfc9e6">
+${x.email||cfgData.email||d.id} - ${cfgData.plan||'Basico'} - ${activo?'ACTIVO':'VENCIDO'} - ${vence} ${cfgData.trialUsado?'(trial usado)':''}
+</div>
+</div>
+<div style="display:flex;gap:6px">
+<button class="btn small ghost" onclick="verFicha('${d.id}')">
+Ver
+</button>
+<button class="btn small" onclick="darPromo('${d.id}',30)">
++30
+</button>
+<button class="btn small ghost" onclick="bloquear('${d.id}')">
+Bloq
+</button>
+</div>
+`;
+ul.appendChild(li);
 });
-toast(`Gratis ${dias} días`);
-load();
+}catch(e){
+$('uList').innerHTML='<li class="item">'+e.message+'</li>';
+}
+}
+$('reloadUsers').onclick=loadUsers;
+$('reload').onclick=load;
+window.verFicha=async id=>{
+const doc=await db.collection('config').doc(id).get();
+const uDoc=await db.collection('users').doc(id).get();
+const c=doc.exists?doc.data():{};
+const u=uDoc.exists?uDoc.data():{};
+selectedUid=id;
+$('modalTitle').textContent=c.nombre||u.nombre||id;
+$('modalBody').innerHTML=`
+<b>Email:</b> ${c.email||u.email||'-'}<br>
+<b>Plan:</b> ${c.plan||'-'}<br>
+<b>Activo:</b> ${c.planActivo?'Si':'No'}<br>
+<b>Vence:</b> ${fmtVence(c)}<br>
+<b>Trial:</b> ${c.trialUsado?'Usado':'No usado'}<br>
+<b>Promo:</b> ${c.promoMotivo||'-'} hasta ${c.promoHasta||'-'}<br>
+<b>Tel:</b> ${c.telefono||u.telefono||'-'}<br>
+<b>UID:</b> ${id}<br>
+`;
+$('userModal').classList.remove('hidden');
 };
-
-window.togDest=async(id,v)=>{
-await db.collection('locales').doc(id).update({destacado:v});
-load();
+$('modalClose').onclick=()=>{
+$('userModal').classList.add('hidden');
 };
-
-window.togVis=async(id,v)=>{
-await db.collection('locales').doc(id).update({visible:v});
-load();
+$('modalDar30').onclick=()=>{
+if(selectedUid){
+$('userModal').classList.add('hidden');
+darPromo(selectedUid,30);
+}
 };
-
+$('modalBloq').onclick=()=>{
+if(selectedUid){
+$('userModal').classList.add('hidden');
+bloquear(selectedUid);
+}
+};
+window.bloquear=async id=>{
+if(!confirm('Bloquear?')) return;
+await db.collection('config').doc(id).set({
+planActivo:false,
+visible:false
+},{merge:true});
+toast('Bloqueado');
+load();
+loadUsers();
+};
+async function loadSoporte(filtro='todos'){
+const ul=$('sList');
+ul.innerHTML='<li class="item">Cargando soporte...</li>';
+try{
+let q=db.collection('soporte').orderBy('ts','desc').limit(100);
+if(filtro!=='todos'){
+q=db.collection('soporte').where('origen','==',filtro).orderBy('ts','desc').limit(100);
+}
+const s=await q.get();
+if(s.empty){
+ul.innerHTML='<li class="item">Sin mensajes</li>';
+return;
+}
+ul.innerHTML='';
+s.forEach(d=>{
+const x=d.data();
+const esLocal=x.origen==='local';
+const color=esLocal?'#a855f7':'#22c55e';
+const label=esLocal?'🟣 LOCAL':'🟢 CLIENTE';
+const img=x.imagen?`<br><img src="${x.imagen}" style="max-width:200px;border-radius:12px;margin-top:6px;border:1px solid #ffffff22">`:'';
+const li=document.createElement('li');
+li.className='item';
+li.style.borderLeft=`4px solid ${color}`;
+li.innerHTML=`
+<div style="flex:1">
+<div style="display:flex;gap:6px;align-items:center">
+<b style="color:${color}">
+${label}
+</b>
+<span class="pill">
+${x.tipo||'queja'}
+</span>
+<span style="font-size:10px;color:#cfc9e6">
+${x.ts?.toDate?x.ts.toDate().toLocaleString('es-AR'):''}
+</span>
+</div>
+<div style="margin-top:6px">
+<b>${x.nombre||x.email||''}</b> ${x.telefono?'- '+x.telefono:''}
+</div>
+<div style="font-size:12px;color:#cfc9e6">
+${x.email||''} ${x.localAfectado?'=> Local: '+x.localAfectado:''}
+</div>
+<div style="margin-top:6px;font-size:13px">
+${x.mensaje||''}
+${img}
+</div>
+</div>
+<div>
+<button class="btn small ghost" onclick="delSoporte('${d.id}')">
+Borrar
+</button>
+</div>
+`;
+ul.appendChild(li);
+});
+}catch(e){
+ul.innerHTML='<li class="item">Error soporte: '+e.message+' - crea indice origen+ts</li>';
+}
+}
+window.delSoporte=async id=>{
+if(confirm('Borrar?')){
+await db.collection('soporte').doc(id).delete();
+toast('Borrado');
+loadSoporte('todos');
+}
+};
 $('bus').oninput=e=>{
 const q=e.target.value.toLowerCase();
-const f=all.filter(l=>(l.nombre||'').toLowerCase().includes(q));
+const f=all.filter(l=>(l.nombre||'').toLowerCase().includes(q)||(l.email||'').toLowerCase().includes(q));
 const g=$('grid');
 g.innerHTML='';
 f.forEach(l=>{
 const d=document.createElement('div');
-d.className='planCard';
-d.innerHTML=`<b>${l.nombre||'Local'}</b><div style="margin-top:8px"><button class="btn small" onclick="act('${l.id}')">48hs</button></div>`;
+d.className='card';
+d.innerHTML=`<b>${l.nombre||'Local'}</b><div style="margin-top:8px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button> <button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;
 g.appendChild(d);
 });
 };
-
-$('reload').onclick=load;
-
+$('busUsers').oninput=e=>{
+const q=e.target.value.toLowerCase();
+$('uList').querySelectorAll('li').forEach(li=>{
+li.style.display=li.textContent.toLowerCase().includes(q)?'flex':'none';
+});
+};
 $('btnGuardarTarifas').onclick=async()=>{
 const data={
-base:{nombre:$('pBaseNombre').value,limite:Number($('pBaseLim').value),precio:Number($('pBasePrecio').value)},
-medio:{nombre:$('pMedioNombre').value,limite:Number($('pMedioLim').value),precio:Number($('pMedioPrecio').value)},
-premium:{nombre:$('pPremNombre').value,limite:Number($('pPremLim').value),precio:Number($('pPremPrecio').value)},
+base:{
+nombre:$('pBaseNombre').value,
+limite:Number($('pBaseLim').value),
+precio:Number($('pBasePrecio').value)
+},
+medio:{
+nombre:$('pMedioNombre').value,
+limite:Number($('pMedioLim').value),
+precio:Number($('pMedioPrecio').value)
+},
+premium:{
+nombre:$('pPremNombre').value,
+limite:Number($('pPremLim').value),
+precio:Number($('pPremPrecio').value)
+},
 updated:firebase.firestore.FieldValue.serverTimestamp()
 };
 await db.collection('config').doc('planes').set(data,{merge:true});
 $('tarifaMsg').textContent='Guardado';
 toast('Tarifas');
 };
-
 $('btnGuardarHoras').onclick=async()=>{
 const h=Number($('horasPlan').value)||48;
-await db.collection('config').doc('adm').set({horasPlan:h},{merge:true});
+await db.collection('config').doc('adm').set({
+horasPlan:h
+},{merge:true});
 cfg.horasPlan=h;
 $('ajMsg').textContent='Guardado';
 load();
 };
-
-$('btnGuardarSaludos').onclick=async()=>{
-const data={
-saludoLocal:$('saludoLocal').value,
-saludoCliente:$('saludoCliente').value,
-tituloAdmi:$('tituloAdmi').value
-};
-await db.collection('config').doc('branding').set(data,{merge:true});
-$('saludoMsg').textContent='Guardado';
-};
-
 $('btnGuardarCobrosJona').onclick=async()=>{
 try{
 await db.collection('config').doc('cobros').set({
@@ -1157,100 +1125,12 @@ whatsapp:$('jonaWsp').value.trim(),
 instrucciones:$('jonaInstr').value.trim(),
 actualizado:firebase.firestore.FieldValue.serverTimestamp()
 },{merge:true});
-await db.collection('jona_config').doc('cobros').set({
-alias:$('jonaAlias').value.trim(),
-cbu:$('jonaCbu').value.trim(),
-titular:$('jonaTitular').value.trim(),
-wsp:$('jonaWsp').value.trim(),
-instrucciones:$('jonaInstr').value.trim(),
-actualizado:firebase.firestore.FieldValue.serverTimestamp()
-},{merge:true});
-$('msgCobrosJona').textContent='✅ Guardado';
-toast('Cobros guardados');
-}catch(e){
-toast(e.message);
-}
-};
-
-async function loadSoporte(){
-const ul=$('sList');
-ul.innerHTML='<li class="item">Cargando...</li>';
-try{
-const s=await db.collection('soporte').orderBy('ts','desc').limit(100).get();
-if(s.empty){
-ul.innerHTML='<li class="item">Sin quejas</li>';
-return;
-}
-ul.innerHTML='';
-s.forEach(d=>{
-const x=d.data();
-const li=document.createElement('li');
-li.className='item';
-li.innerHTML=`
-<div>
-<b>${x.email||''}</b>
-<div style="font-size:12px">${x.mensaje||''}</div>
-</div>
-<div>
-<button class="btn small ghost" onclick="delSoporte('${d.id}')">Borrar</button>
-</div>
-`;
-ul.appendChild(li);
-});
-}catch(e){
-ul.innerHTML='<li class="item">Sin soporte o falta índice</li>';
-}
-}
-
-window.delSoporte=async id=>{
-if(confirm('Borrar?')){
-await db.collection('soporte').doc(id).delete();
-toast('Borrado');
-loadSoporte();
-}
-};
-
-async function loadUsers(){
-const ul=$('uList');
-ul.innerHTML='<li class="item">Cargando...</li>';
-try{
-const s=await db.collection('usuarios').limit(200).get();
-ul.innerHTML='';
-if(s.empty){
-ul.innerHTML='<li class="item">Sin usuarios</li>';
-return;
-}
-s.forEach(d=>{
-const x=d.data();
-ul.innerHTML+=`<li class="item"><b>${x.email||d.id}</b></li>`;
-});
-}catch(e){
-ul.innerHTML='<li class="item">'+e.message+'</li>';
-}
-}
-
-$('btnCambiarPass').onclick=async()=>{
-const np=$('newPass').value.trim();
-if(np.length<6){
-toast('6 min');
-return;
-}
-try{
-await auth.currentUser.updatePassword(np);
-toast('Cambiada');
-}catch(e){
-toast(e.message);
-}
-};
-
-$('btnResetEmail').onclick=async()=>{
-try{
-await auth.sendPasswordResetEmail(auth.currentUser.email);
-toast('Email enviado');
+$('msgCobrosJona').textContent='Guardado';
+toast('Cobros');
 }catch(e){
 toast(e.message);
 }
 };
 </script>
 </body>
-</html> 
+</html>
