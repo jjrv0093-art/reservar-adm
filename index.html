@@ -112,6 +112,13 @@ background:#ffffff18;
 font-size:12px;
 font-weight:700
 }
+.pill.click{
+cursor:pointer;
+transition:.15s
+}
+.pill.click:active{
+transform:scale(.95)
+}
 input,select,textarea{
 width:100%;
 padding:.65rem .8rem;
@@ -183,7 +190,7 @@ reservAR ADMI V2
 style="color:#d9ccff;
 font-size:12px;
 margin-bottom:14px">
-Trial 30d unico - BASE64
+Trial 30d unico - BASE64 - V3
 </div>
 <input
 id="email"
@@ -211,14 +218,14 @@ class="hidden">
 class="topbar">
 <div
 class="brand">
-reservAR ADMI V2
+reservAR ADMI V2 - V3
 </div>
 <div
 style="display:flex;
 gap:8px">
 <span
 class="pill">
-Trial unico
+KPI click + custom dias
 </span>
 <button
 id="logout"
@@ -280,8 +287,19 @@ Hola ADMI
 </h3>
 <div
 id="kpis"
-class="kpi">
+class="kpi"
+style="display:flex;
+gap:8px;
+flex-wrap:wrap">
 </div>
+<p
+style="font-size:11px;
+color:#d9ccff;
+margin-top:8px">
+Toca Total / Activos / Vencidos para filtrar
+</p>
+</div>
+</p>
 </div>
 <div
 class="card">
@@ -294,9 +312,8 @@ id="resumen">
 <p
 style="font-size:12px;
 color:#d9ccff">
-• Nuevo: 30d auto + trialUsado=true
-<br>
-• Luego solo vos das promo
+• Nuevo: 30d auto + trialUsado=true<br>
+• KPI click + boton +N custom
 </p>
 </div>
 </div>
@@ -337,6 +354,11 @@ placeholder="Buscar local...">
 id="reload"
 class="btn small ghost">
 Recargar
+</button>
+<button
+class="btn small ghost"
+onclick="filtrarKpi('todos')">
+Todos
 </button>
 </div>
 <div
@@ -488,8 +510,13 @@ class="screen">
 <div
 class="card">
 <h3>
-Usuarios - Gestion completa
+Usuarios
 </h3>
+<p
+style="font-size:11px;
+color:#d9ccff">
+Clientes: solo Ver/Bloquear sin dias
+</p>
 <div
 style="display:flex;
 gap:8px;
@@ -607,17 +634,11 @@ line-height:1.6">
 <div
 style="display:flex;
 gap:8px;
-margin-top:14px;
-flex-wrap:wrap">
+margin-top:14px">
 <button
 id="modalClose"
 class="btn ghost">
 Cerrar
-</button>
-<button
-id="modalDar30"
-class="btn small">
-+30 dias promo
 </button>
 <button
 id="modalBloq"
@@ -667,7 +688,7 @@ document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
 t.classList.add('active');
 document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
 $(t.dataset.s).classList.add('active');
-if(t.dataset.s==='planes') load();
+if(t.dataset.s==='planes') renderLocalesFiltrados();
 if(t.dataset.s==='pagos') loadPagos();
 if(t.dataset.s==='soporte') loadSoporte('todos');
 if(t.dataset.s==='users') loadUsers();
@@ -676,6 +697,7 @@ if(t.dataset.s==='users') loadUsers();
 let all=[];
 let cfg={horasPlan:48};
 let selectedUid=null;
+let filtroKpiActual='todos';
 auth.onAuthStateChanged(async u=>{
 if(!u){
 $('auth').classList.remove('hidden');
@@ -690,7 +712,7 @@ return;
 $('auth').classList.add('hidden');
 $('app').classList.remove('hidden');
 $('sal').textContent='Hola ADMI '+u.email;
-try{
+ try{
 const c=await db.collection('config').doc('adm').get();
 if(c.exists){
 cfg=c.data();
@@ -732,14 +754,19 @@ if(l.planVence.toDate) v=l.planVence.toDate();
 else if(l.planVence.seconds) v=new Date(l.planVence.seconds*1000);
 else v=new Date(l.planVence);
 }catch(e){}
-if(!v) return true;
+if(!v||isNaN(v.getTime())) return true;
 return (new Date()-v)/36e5<=(cfg.horasPlan||48);
 }
 function fmtVence(l){
+if(!l) return '-';
+const pv=l.planVence||l;
+if(!pv) return '-';
 try{
-if(l.planVence?.toDate) return l.planVence.toDate().toLocaleDateString('es-AR');
-if(l.planVence?.seconds) return new Date(l.planVence.seconds*1000).toLocaleDateString('es-AR');
-return new Date(l.planVence).toLocaleDateString('es-AR');
+if(pv.toDate) return pv.toDate().toLocaleDateString('es-AR');
+if(pv.seconds) return new Date(pv.seconds*1000).toLocaleDateString('es-AR');
+const d=new Date(pv);
+if(isNaN(d.getTime())) return '-';
+return d.toLocaleDateString('es-AR');
 }catch(e){
 return '-';
 }
@@ -749,15 +776,37 @@ try{
 const s=await db.collection('config').get();
 all=s.docs.filter(d=>d.id!=='cobros'&&d.id!=='planes'&&d.id!=='adm'&&d.id!=='branding').map(d=>({id:d.id,...d.data()}));
 const activos=all.filter(estaActivo).length;
-$('kpis').innerHTML=`<span class="pill">Total ${all.length}</span><span class="pill" style="background:#22c55e33">Activos ${activos}</span><span class="pill" style="background:#ef444433">Vencidos ${all.length-activos}</span>`;
-$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span><span class="pill">Trial unico</span>`;
+$('kpis').innerHTML=`
+<span class="pill click" onclick="filtrarKpi('todos')" style="background:#ffffff22;cursor:pointer">Total ${all.length}</span>
+<span class="pill click" onclick="filtrarKpi('activos')" style="background:#22c55e33;cursor:pointer">Activos ${activos}</span>
+<span class="pill click" onclick="filtrarKpi('vencidos')" style="background:#ef444433;cursor:pointer">Vencidos ${all.length-activos}</span>
+`;
+$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span><span class="pill">KPI click</span><span class="pill">+N custom</span>`;
+renderLocalesFiltrados();
+}catch(e){
+toast(e.message);
+}
+}
+window.filtrarKpi=(tipo)=>{
+filtroKpiActual=tipo;
+document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+document.querySelector('[data-s="planes"]').classList.add('active');
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+$('planes').classList.add('active');
+renderLocalesFiltrados();
+};
+function renderLocalesFiltrados(){
+let lista=[...all];
+if(filtroKpiActual==='activos') lista=all.filter(estaActivo);
+if(filtroKpiActual==='vencidos') lista=all.filter(l=>!estaActivo(l));
 const g=$('grid');
+if(!g) return;
 g.innerHTML='';
-if(!all.length){
-g.innerHTML='<div class="card">Sin locales</div>';
+if(!lista.length){
+g.innerHTML=`<div class="card">Sin locales en ${filtroKpiActual}</div>`;
 return;
 }
-all.forEach(l=>{
+lista.forEach(l=>{
 let vence=fmtVence(l);
 const a=estaActivo(l);
 const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${l.promoMotivo||'PROMO'} ${l.promoHasta||vence}</span>`:'';
@@ -794,6 +843,9 @@ Vence: ${vence}
 <button class="btn small ghost" onclick="darPromo('${l.id}',30)">
 +30 promo
 </button>
+<button class="btn small ghost" style="background:#fff;color:#000;font-weight:900" onclick="darCustom('${l.id}')">
++N
+</button>
 <button class="btn small ghost" onclick="verFicha('${l.id}')">
 Ver
 </button>
@@ -801,11 +853,8 @@ Ver
 `;
 g.appendChild(d);
 });
-}catch(e){
-toast(e.message);
 }
-}
- async function loadPagos(){
+async function loadPagos(){
 const ul=$('pagosList');
 ul.innerHTML='<li class="item">Cargando...</li>';
 try{
@@ -911,7 +960,31 @@ toast(`Promo ${dias}d`);
 load();
 loadUsers();
 };
-async function loadUsers(){
+window.darCustom=async(id)=>{
+const inp=prompt('Cuantos dias custom? Ej: 45, 60, 90');
+if(inp===null) return;
+const dias=Number(inp);
+if(isNaN(dias)||dias<=0){
+toast('Numero invalido');
+return;
+}
+const motivo=prompt(`Dar ${dias} dias - Motivo:`, 'Custom');
+if(motivo===null) return;
+const hasta=new Date();
+hasta.setDate(hasta.getDate()+dias);
+await db.collection('config').doc(id).set({
+planVence:firebase.firestore.Timestamp.fromDate(hasta),
+planActivo:true,
+visible:true,
+promoGratis:true,
+promoHasta:hasta.toLocaleDateString('es-AR'),
+promoMotivo:motivo,
+trialUsado:true
+},{merge:true});
+toast(`Custom ${dias}d`);
+load();
+};
+ async function loadUsers(){
 const ul=$('uList');
 ul.innerHTML='<li class="item">Cargando...</li>';
 try{
@@ -925,22 +998,19 @@ if(['cobros','planes','adm','branding'].includes(d.id)) return;
 const x=d.data();
 const cfgData=all.find(a=>a.id==d.id)||{};
 const activo=estaActivo(cfgData);
-const vence=cfgData.planVence?fmtVence(cfgData):'-';
+const vence=fmtVence(cfgData);
 const li=document.createElement('li');
 li.className='item';
 li.innerHTML=`
 <div>
-<b>${x.nombre||cfgData.nombre||'Local'}</b>
+<b>${x.nombre||cfgData.nombre||d.id.substring(0,10)+'...'}</b>
 <div style="font-size:12px;color:#cfc9e6">
-${x.email||cfgData.email||d.id} - ${cfgData.plan||'Basico'} - ${activo?'ACTIVO':'VENCIDO'} - ${vence} ${cfgData.trialUsado?'(trial usado)':''}
+${x.email||cfgData.email||''} - ${cfgData.plan||'-'} - ${activo?'ACTIVO':'VENCIDO'} - ${vence}
 </div>
 </div>
 <div style="display:flex;gap:6px">
 <button class="btn small ghost" onclick="verFicha('${d.id}')">
 Ver
-</button>
-<button class="btn small" onclick="darPromo('${d.id}',30)">
-+30
 </button>
 <button class="btn small ghost" onclick="bloquear('${d.id}')">
 Bloq
@@ -961,7 +1031,7 @@ const uDoc=await db.collection('users').doc(id).get();
 const c=doc.exists?doc.data():{};
 const u=uDoc.exists?uDoc.data():{};
 selectedUid=id;
-$('modalTitle').textContent=c.nombre||u.nombre||id;
+$('modalTitle').textContent=c.nombre||u.nombre||u.email||c.email||id;
 $('modalBody').innerHTML=`
 <b>Email:</b> ${c.email||u.email||'-'}<br>
 <b>Plan:</b> ${c.plan||'-'}<br>
@@ -976,12 +1046,6 @@ $('userModal').classList.remove('hidden');
 };
 $('modalClose').onclick=()=>{
 $('userModal').classList.add('hidden');
-};
-$('modalDar30').onclick=()=>{
-if(selectedUid){
-$('userModal').classList.add('hidden');
-darPromo(selectedUid,30);
-}
 };
 $('modalBloq').onclick=()=>{
 if(selectedUid){
@@ -1018,30 +1082,24 @@ const x=d.data();
 const esLocal=x.origen==='local';
 const color=esLocal?'#a855f7':'#22c55e';
 const label=esLocal?'🟣 LOCAL':'🟢 CLIENTE';
-const img=x.imagen?`<br><img src="${x.imagen}" style="max-width:200px;border-radius:12px;margin-top:6px;border:1px solid #ffffff22">`:'';
+const img=x.imagen?`<br><img src="${x.imagen}" style="max-width:200px;border-radius:12px;margin-top:6px">`:'';
 const li=document.createElement('li');
 li.className='item';
 li.style.borderLeft=`4px solid ${color}`;
 li.innerHTML=`
 <div style="flex:1">
-<div style="display:flex;gap:6px;align-items:center">
+<div style="display:flex;gap:6px">
 <b style="color:${color}">
 ${label}
 </b>
 <span class="pill">
 ${x.tipo||'queja'}
 </span>
-<span style="font-size:10px;color:#cfc9e6">
-${x.ts?.toDate?x.ts.toDate().toLocaleString('es-AR'):''}
-</span>
 </div>
 <div style="margin-top:6px">
-<b>${x.nombre||x.email||''}</b> ${x.telefono?'- '+x.telefono:''}
+<b>${x.nombre||x.email||''}</b>
 </div>
-<div style="font-size:12px;color:#cfc9e6">
-${x.email||''} ${x.localAfectado?'=> Local: '+x.localAfectado:''}
-</div>
-<div style="margin-top:6px;font-size:13px">
+<div style="font-size:12px">
 ${x.mensaje||''}
 ${img}
 </div>
@@ -1055,7 +1113,7 @@ Borrar
 ul.appendChild(li);
 });
 }catch(e){
-ul.innerHTML='<li class="item">Error soporte: '+e.message+' - crea indice origen+ts</li>';
+ul.innerHTML='<li class="item">Error: '+e.message+'</li>';
 }
 }
 window.delSoporte=async id=>{
@@ -1067,6 +1125,11 @@ loadSoporte('todos');
 };
 $('bus').oninput=e=>{
 const q=e.target.value.toLowerCase();
+if(q.trim()===''){
+filtroKpiActual='todos';
+renderLocalesFiltrados();
+return;
+}
 const f=all.filter(l=>(l.nombre||'').toLowerCase().includes(q)||(l.email||'').toLowerCase().includes(q));
 const g=$('grid');
 g.innerHTML='';
@@ -1116,7 +1179,6 @@ $('ajMsg').textContent='Guardado';
 load();
 };
 $('btnGuardarCobrosJona').onclick=async()=>{
-try{
 await db.collection('config').doc('cobros').set({
 alias:$('jonaAlias').value.trim(),
 cbu:$('jonaCbu').value.trim(),
@@ -1127,10 +1189,8 @@ actualizado:firebase.firestore.FieldValue.serverTimestamp()
 },{merge:true});
 $('msgCobrosJona').textContent='Guardado';
 toast('Cobros');
-}catch(e){
-toast(e.message);
-}
 };
 </script>
 </body>
-</html>
+</html> 
+ 
