@@ -2,1188 +2,265 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
-<title>
-reservAR ADM
-</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>reservAR ADM</title>
 <style>
-:root{
---stroke:#ffffff20;
-}
-*{
-box-sizing:border-box
-}
-body{
-margin:0;
-font-family:Inter,system-ui;
-color:#fff;
-background:linear-gradient(
-160deg,
-#6a11cb,
-#7b1fa2,
-#3a0f6e,
-#0a0933
-);
-background-attachment:fixed
-}
-.hidden{
-display:none!important
-}
-.screen{
-display:none
-}
-.screen.active{
-display:block
-}
-.wrap{
-max-width:1200px;
-margin:0 auto;
-padding:16px
-}
-.topbar{
-position:sticky;
-top:0;
-z-index:20;
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:14px 18px;
-background:rgba(20,8,45,.9);
-border-bottom:1px solid var(--stroke)
-}
-.brand{
-font-weight:900
-}
-.tabs{
-display:flex;
-gap:8px;
-overflow-x:auto;
-padding:10px 2px
-}
-.tab{
-border:1px solid var(--stroke);
-background:#ffffff12;
-color:#e9e0ff;
-padding:10px 18px;
-border-radius:999px;
-cursor:pointer;
-font-weight:700;
-font-size:14px;
-white-space:nowrap
-}
-.tab.active{
-background:#fff;
-color:#3a0f6e
-}
-.btn{
-background:#a855f7;
-border:none;
-color:#fff;
-padding:.6rem .95rem;
-border-radius:12px;
-cursor:pointer;
-font-weight:800;
-font-size:14px
-}
-.btn.ghost{
-background:transparent;
-border:1px solid var(--stroke)
-}
-.btn.small{
-padding:.4rem .7rem;
-font-size:12px
-}
-.btn.full{
-width:100%
-}
-.card{
-background:#ffffff14;
-border:1px solid var(--stroke);
-border-radius:20px;
-padding:18px;
-margin-bottom:14px
-}
-.pill{
-padding:7px 12px;
-border-radius:999px;
-border:1px solid var(--stroke);
-background:#ffffff18;
-font-size:12px;
-font-weight:700
-}
-.pill.click{
-cursor:pointer;
-transition:.15s
-}
-.pill.click:active{
-transform:scale(.95)
-}
-input,select,textarea{
-width:100%;
-padding:.65rem .8rem;
-border-radius:12px;
-border:1px solid #ffffff22;
-background:#1a1033cc;
-color:#fff
-}
-label{
-font-size:12px;
-color:#d9ccff;
-margin-bottom:6px;
-display:block
-}
-.list{
-list-style:none;
-padding:0;
-margin:0;
-display:flex;
-flex-direction:column;
-gap:10px
-}
-.item{
-padding:12px;
-border:1px solid var(--stroke);
-border-radius:14px;
-background:#ffffff0f;
-display:flex;
-justify-content:space-between;
-align-items:center;
-flex-wrap:wrap;
-gap:8px
-}
-.toast{
-position:fixed;
-bottom:20px;
-left:50%;
-transform:translateX(-50%);
-background:#fff;
-color:#111;
-padding:12px 18px;
-border-radius:999px;
-font-weight:900;
-z-index:99
-}
+:root{--stroke:#ffffff20}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui;color:#fff;
+background:linear-gradient(160deg,#6a11cb,#7b1fa2,#3a0f6e,#0a0933);
+background-attachment:fixed}
+.hidden{display:none!important}
+.screen{display:none}
+.screen.active{display:block}
+.wrap{max-width:1200px;margin:0 auto;padding:16px}
+.topbar{position:sticky;top:0;z-index:20;display:flex;
+justify-content:space-between;align-items:center;
+padding:14px 18px;background:rgba(20,8,45,.9);
+border-bottom:1px solid var(--stroke)}
+.brand{font-weight:900}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 2px}
+.tab{border:1px solid var(--stroke);background:#ffffff12;color:#e9e0ff;
+padding:10px 18px;border-radius:999px;cursor:pointer;font-weight:700;font-size:14px;white-space:nowrap}
+.tab.active{background:#fff;color:#3a0f6e}
+.btn{background:#a855f7;border:none;color:#fff;padding:.6rem .95rem;border-radius:12px;cursor:pointer;font-weight:800;font-size:14px}
+.btn.ghost{background:transparent;border:1px solid var(--stroke)}
+.btn.small{padding:.4rem .7rem;font-size:12px}
+.btn.full{width:100%}
+.card{background:#ffffff14;border:1px solid var(--stroke);border-radius:20px;padding:18px;margin-bottom:14px}
+.pill{padding:7px 12px;border-radius:999px;border:1px solid var(--stroke);background:#ffffff18;font-size:12px;font-weight:700}
+.pill.click{cursor:pointer}
+input,select,textarea{width:100%;padding:.65rem .8rem;border-radius:12px;border:1px solid #ffffff22;background:#1a1033cc;color:#fff}
+label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
+.list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.item{padding:12px;border:1px solid var(--stroke);border-radius:14px;background:#ffffff0f;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;color:#111;padding:12px 18px;border-radius:999px;font-weight:900;z-index:99}
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js">
-</script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js">
-</script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js">
-</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 </head>
 <body>
-<section
-id="auth"
-style="max-width:400px;
-margin:60px auto;
-background:#ffffff12;
-border:1px solid var(--stroke);
-border-radius:20px;
-padding:20px">
-<div
-class="brand"
-style="font-size:22px">
-reservAR ADM
-</div>
-<div
-style="color:#d9ccff;
-font-size:12px;
-margin-bottom:14px">
-Trial 30d unico
-</div>
-<input
-id="email"
-value="jjrv.0093@gmail.com">
-<input
-id="password"
-type="password"
-placeholder="Contraseña"
-style="margin-top:8px">
-<p
-id="err"
-style="color:#fca5a5;
-min-height:18px">
-</p>
-<button
-id="loginBtn"
-class="btn full">
-Entrar
-</button>
+<section id="auth" style="max-width:400px;margin:60px auto;background:#ffffff12;border:1px solid var(--stroke);border-radius:20px;padding:20px">
+<div class="brand" style="font-size:22px">reservAR ADM</div>
+<div style="color:#d9ccff;font-size:12px;margin-bottom:14px">Trial 30d unico</div>
+<input id="email" value="jjrv.0093@gmail.com">
+<input id="password" type="password" placeholder="Contraseña" style="margin-top:8px">
+<p id="err" style="color:#fca5a5;min-height:18px"></p>
+<button id="loginBtn" class="btn full">Entrar</button>
 </section>
-<section
-id="app"
-class="hidden">
-<div
-class="topbar">
-<div
-class="brand">
-reservAR ADM
-</div>
-<div
-style="display:flex;
-gap:8px">
-<span
-class="pill">
-Trial unico
-</span>
-<button
-id="logout"
-class="btn small ghost">
-Salir
-</button>
+<section id="app" class="hidden">
+<div class="topbar">
+<div class="brand">reservAR ADM</div>
+<div style="display:flex;gap:8px">
+<span class="pill">Trial unico</span>
+<button id="logout" class="btn small ghost">Salir</button>
 </div>
 </div>
-<div
-class="wrap">
-<div
-class="tabs">
-<button
-class="tab active"
-data-s="dash">
-Inicio
-</button>
-<button
-class="tab"
-data-s="pagos"
-style="background:#facc15;
-color:#000">
-💸 Pagos
-</button>
-<button
-class="tab"
-data-s="planes">
-Locales
-</button>
-<button
-class="tab"
-data-s="tarifas">
-Tarifas
-</button>
-<button
-class="tab"
-data-s="soporte">
-Soporte
-</button>
-<button
-class="tab"
-data-s="users">
-Usuarios
-</button>
-<button
-class="tab"
-data-s="ajustes">
-Ajustes
-</button>
+<div class="wrap">
+<div class="tabs">
+<button class="tab active" data-s="dash">Inicio</button>
+<button class="tab" data-s="pagos" style="background:#facc15;color:#000">💸 Pagos</button>
+<button class="tab" data-s="planes">Locales</button>
+<button class="tab" data-s="tarifas">Tarifas</button>
+<button class="tab" data-s="soporte" style="background:#a855f7;color:#fff">Soporte</button>
+<button class="tab" data-s="users">Usuarios</button>
+<button class="tab" data-s="ajustes">Ajustes</button>
 </div>
-<div
-id="dash"
-class="screen active">
-<div
-class="card">
-<h3
-id="sal">
-Hola ADMI
-</h3>
-<div
-id="kpis"
-class="kpi"
-style="display:flex;
-gap:8px;
-flex-wrap:wrap">
+<div id="dash" class="screen active">
+<div class="card">
+<h3 id="sal">Hola ADMI</h3>
+<div id="kpis" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+<p style="font-size:11px;color:#d9ccff;margin-top:8px">Toca Total / Activos / Vencidos para filtrar</p>
 </div>
-<p
-style="font-size:11px;
-color:#d9ccff;
-margin-top:8px">
-Toca Total / Activos / Vencidos para filtrar
-</p>
-</div>
-</p>
-</div>
-<div
-class="card">
-<h3>
-30 dias por unica vez
-</h3>
-<div
-id="resumen">
+<div class="card">
+<h3>30 dias por unica vez</h3>
+<div id="resumen"></div>
 </div>
 </div>
-</div>
-<div
-id="pagos"
-class="screen">
-<div
-class="card"
-style="border:2px solid #facc15">
-<h3>
-💸 Solicitudes Pendientes
-</h3>
-<button
-id="btnReloadPagos"
-class="btn small ghost"
-style="margin-top:8px">
-Recargar pagos
-</button>
-<ul
-id="pagosList"
-class="list"
-style="margin-top:12px">
-</ul>
+<div id="pagos" class="screen">
+<div class="card" style="border:2px solid #facc15">
+<h3>💸 Solicitudes Pendientes</h3>
+<button id="btnReloadPagos" class="btn small ghost" style="margin-top:8px">Recargar pagos</button>
+<ul id="pagosList" class="list" style="margin-top:12px"></ul>
 </div>
 </div>
-<div
-id="planes"
-class="screen">
-<div
-class="card">
-<div
-style="display:flex;
-gap:8px">
-<input
-id="bus"
-placeholder="Buscar local...">
-<button
-id="reload"
-class="btn small ghost">
-Recargar
-</button>
-<button
-class="btn small ghost"
-onclick="filtrarKpi('todos')">
-Todos
-</button>
+<div id="planes" class="screen">
+<div class="card">
+<div style="display:flex;gap:8px">
+<input id="bus" placeholder="Buscar local...">
+<button id="reload" class="btn small ghost">Recargar</button>
+<button class="btn small ghost" onclick="filtrarKpi('todos')">Todos</button>
 </div>
-<div
-id="grid"
-style="margin-top:14px;
-display:grid;
-grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
-gap:12px">
+<div id="grid" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px"></div>
 </div>
 </div>
+<div id="tarifas" class="screen">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+<div class="card">
+<b>Básico</b>
+<label>Nombre</label>
+<input id="pBaseNombre" value="Básico">
+<label>Limite/mes</label>
+<input id="pBaseLim" type="number" value="100">
+<label>Precio $</label>
+<input id="pBasePrecio" type="number" value="5000">
 </div>
-<div
-id="tarifas"
-class="screen">
-<div
-style="display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:12px">
-<div
-class="card">
-<b>
-Básico
-</b>
-<label>
-Nombre
-</label>
-<input
-id="pBaseNombre"
-value="Básico">
-<label>
-Limite/mes
-</label>
-<input
-id="pBaseLim"
-type="number"
-value="100">
-<label>
-Precio $
-</label>
-<input
-id="pBasePrecio"
-type="number"
-value="5000">
+<div class="card">
+<b>Medio</b>
+<label>Nombre</label>
+<input id="pMedioNombre" value="Medio">
+<label>Limite</label>
+<input id="pMedioLim" type="number" value="300">
+<label>Precio $</label>
+<input id="pMedioPrecio" type="number" value="9000">
 </div>
-<div
-class="card">
-<b>
-Medio
-</b>
-<label>
-Nombre
-</label>
-<input
-id="pMedioNombre"
-value="Medio">
-<label>
-Limite
-</label>
-<input
-id="pMedioLim"
-type="number"
-value="300">
-<label>
-Precio $
-</label>
-<input
-id="pMedioPrecio"
-type="number"
-value="9000">
-</div>
-<div
-class="card">
-<b>
-Premium
-</b>
-<label>
-Nombre
-</label>
-<input
-id="pPremNombre"
-value="Premium">
-<label>
-Limite
-</label>
-<input
-id="pPremLim"
-type="number"
-value="999999">
-<label>
-Precio $
-</label>
-<input
-id="pPremPrecio"
-type="number"
-value="15000">
+<div class="card">
+<b>Premium</b>
+<label>Nombre</label>
+<input id="pPremNombre" value="Premium">
+<label>Limite</label>
+<input id="pPremLim" type="number" value="999999">
+<label>Precio $</label>
+<input id="pPremPrecio" type="number" value="15000">
 </div>
 </div>
-<div
-class="card">
-<button
-id="btnGuardarTarifas"
-class="btn">
-Guardar tarifas
-</button>
-<span
-id="tarifaMsg"
-style="color:#86efac;
-margin-left:8px">
-</span>
+<div class="card">
+<button id="btnGuardarTarifas" class="btn">Guardar tarifas</button>
+<span id="tarifaMsg" style="color:#86efac;margin-left:8px"></span>
 </div>
 </div>
-<div
-id="soporte"
-class="screen">
-<div
-class="card">
-<h3>
-Soporte LOCAL vs CLIENTE
-</h3>
-<div
-style="display:flex;
-gap:6px;
-margin-bottom:10px">
-<button
-class="btn small ghost"
-onclick="loadSoporte('todos')">
-Todos
-</button>
-<button
-class="btn small ghost"
-onclick="loadSoporte('local')">
-Solo Locales
-</button>
-<button
-class="btn small ghost"
-onclick="loadSoporte('cliente')">
-Solo Clientes
-</button>
+<div id="soporte" class="screen">
+<div class="card" style="border:2px solid #a855f7">
+<h3 style="color:#a855f7">Soporte LOCAL vs CLIENTE - Unificado</h3>
+<div style="display:flex;gap:6px;margin-bottom:10px">
+<button class="btn small ghost" onclick="loadSoporte('todos')">Todos</button>
+<button class="btn small" style="background:#a855f7" onclick="loadSoporte('local')">Solo Locales</button>
+<button class="btn small" style="background:#22c55e" onclick="loadSoporte('cliente')">Solo Clientes</button>
 </div>
-<ul
-id="sList"
-class="list">
-</ul>
+<ul id="sList" class="list"></ul>
 </div>
 </div>
-<div
-id="users"
-class="screen">
-<div
-class="card">
-<h3>
-Usuarios
-</h3>
-<p
-style="font-size:11px;
-color:#d9ccff">
-Clientes: solo Ver/Bloquear sin dias
-</p>
-<div
-style="display:flex;
-gap:8px;
-margin-bottom:12px">
-<input
-id="busUsers"
-placeholder="Buscar usuario...">
-<button
-id="reloadUsers"
-class="btn small ghost">
-Recargar
-</button>
+<div id="users" class="screen">
+<div class="card">
+<h3>Usuarios</h3>
+<p style="font-size:11px;color:#d9ccff">Clientes: solo Ver/Bloquear sin dias</p>
+<div style="display:flex;gap:8px;margin-bottom:12px">
+<input id="busUsers" placeholder="Buscar usuario...">
+<button id="reloadUsers" class="btn small ghost">Recargar</button>
 </div>
-<ul
-id="uList"
-class="list">
-</ul>
+<ul id="uList" class="list"></ul>
 </div>
 </div>
-<div
-id="ajustes"
-class="screen">
-<div
-class="card"
-style="border:2px solid #facc15">
-<h3>
-💸 MIS DATOS DE COBRO
-</h3>
-<label>
-Alias
-</label>
-<input
-id="jonaAlias">
-<label>
-CBU
-</label>
-<input
-id="jonaCbu">
-<label>
-Titular
-</label>
-<input
-id="jonaTitular">
-<label>
-WhatsApp
-</label>
-<input
-id="jonaWsp">
-<label>
-Instrucciones
-</label>
-<textarea
-id="jonaInstr">
-</textarea>
-<button
-id="btnGuardarCobrosJona"
-class="btn"
-style="margin-top:10px">
-Guardar mis datos
-</button>
-<span
-id="msgCobrosJona"
-style="color:#86efac">
-</span>
+<div id="ajustes" class="screen">
+<div class="card" style="border:2px solid #facc15">
+<h3>💸 MIS DATOS DE COBRO</h3>
+<label>Alias</label>
+<input id="jonaAlias">
+<label>CBU</label>
+<input id="jonaCbu">
+<label>Titular</label>
+<input id="jonaTitular">
+<label>WhatsApp</label>
+<input id="jonaWsp">
+<label>Instrucciones</label>
+<textarea id="jonaInstr"></textarea>
+<button id="btnGuardarCobrosJona" class="btn" style="margin-top:10px">Guardar mis datos</button>
+<span id="msgCobrosJona" style="color:#86efac"></span>
 </div>
-<div
-class="card">
-<h3>
-Horas de gracia
-</h3>
-<input
-id="horasPlan"
-type="number"
-value="48"
-style="max-width:200px">
-<button
-id="btnGuardarHoras"
-class="btn small"
-style="margin-top:8px">
-Guardar
-</button>
-<span
-id="ajMsg"
-style="color:#86efac">
-</span>
+<div class="card">
+<h3>Horas de gracia</h3>
+<input id="horasPlan" type="number" value="48" style="max-width:200px">
+<button id="btnGuardarHoras" class="btn small" style="margin-top:8px">Guardar</button>
+<span id="ajMsg" style="color:#86efac"></span>
 </div>
 </div>
 </div>
 </section>
-<div
-id="userModal"
-style="position:fixed;
-inset:0;
-background:#0009;
-z-index:50;
-display:flex;
-align-items:center;
-justify-content:center;
-padding:16px"
-class="hidden">
-<div
-class="card"
-style="max-width:500px;
-width:100%;
-background:#1a1033">
-<h3
-id="modalTitle">
-Ficha
-</h3>
-<div
-id="modalBody"
-style="font-size:13px;
-line-height:1.6">
-</div>
-<div
-style="display:flex;
-gap:8px;
-margin-top:14px">
-<button
-id="modalClose"
-class="btn ghost">
-Cerrar
-</button>
-<button
-id="modalBloq"
-class="btn small ghost">
-Bloquear
-</button>
+<div id="userModal" style="position:fixed;inset:0;background:#0009;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px" class="hidden">
+<div class="card" style="max-width:500px;width:100%;background:#1a1033">
+<h3 id="modalTitle">Ficha</h3>
+<div id="modalBody" style="font-size:13px;line-height:1.6"></div>
+<div style="display:flex;gap:8px;margin-top:14px">
+<button id="modalClose" class="btn ghost">Cerrar</button>
+<button id="modalBloq" class="btn small ghost">Bloquear</button>
 </div>
 </div>
 </div>
-<div
-id="toast"
-class="toast hidden">
-</div>
+<div id="toast" class="toast hidden"></div>
 <script>
-const firebaseConfig={
-apiKey:"AIzaSyC57wshaJ2EuIBoBdXv18opL4u_Vuw2bAQ",
-authDomain:"reservar-cb70d.firebaseapp.com",
-projectId:"reservar-cb70d",
-storageBucket:"reservar-cb70d.firebasestorage.app",
-messagingSenderId:"630908928696",
-appId:"1:630908928696:web:5e89f5f2b2cc2b240e6a4d"
-};
+const firebaseConfig={apiKey:"AIzaSyC57wshaJ2EuIBoBdXv18opL4u_Vuw2bAQ",authDomain:"reservar-cb70d.firebaseapp.com",projectId:"reservar-cb70d",storageBucket:"reservar-cb70d.firebasestorage.app",messagingSenderId:"630908928696",appId:"1:630908928696:web:5e89f5f2b2cc2b240e6a4d"};
 firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const db=firebase.firestore();
+const auth=firebase.auth();const db=firebase.firestore();
 const $=id=>document.getElementById(id);
-const toast=m=>{
-const t=$('toast');
-t.textContent=m;
-t.classList.remove('hidden');
-setTimeout(()=>t.classList.add('hidden'),2500);
-};
-$('loginBtn').onclick=async()=>{
-const e=$('email').value.trim();
-const p=$('password').value.trim();
-$('err').textContent='Conectando...';
-try{
-await auth.signInWithEmailAndPassword(e,p);
-}catch(er){
-$('err').textContent=er.message;
-}
-};
+const toast=m=>{const t=$('toast');t.textContent=m;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),2500);};
+$('loginBtn').onclick=async()=>{const e=$('email').value.trim();const p=$('password').value.trim();$('err').textContent='Conectando...';try{await auth.signInWithEmailAndPassword(e,p);}catch(er){$('err').textContent=er.message;}};
 $('logout').onclick=()=>auth.signOut();
-document.querySelectorAll('.tab').forEach(t=>{
-t.onclick=()=>{
-document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-t.classList.add('active');
-document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-$(t.dataset.s).classList.add('active');
-if(t.dataset.s==='planes') renderLocalesFiltrados();
-if(t.dataset.s==='pagos') loadPagos();
-if(t.dataset.s==='soporte') loadSoporte('todos');
-if(t.dataset.s==='users') loadUsers();
-};
-});
-let all=[];
-let cfg={horasPlan:48};
-let selectedUid=null;
-let filtroKpiActual='todos';
+document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(t.dataset.s).classList.add('active');if(t.dataset.s==='planes')renderLocalesFiltrados();if(t.dataset.s==='pagos')loadPagos();if(t.dataset.s==='soporte')loadSoporte('todos');if(t.dataset.s==='users')loadUsers();};});
+let all=[];let cfg={horasPlan:48};let selectedUid=null;let filtroKpiActual='todos';
 auth.onAuthStateChanged(async u=>{
-if(!u){
-$('auth').classList.remove('hidden');
-$('app').classList.add('hidden');
-return;
-}
-if(u.email.toLowerCase()!=='jjrv.0093@gmail.com'){
-toast('No sos ADMI');
-await auth.signOut();
-return;
-}
-$('auth').classList.add('hidden');
-$('app').classList.remove('hidden');
-$('sal').textContent='Hola ADMI '+u.email;
-try{
-const c=await db.collection('config').doc('adm').get();
-if(c.exists){
-cfg=c.data();
-$('horasPlan').value=cfg.horasPlan||48;
-}
-const pt=await db.collection('config').doc('planes').get();
-if(pt.exists){
-const d=pt.data();
-$('pBaseNombre').value=d.base?.nombre||'Básico';
-$('pBaseLim').value=d.base?.limite||100;
-$('pBasePrecio').value=d.base?.precio||5000;
-$('pMedioNombre').value=d.medio?.nombre||'Medio';
-$('pMedioLim').value=d.medio?.limite||300;
-$('pMedioPrecio').value=d.medio?.precio||9000;
-$('pPremNombre').value=d.premium?.nombre||'Premium';
-$('pPremLim').value=d.premium?.limite||999999;
-$('pPremPrecio').value=d.premium?.precio||15000;
-}
-const cob=await db.collection('config').doc('cobros').get();
-if(cob.exists){
-const c=cob.data();
-$('jonaAlias').value=c.alias||'';
-$('jonaCbu').value=c.cbu||'';
-$('jonaTitular').value=c.titular||'';
-$('jonaWsp').value=c.whatsapp||c.wsp||'';
-$('jonaInstr').value=c.instrucciones||'';
-}
-}catch(e){}
-load();
-loadPagos();
+if(!u){$('auth').classList.remove('hidden');$('app').classList.add('hidden');return;}
+if(u.email.toLowerCase()!=='jjrv.0093@gmail.com'){toast('No sos ADMI');await auth.signOut();return;}
+$('auth').classList.add('hidden');$('app').classList.remove('hidden');$('sal').textContent='Hola ADMI '+u.email;
+try{const c=await db.collection('config').doc('adm').get();if(c.exists){cfg=c.data();$('horasPlan').value=cfg.horasPlan||48;}
+const pt=await db.collection('config').doc('planes').get();if(pt.exists){const d=pt.data();$('pBaseNombre').value=d.base?.nombre||'Básico';$('pBaseLim').value=d.base?.limite||100;$('pBasePrecio').value=d.base?.precio||5000;$('pMedioNombre').value=d.medio?.nombre||'Medio';$('pMedioLim').value=d.medio?.limite||300;$('pMedioPrecio').value=d.medio?.precio||9000;$('pPremNombre').value=d.premium?.nombre||'Premium';$('pPremLim').value=d.premium?.limite||999999;$('pPremPrecio').value=d.premium?.precio||15000;}
+const cob=await db.collection('config').doc('cobros').get();if(cob.exists){const c=cob.data();$('jonaAlias').value=c.alias||'';$('jonaCbu').value=c.cbu||'';$('jonaTitular').value=c.titular||'';$('jonaWsp').value=c.whatsapp||c.wsp||'';$('jonaInstr').value=c.instrucciones||'';}}catch(e){}
+load();loadPagos();
 });
- function estaActivo(l){
-if(l.planActivo===false) return false;
-if(l.visible===false) return false;
-if(!l.planVence) return true;
-let v=null;
-try{
-if(l.planVence.toDate) v=l.planVence.toDate();
-else if(l.planVence.seconds) v=new Date(l.planVence.seconds*1000);
-else v=new Date(l.planVence);
-}catch(e){}
-if(!v||isNaN(v.getTime())) return true;
-return (new Date()-v)/36e5<=(cfg.horasPlan||48);
-}
-function fmtVence(l){
-if(!l) return '-';
-const pv=l.planVence||l;
-if(!pv) return '-';
-try{
-if(pv.toDate) return pv.toDate().toLocaleDateString('es-AR');
-if(pv.seconds) return new Date(pv.seconds*1000).toLocaleDateString('es-AR');
-const d=new Date(pv);
-if(isNaN(d.getTime())) return '-';
-return d.toLocaleDateString('es-AR');
-}catch(e){
-return '-';
-}
-}
-async function load(){
-try{
-const s=await db.collection('config').get();
-all=s.docs.filter(d=>d.id!=='cobros'&&d.id!=='planes'&&d.id!=='adm'&&d.id!=='branding').map(d=>({id:d.id,...d.data()}));
-const activos=all.filter(estaActivo).length;
-$('kpis').innerHTML=`
-<span class="pill click" onclick="filtrarKpi('todos')" style="background:#ffffff22;cursor:pointer">Total ${all.length}</span>
-<span class="pill click" onclick="filtrarKpi('activos')" style="background:#22c55e33;cursor:pointer">Activos ${activos}</span>
-<span class="pill click" onclick="filtrarKpi('vencidos')" style="background:#ef444433;cursor:pointer">Vencidos ${all.length-activos}</span>
-`;
-$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span><span class="pill">Trial unico</span>`;
-renderLocalesFiltrados();
-}catch(e){
-toast(e.message);
-}
-}
-window.filtrarKpi=(tipo)=>{
-filtroKpiActual=tipo;
-document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-document.querySelector('[data-s="planes"]').classList.add('active');
-document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-$('planes').classList.add('active');
-renderLocalesFiltrados();
-};
-function renderLocalesFiltrados(){
-let lista=[...all];
-if(filtroKpiActual==='activos') lista=all.filter(estaActivo);
-if(filtroKpiActual==='vencidos') lista=all.filter(l=>!estaActivo(l));
-const g=$('grid');
-if(!g) return;
-g.innerHTML='';
-if(!lista.length){
-g.innerHTML=`<div class="card">Sin locales en ${filtroKpiActual}</div>`;
-return;
-}
-lista.forEach(l=>{
-let vence=fmtVence(l);
-const a=estaActivo(l);
-const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${l.promoMotivo||'PROMO'} ${l.promoHasta||vence}</span>`:'';
-const trialBadge=l.trialUsado?`<span class="pill" style="background:#a855f733">Trial usado</span>`:`<span class="pill" style="background:#22c55e33">Trial 30d</span>`;
-const logo=l.logoUrl?`<img src="${l.logoUrl}" style="width:40px;height:40px;border-radius:12px;object-fit:cover">`:'';
-const d=document.createElement('div');
-d.className='card';
-d.innerHTML=`
-<div style="display:flex;justify-content:space-between">
-<div style="display:flex;gap:8px;align-items:center">
-${logo}
-<b>${l.nombre||'Local'}</b>
-</div>
-<span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">
-${a?'ACTIVO':'VENCIDO'}
-</span>
-</div>
-<div style="font-size:12px;color:#cfc9e6;margin:8px 0">
-${l.email||''} - ${l.plan||'Basico'} ${promo} ${trialBadge}
-</div>
-<div style="font-size:12px;margin-bottom:8px">
-Vence: ${vence}
-</div>
-<div style="display:flex;flex-wrap:wrap;gap:6px">
-<button class="btn small" onclick="activar48('${l.id}')">
-48hs
-</button>
-<button class="btn small ghost" onclick="darPromo('${l.id}',7)">
-+7
-</button>
-<button class="btn small ghost" onclick="darPromo('${l.id}',15)">
-+15
-</button>
-<button class="btn small ghost" onclick="darPromo('${l.id}',30)">
-+30 promo
-</button>
-<button class="btn small ghost" style="background:#fff;color:#000;font-weight:900" onclick="darCustom('${l.id}')">
-+N
-</button>
-<button class="btn small ghost" onclick="verFicha('${l.id}')">
-Ver
-</button>
-</div>
-`;
-g.appendChild(d);
-});
-}
- async function loadPagos(){
-const ul=$('pagosList');
-ul.innerHTML='<li class="item">Cargando...</li>';
-try{
-const snap=await db.collection('solicitudes').where('estado','==','pendiente').limit(100).get();
-if(snap.empty){
-ul.innerHTML='<li class="item">No hay pagos ✅</li>';
-return;
-}
-ul.innerHTML='';
-snap.forEach(doc=>{
-const x=doc.data();
-const li=document.createElement('li');
-li.className='item';
-li.style.flexDirection='column';
-li.style.alignItems='flex-start';
-li.innerHTML=`
-<div style="width:100%;display:flex;justify-content:space-between">
-<b>${x.nombreLocal||'Local'}</b>
-<span class="pill" style="background:#facc15;color:#000">
-${x.plan||''} $${x.precio||''}
-</span>
-</div>
-<div style="font-size:12px;color:#cfc9e6;margin:6px 0">
-${x.email||''} - UID:${x.uid||''}
-</div>
-<div style="display:flex;gap:6px">
-<button class="btn small" style="background:#22c55e" onclick="aprobarPago('${doc.id}','${x.uid}','${x.plan}')">
-Aprobar 30d
-</button>
-<button class="btn small ghost" onclick="rechazarPago('${doc.id}','${x.uid}')">
-Rechazar
-</button>
-</div>
-`;
-ul.appendChild(li);
-});
-}catch(e){
-$('pagosList').innerHTML='<li class="item">Error: '+e.message+'</li>';
-}
-}
+function estaActivo(l){if(l.planActivo===false)return false;if(l.visible===false)return false;if(!l.planVence)return true;let v=null;try{if(l.planVence.toDate)v=l.planVence.toDate();else if(l.planVence.seconds)v=new Date(l.planVence.seconds*1000);else v=new Date(l.planVence);}catch(e){}if(!v||isNaN(v.getTime()))return true;return (new Date()-v)/36e5<=(cfg.horasPlan||48);}
+function fmtVence(l){if(!l)return '-';const pv=l.planVence||l;if(!pv)return '-';try{if(pv.toDate)return pv.toDate().toLocaleDateString('es-AR');if(pv.seconds)return new Date(pv.seconds*1000).toLocaleDateString('es-AR');const d=new Date(pv);if(isNaN(d.getTime()))return '-';return d.toLocaleDateString('es-AR');}catch(e){return '-';}}
+async function load(){try{const s=await db.collection('config').get();all=s.docs.filter(d=>d.id!=='cobros'&&d.id!=='planes'&&d.id!=='adm'&&d.id!=='branding').map(d=>({id:d.id,...d.data()}));const activos=all.filter(estaActivo).length;$('kpis').innerHTML=`<span class="pill click" onclick="filtrarKpi('todos')" style="background:#ffffff22">Total ${all.length}</span><span class="pill click" onclick="filtrarKpi('activos')" style="background:#22c55e33">Activos ${activos}</span><span class="pill click" onclick="filtrarKpi('vencidos')" style="background:#ef444433">Vencidos ${all.length-activos}</span>`;$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span>`;renderLocalesFiltrados();}catch(e){toast(e.message);}}
+window.filtrarKpi=(tipo)=>{filtroKpiActual=tipo;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelector('[data-s="planes"]').classList.add('active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$('planes').classList.add('active');renderLocalesFiltrados();};
+function renderLocalesFiltrados(){let lista=[...all];if(filtroKpiActual==='activos')lista=all.filter(estaActivo);if(filtroKpiActual==='vencidos')lista=all.filter(l=>!estaActivo(l));const g=$('grid');if(!g)return;g.innerHTML='';if(!lista.length){g.innerHTML=`<div class="card">Sin locales en ${filtroKpiActual}</div>`;return;}lista.forEach(l=>{let vence=fmtVence(l);const a=estaActivo(l);const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${l.promoMotivo||'PROMO'} ${l.promoHasta||vence}</span>`:'';
+const trialBadge=l.trialUsado?`<span class="pill" style="background:#a855f733">Trial usado</span>`:`<span class="pill" style="background:#22c55e33">Trial 30d</span>`;const logo=l.logoUrl?`<img src="${l.logoUrl}" style="width:40px;height:40px;border-radius:12px;object-fit:cover">`:'';const d=document.createElement('div');d.className='card';d.innerHTML=`<div style="display:flex;justify-content:space-between"><div style="display:flex;gap:8px;align-items:center">${logo}<b>${l.nombre||'Local'}</b></div><span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}</span></div><div style="font-size:12px;color:#cfc9e6;margin:8px 0">${l.email||''} - ${l.plan||'Basico'} ${promo} ${trialBadge}</div><div style="font-size:12px;margin-bottom:8px">Vence: ${vence}</div><div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button><button class="btn small ghost" onclick="darPromo('${l.id}',7)">+7</button><button class="btn small ghost" onclick="darPromo('${l.id}',15)">+15</button><button class="btn small ghost" onclick="darPromo('${l.id}',30)">+30 promo</button><button class="btn small ghost" style="background:#fff;color:#000;font-weight:900" onclick="darCustom('${l.id}')">+N</button><button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;g.appendChild(d);});}
+async function loadPagos(){const ul=$('pagosList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('solicitudes').where('estado','==','pendiente').limit(100).get();if(snap.empty){ul.innerHTML='<li class="item">No hay pagos ✅</li>';return;}ul.innerHTML='';snap.forEach(doc=>{const x=doc.data();const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b>${x.nombreLocal||'Local'}</b><span class="pill" style="background:#facc15;color:#000">${x.plan||''} $${x.precio||''}</span></div><div style="font-size:12px;color:#cfc9e6;margin:6px 0">${x.email||''} - UID:${x.uid||''}</div><div style="display:flex;gap:6px"><button class="btn small" style="background:#22c55e" onclick="aprobarPago('${doc.id}','${x.uid}','${x.plan}')">Aprobar 30d</button><button class="btn small ghost" onclick="rechazarPago('${doc.id}','${x.uid}')">Rechazar</button></div>`;ul.appendChild(li);});}catch(e){$('pagosList').innerHTML='<li class="item">Error: '+e.message+'</li>';}}
 $('btnReloadPagos').onclick=loadPagos;
-window.aprobarPago=async(solicId,uid,plan)=>{
-if(!confirm('Aprobar 30 dias?')) return;
-const vence=new Date();
-vence.setDate(vence.getDate()+30);
-await db.collection('config').doc(uid).set({
-plan:plan,
-planActivo:true,
-visible:true,
-planVence:firebase.firestore.Timestamp.fromDate(vence),
-plan_estado:'aprobado',
-trialUsado:true
-},{merge:true});
-await db.collection('solicitudes').doc(solicId).update({
-estado:'aprobado',
-aprobado_en:firebase.firestore.FieldValue.serverTimestamp()
-});
-toast('Aprobado 30d');
-loadPagos();
-load();
-loadUsers();
-};
-window.rechazarPago=async(solicId,uid)=>{
-if(!confirm('Rechazar?')) return;
-await db.collection('config').doc(uid).set({
-planActivo:false,
-visible:false,
-plan_estado:'rechazado'
-},{merge:true});
-await db.collection('solicitudes').doc(solicId).update({
-estado:'rechazado'
-});
-toast('Rechazado');
-loadPagos();
-load();
-};
-window.activar48=async id=>{
-const vence=new Date();
-vence.setHours(vence.getHours()+48);
-await db.collection('config').doc(id).set({
-planVence:firebase.firestore.Timestamp.fromDate(vence),
-planActivo:true,
-visible:true
-},{merge:true});
-toast('48hs');
-load();
-};
-window.darPromo=async(id,dias)=>{
-const motivo=prompt(`Dar ${dias} dias - Motivo:`,dias==30?'Gentileza':'Promo');
-if(motivo===null) return;
-const hasta=new Date();
-hasta.setDate(hasta.getDate()+dias);
-await db.collection('config').doc(id).set({
-planVence:firebase.firestore.Timestamp.fromDate(hasta),
-planActivo:true,
-visible:true,
-promoGratis:true,
-promoHasta:hasta.toLocaleDateString('es-AR'),
-promoMotivo:motivo,
-trialUsado:true
-},{merge:true});
-toast(`Promo ${dias}d`);
-load();
-loadUsers();
-};
-window.darCustom=async(id)=>{
-const inp=prompt('Cuantos dias custom? Ej: 45, 60, 90');
-if(inp===null) return;
-const dias=Number(inp);
-if(isNaN(dias)||dias<=0){
-toast('Numero invalido');
-return;
-}
-const motivo=prompt(`Dar ${dias} dias - Motivo:`, 'Custom');
-if(motivo===null) return;
-const hasta=new Date();
-hasta.setDate(hasta.getDate()+dias);
-await db.collection('config').doc(id).set({
-planVence:firebase.firestore.Timestamp.fromDate(hasta),
-planActivo:true,
-visible:true,
-promoGratis:true,
-promoHasta:hasta.toLocaleDateString('es-AR'),
-promoMotivo:motivo,
-trialUsado:true
-},{merge:true});
-toast(`Custom ${dias}d`);
-load();
-};
- async function loadUsers(){
-const ul=$('uList');
-ul.innerHTML='<li class="item">Cargando...</li>';
-try{
-let usersSnap=await db.collection('users').limit(200).get();
-if(usersSnap.empty){
-usersSnap=await db.collection('config').limit(200).get();
-}
-ul.innerHTML='';
-usersSnap.forEach(d=>{
-if(['cobros','planes','adm','branding'].includes(d.id)) return;
-const x=d.data();
-const cfgData=all.find(a=>a.id==d.id)||{};
-const activo=estaActivo(cfgData);
-const vence=fmtVence(cfgData);
-const li=document.createElement('li');
-li.className='item';
-li.innerHTML=`
-<div>
-<b>${x.nombre||cfgData.nombre||d.id.substring(0,10)+'...'}</b>
-<div style="font-size:12px;color:#cfc9e6">
-${x.email||cfgData.email||''} - ${cfgData.plan||'-'} - ${activo?'ACTIVO':'VENCIDO'} - ${vence}
-</div>
-</div>
-<div style="display:flex;gap:6px">
-<button class="btn small ghost" onclick="verFicha('${d.id}')">
-Ver
-</button>
-<button class="btn small ghost" onclick="bloquear('${d.id}')">
-Bloq
-</button>
-</div>
-`;
-ul.appendChild(li);
-});
-}catch(e){
-$('uList').innerHTML='<li class="item">'+e.message+'</li>';
-}
-}
-$('reloadUsers').onclick=loadUsers;
-$('reload').onclick=load;
-window.verFicha=async id=>{
-const doc=await db.collection('config').doc(id).get();
-const uDoc=await db.collection('users').doc(id).get();
-const c=doc.exists?doc.data():{};
-const u=uDoc.exists?uDoc.data():{};
-selectedUid=id;
-$('modalTitle').textContent=c.nombre||u.nombre||u.email||c.email||id;
-$('modalBody').innerHTML=`
-<b>Email:</b> ${c.email||u.email||'-'}<br>
-<b>Plan:</b> ${c.plan||'-'}<br>
-<b>Activo:</b> ${c.planActivo?'Si':'No'}<br>
-<b>Vence:</b> ${fmtVence(c)}<br>
-<b>Trial:</b> ${c.trialUsado?'Usado':'No usado'}<br>
-<b>Promo:</b> ${c.promoMotivo||'-'} hasta ${c.promoHasta||'-'}<br>
-<b>Tel:</b> ${c.telefono||u.telefono||'-'}<br>
-<b>UID:</b> ${id}<br>
-`;
-$('userModal').classList.remove('hidden');
-};
-$('modalClose').onclick=()=>{
-$('userModal').classList.add('hidden');
-};
-$('modalBloq').onclick=()=>{
-if(selectedUid){
-$('userModal').classList.add('hidden');
-bloquear(selectedUid);
-}
-};
-window.bloquear=async id=>{
-if(!confirm('Bloquear?')) return;
-await db.collection('config').doc(id).set({
-planActivo:false,
-visible:false
-},{merge:true});
-toast('Bloqueado');
-load();
-loadUsers();
-};
+window.aprobarPago=async(solicId,uid,plan)=>{if(!confirm('Aprobar 30 dias?'))return;const vence=new Date();vence.setDate(vence.getDate()+30);await db.collection('config').doc(uid).set({plan:plan,planActivo:true,visible:true,planVence:firebase.firestore.Timestamp.fromDate(vence),plan_estado:'aprobado',trialUsado:true},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'aprobado',aprobado_en:firebase.firestore.FieldValue.serverTimestamp()});toast('Aprobado 30d');loadPagos();load();loadUsers();};
+window.rechazarPago=async(solicId,uid)=>{if(!confirm('Rechazar?'))return;await db.collection('config').doc(uid).set({planActivo:false,visible:false,plan_estado:'rechazado'},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'rechazado'});toast('Rechazado');loadPagos();load();};
+window.activar48=async id=>{const vence=new Date();vence.setHours(vence.getHours()+48);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(vence),planActivo:true,visible:true},{merge:true});toast('48hs');load();};
+window.darPromo=async(id,dias)=>{const motivo=prompt(`Dar ${dias} dias - Motivo:`,dias==30?'Gentileza':'Promo');if(motivo===null)return;const hasta=new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Promo ${dias}d`);load();loadUsers();};
+window.darCustom=async(id)=>{const inp=prompt('Cuantos dias custom? Ej: 45, 60, 90');if(inp===null)return;const dias=Number(inp);if(isNaN(dias)||dias<=0){toast('Numero invalido');return;}const motivo=prompt(`Dar ${dias} dias - Motivo:`, 'Custom');if(motivo===null)return;const hasta=new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Custom ${dias}d`);load();};
+async function loadUsers(){const ul=$('uList');ul.innerHTML='<li class="item">Cargando...</li>';try{let usersSnap=await db.collection('users').limit(200).get();if(usersSnap.empty){usersSnap=await db.collection('config').limit(200).get();}ul.innerHTML='';usersSnap.forEach(d=>{if(['cobros','planes','adm','branding'].includes(d.id))return;const x=d.data();const cfgData=all.find(a=>a.id==d.id)||{};const activo=estaActivo(cfgData);const vence=fmtVence(cfgData);const li=document.createElement('li');li.className='item';li.innerHTML=`<div><b>${x.nombre||cfgData.nombre||d.id.substring(0,10)+'...'}</b><div style="font-size:12px;color:#cfc9e6">${x.email||cfgData.email||''} - ${cfgData.plan||'-'} - ${activo?'ACTIVO':'VENCIDO'} - ${vence}</div></div><div style="display:flex;gap:6px"><button class="btn small ghost" onclick="verFicha('${d.id}')">Ver</button><button class="btn small ghost" onclick="bloquear('${d.id}')">Bloq</button></div>`;ul.appendChild(li);});}catch(e){$('uList').innerHTML='<li class="item">'+e.message+'</li>';}}
+$('reloadUsers').onclick=loadUsers;$('reload').onclick=load;
+window.verFicha=async id=>{const doc=await db.collection('config').doc(id).get();const uDoc=await db.collection('users').doc(id).get();const c=doc.exists?doc.data():{};const u=uDoc.exists?uDoc.data():{};selectedUid=id;$('modalTitle').textContent=c.nombre||u.nombre||u.email||c.email||id;$('modalBody').innerHTML=`<b>Email:</b> ${c.email||u.email||'-'}<br><b>Plan:</b> ${c.plan||'-'}<br><b>Activo:</b> ${c.planActivo?'Si':'No'}<br><b>Vence:</b> ${fmtVence(c)}<br><b>Trial:</b> ${c.trialUsado?'Usado':'No usado'}<br><b>Promo:</b> ${c.promoMotivo||'-'} hasta ${c.promoHasta||'-'}<br><b>Tel:</b> ${c.telefono||u.telefono||'-'}<br><b>UID:</b> ${id}<br>`;$('userModal').classList.remove('hidden');};
+$('modalClose').onclick=()=>{$('userModal').classList.add('hidden');};$('modalBloq').onclick=()=>{if(selectedUid){$('userModal').classList.add('hidden');bloquear(selectedUid);}};
+window.bloquear=async id=>{if(!confirm('Bloquear?'))return;await db.collection('config').doc(id).set({planActivo:false,visible:false},{merge:true});toast('Bloqueado');load();loadUsers();};
 async function loadSoporte(filtro='todos'){
-const ul=$('sList');
-ul.innerHTML='<li class="item">Cargando soporte...</li>';
+const ul=$('sList');ul.innerHTML='<li class="item">Cargando soporte...</li>';
 try{
-let q=db.collection('soporte').orderBy('ts','desc').limit(100);
-if(filtro!=='todos'){
-q=db.collection('soporte').where('origen','==',filtro).orderBy('ts','desc').limit(100);
-}
+let q=db.collection('soporte').orderBy('ts','desc').limit(120);
+if(filtro!=='todos'){q=db.collection('soporte').where('origen','==',filtro).orderBy('ts','desc').limit(120);}
 const s=await q.get();
-if(s.empty){
-ul.innerHTML='<li class="item">Sin mensajes</li>';
-return;
-}
+if(s.empty){ul.innerHTML='<li class="item">Sin mensajes</li>';return;}
 ul.innerHTML='';
 s.forEach(d=>{
 const x=d.data();
 const esLocal=x.origen==='local';
 const color=esLocal?'#a855f7':'#22c55e';
 const label=esLocal?'🟣 LOCAL':'🟢 CLIENTE';
-const img=x.imagen?`<br><img src="${x.imagen}" style="max-width:200px;border-radius:12px;margin-top:6px">`:'';
-const li=document.createElement('li');
-li.className='item';
-li.style.borderLeft=`4px solid ${color}`;
-li.innerHTML=`
-<div style="flex:1">
-<div style="display:flex;gap:6px">
-<b style="color:${color}">
-${label}
-</b>
-<span class="pill">
-${x.tipo||'queja'}
-</span>
-</div>
-<div style="margin-top:6px">
-<b>${x.nombre||x.email||''}</b>
-</div>
-<div style="font-size:12px">
-${x.mensaje||''}
-${img}
-</div>
-</div>
-<div>
-<button class="btn small ghost" onclick="delSoporte('${d.id}')">
-Borrar
-</button>
-</div>
-`;
+const nombre=x.nombreCliente||x.nombreLocal||x.nombre||x.emailCliente||x.email||x.clienteNombre||'Sin nombre';
+const mensaje=x.mensaje||x.msg||x.comentario||'Sin mensaje';
+const imagen=x.imagen||x.archivo||'';
+const img=imagen?`<br><img src="${imagen}" style="max-width:220px;border-radius:12px;margin-top:8px;border:2px solid ${color}">`:'';
+const fechaProb=x.fechaProblema||'-';const horaProb=x.horaProblema||'-';
+const fechaEnv=x.fechaEnvio||x.fechaHoraEnvio||'';
+const localInfo=x.nombreLocal||x.datosLocalCompleto?.localNombre||x.localData?.localNombre||'';
+const cliInfo=x.emailCliente||x.whatsappCliente||x.clienteData?.whats||'';
+const resInfo=x.reservaData?`<div style="font-size:11px;background:#0003;padding:6px;border-radius:8px;margin-top:6px">Reserva: ${x.reservaData.fechaHora||''} ${x.reservaData.servicio||''} $${x.reservaData.precio||''}</div>`:'';
+const cliData=x.clienteData||x.perfilCompleto?`<div style="font-size:11px;background:#22c55e22;padding:6px;border-radius:8px;margin-top:6px;border:1px solid #22c55e55">Cliente: ${x.clienteData?.nombre||x.perfilCompleto?.nombre||''} ${cliInfo} DNI:${x.clienteData?.dni||''}</div>`:'';
+const locData=x.localData||x.datosLocalCompleto?`<div style="font-size:11px;background:#a855f722;padding:6px;border-radius:8px;margin-top:6px;border:1px solid #a855f755">Local: ${localInfo} ${x.localData?.telefono||x.datosLocalCompleto?.telefono||''}</div>`:'';
+const li=document.createElement('li');li.className='item';li.style.borderLeft=`4px solid ${color}`;li.style.flexDirection='column';li.style.alignItems='flex-start';
+li.innerHTML=`<div style="width:100%"><div style="display:flex;gap:6px;flex-wrap:wrap"><b style="color:${color}">${label}</b><span class="pill">${x.tipo||x.tipoLocal||'consulta'}</span><span class="pill" style="background:${color}22">${fechaProb} ${horaProb}</span></div><div style="margin-top:6px"><b style="font-size:14px;color:#fff">${nombre}</b> <span style="font-size:11px;color:#cfc9e6">${localInfo?'- Local: '+localInfo:''}</span></div><div style="font-size:12px;color:#cfc9e6">Envio: ${fechaEnv} ${x.horaEnvio||''}</div><div style="font-size:13px;margin-top:8px;background:#fff1;padding:8px;border-radius:10px;border:1px solid ${color}55">${mensaje}${img}</div>${cliData}${locData}${resInfo}</div><div style="width:100%;display:flex;gap:6px;margin-top:8px"><button class="btn small ghost" onclick="delSoporte('${d.id}')">Borrar</button></div>`;
 ul.appendChild(li);
 });
-}catch(e){
-ul.innerHTML='<li class="item">Error: '+e.message+'</li>';
+}catch(e){ul.innerHTML='<li class="item">Error: '+e.message+' (crea indice ts+origen)</li>';}
 }
-}
-window.delSoporte=async id=>{
-if(confirm('Borrar?')){
-await db.collection('soporte').doc(id).delete();
-toast('Borrado');
-loadSoporte('todos');
-}
-};
-$('bus').oninput=e=>{
-const q=e.target.value.toLowerCase();
-if(q.trim()===''){
-filtroKpiActual='todos';
-renderLocalesFiltrados();
-return;
-}
-const f=all.filter(l=>(l.nombre||'').toLowerCase().includes(q)||(l.email||'').toLowerCase().includes(q));
-const g=$('grid');
-g.innerHTML='';
-f.forEach(l=>{
-const d=document.createElement('div');
-d.className='card';
-d.innerHTML=`<b>${l.nombre||'Local'}</b><div style="margin-top:8px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button> <button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;
-g.appendChild(d);
-});
-};
-$('busUsers').oninput=e=>{
-const q=e.target.value.toLowerCase();
-$('uList').querySelectorAll('li').forEach(li=>{
-li.style.display=li.textContent.toLowerCase().includes(q)?'flex':'none';
-});
-};
-$('btnGuardarTarifas').onclick=async()=>{
-const data={
-base:{
-nombre:$('pBaseNombre').value,
-limite:Number($('pBaseLim').value),
-precio:Number($('pBasePrecio').value)
-},
-medio:{
-nombre:$('pMedioNombre').value,
-limite:Number($('pMedioLim').value),
-precio:Number($('pMedioPrecio').value)
-},
-premium:{
-nombre:$('pPremNombre').value,
-limite:Number($('pPremLim').value),
-precio:Number($('pPremPrecio').value)
-},
-updated:firebase.firestore.FieldValue.serverTimestamp()
-};
-await db.collection('config').doc('planes').set(data,{merge:true});
-$('tarifaMsg').textContent='Guardado';
-toast('Tarifas');
-};
-$('btnGuardarHoras').onclick=async()=>{
-const h=Number($('horasPlan').value)||48;
-await db.collection('config').doc('adm').set({
-horasPlan:h
-},{merge:true});
-cfg.horasPlan=h;
-$('ajMsg').textContent='Guardado';
-load();
-};
-$('btnGuardarCobrosJona').onclick=async()=>{
-await db.collection('config').doc('cobros').set({
-alias:$('jonaAlias').value.trim(),
-cbu:$('jonaCbu').value.trim(),
-titular:$('jonaTitular').value.trim(),
-whatsapp:$('jonaWsp').value.trim(),
-instrucciones:$('jonaInstr').value.trim(),
-actualizado:firebase.firestore.FieldValue.serverTimestamp()
-},{merge:true});
-$('msgCobrosJona').textContent='Guardado';
-toast('Cobros');
-};
+window.delSoporte=async id=>{if(confirm('Borrar?')){await db.collection('soporte').doc(id).delete();toast('Borrado');loadSoporte('todos');}};
+$('bus').oninput=e=>{const q=e.target.value.toLowerCase();if(q.trim()===''){filtroKpiActual='todos';renderLocalesFiltrados();return;}const f=all.filter(l=>(l.nombre||'').toLowerCase().includes(q)||(l.email||'').toLowerCase().includes(q));const g=$('grid');g.innerHTML='';f.forEach(l=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<b>${l.nombre||'Local'}</b><div style="margin-top:8px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button> <button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;g.appendChild(d);});};
+$('busUsers').oninput=e=>{const q=e.target.value.toLowerCase();$('uList').querySelectorAll('li').forEach(li=>{li.style.display=li.textContent.toLowerCase().includes(q)?'flex':'none';});};
+$('btnGuardarTarifas').onclick=async()=>{const data={base:{nombre:$('pBaseNombre').value,limite:Number($('pBaseLim').value),precio:Number($('pBasePrecio').value)},medio:{nombre:$('pMedioNombre').value,limite:Number($('pMedioLim').value),precio:Number($('pMedioPrecio').value)},premium:{nombre:$('pPremNombre').value,limite:Number($('pPremLim').value),precio:Number($('pPremPrecio').value)},updated:firebase.firestore.FieldValue.serverTimestamp()};await db.collection('config').doc('planes').set(data,{merge:true});$('tarifaMsg').textContent='Guardado';toast('Tarifas');};
+$('btnGuardarHoras').onclick=async()=>{const h=Number($('horasPlan').value)||48;await db.collection('config').doc('adm').set({horasPlan:h},{merge:true});cfg.horasPlan=h;$('ajMsg').textContent='Guardado';load();};
+$('btnGuardarCobrosJona').onclick=async()=>{await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value.trim(),cbu:$('jonaCbu').value.trim(),titular:$('jonaTitular').value.trim(),whatsapp:$('jonaWsp').value.trim(),instrucciones:$('jonaInstr').value.trim(),actualizado:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});$('msgCobrosJona').textContent='Guardado';toast('Cobros');};
 </script>
 </body>
 </html>
