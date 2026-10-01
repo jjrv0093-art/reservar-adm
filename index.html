@@ -187,7 +187,7 @@ const firebaseConfig={apiKey:"AIzaSyC57wshaJ2EuIBoBdXv18opL4u_Vuw2bAQ",authDomai
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();const db=firebase.firestore();
 const $=id=>document.getElementById(id);
-const toast=m=>{const t=$('toast');t.textContent=m;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),2500);};
+const toast=m=>{const t=$('toast');t.textContent=m;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),3000);};
 $('loginBtn').onclick=async()=>{const e=$('email').value.trim();const p=$('password').value.trim();$('err').textContent='Conectando...';try{await auth.signInWithEmailAndPassword(e,p);}catch(er){$('err').textContent=er.message;}};
 $('logout').onclick=()=>auth.signOut();
 document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(t.dataset.s).classList.add('active');if(t.dataset.s==='planes')renderLocalesFiltrados();if(t.dataset.s==='pagos')loadPagos();if(t.dataset.s==='soporte')loadSoporte('todos');if(t.dataset.s==='users')loadUsers();};});
@@ -196,9 +196,11 @@ auth.onAuthStateChanged(async u=>{
 if(!u){$('auth').classList.remove('hidden');$('app').classList.add('hidden');return;}
 if(u.email.toLowerCase()!=='jjrv.0093@gmail.com'){toast('No sos ADMI');await auth.signOut();return;}
 $('auth').classList.add('hidden');$('app').classList.remove('hidden');$('sal').textContent='Hola ADMI '+u.email;
-try{const c=await db.collection('config').doc('adm').get();if(c.exists){cfg=c.data();$('horasPlan').value=cfg.horasPlan||48;}
+try{
+const c=await db.collection('config').doc('adm').get();if(c.exists){cfg=c.data();$('horasPlan').value=cfg.horasPlan||48;}
 const pt=await db.collection('config').doc('planes').get();if(pt.exists){const d=pt.data();$('pBaseNombre').value=d.base?.nombre||'Básico';$('pBaseLim').value=d.base?.limite||100;$('pBasePrecio').value=d.base?.precio||5000;$('pMedioNombre').value=d.medio?.nombre||'Medio';$('pMedioLim').value=d.medio?.limite||300;$('pMedioPrecio').value=d.medio?.precio||9000;$('pPremNombre').value=d.premium?.nombre||'Premium';$('pPremLim').value=d.premium?.limite||999999;$('pPremPrecio').value=d.premium?.precio||15000;}
-const cob=await db.collection('config').doc('cobros').get();if(cob.exists){const c=cob.data();$('jonaAlias').value=c.alias||'';$('jonaCbu').value=c.cbu||'';$('jonaTitular').value=c.titular||'';$('jonaWsp').value=c.whatsapp||c.wsp||'';$('jonaInstr').value=c.instrucciones||'';}}catch(e){}
+const cob=await db.collection('config').doc('cobros').get();if(cob.exists){const c=cob.data();$('jonaAlias').value=c.alias||'';$('jonaCbu').value=c.cbu||'';$('jonaTitular').value=c.titular||'';$('jonaWsp').value=c.whatsapp||c.wsp||'';$('jonaInstr').value=c.instrucciones||'';}
+}catch(e){toast(e.message);}
 load();loadPagos();
 });
 function estaActivo(l){if(l.planActivo===false)return false;if(l.visible===false)return false;if(!l.planVence)return true;let v=null;try{if(l.planVence.toDate)v=l.planVence.toDate();else if(l.planVence.seconds)v=new Date(l.planVence.seconds*1000);else v=new Date(l.planVence);}catch(e){}if(!v||isNaN(v.getTime()))return true;return (new Date()-v)/36e5<=(cfg.horasPlan||48);}
@@ -208,8 +210,7 @@ window.filtrarKpi=(tipo)=>{filtroKpiActual=tipo;document.querySelectorAll('.tab'
 function renderLocalesFiltrados(){let lista=[...all];if(filtroKpiActual==='activos')lista=all.filter(estaActivo);if(filtroKpiActual==='vencidos')lista=all.filter(l=>!estaActivo(l));const g=$('grid');if(!g)return;g.innerHTML='';if(!lista.length){g.innerHTML=`<div class="card">Sin locales en ${filtroKpiActual}</div>`;return;}lista.forEach(l=>{let vence=fmtVence(l);const a=estaActivo(l);const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${l.promoMotivo||'PROMO'} ${l.promoHasta||vence}</span>`:'';
 const trialBadge=l.trialUsado?`<span class="pill" style="background:#a855f733">Trial usado</span>`:`<span class="pill" style="background:#22c55e33">Trial 30d</span>`;const logo=l.logoUrl?`<img src="${l.logoUrl}" style="width:40px;height:40px;border-radius:12px;object-fit:cover">`:'';const d=document.createElement('div');d.className='card';d.innerHTML=`<div style="display:flex;justify-content:space-between"><div style="display:flex;gap:8px;align-items:center">${logo}<b>${l.nombre||'Local'}</b></div><span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}</span></div><div style="font-size:12px;color:#cfc9e6;margin:8px 0">${l.email||''} - ${l.plan||'Basico'} ${promo} ${trialBadge}</div><div style="font-size:12px;margin-bottom:8px">Vence: ${vence}</div><div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button><button class="btn small ghost" onclick="darPromo('${l.id}',7)">+7</button><button class="btn small ghost" onclick="darPromo('${l.id}',15)">+15</button><button class="btn small ghost" onclick="darPromo('${l.id}',30)">+30 promo</button><button class="btn small ghost" style="background:#fff;color:#000;font-weight:900" onclick="darCustom('${l.id}')">+N</button><button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;g.appendChild(d);});}
 async function loadPagos(){
-const ul=$('pagosList');
-ul.innerHTML='<li class="item">Cargando...</li>';
+const ul=$('pagosList');ul.innerHTML='<li class="item">Cargando...</li>';
 try{
 const snap=await db.collection('solicitudes').where('estado','==','pendiente').orderBy('ts','desc').limit(100).get();
 if(snap.empty){ul.innerHTML='<li class="item">No hay pagos ✅</li>';return;}
@@ -219,28 +220,11 @@ const x=doc.data();
 const cfgExtra=all.find(a=>a.id===x.uid)||{};
 const comp=x.comprobante||x.comprobanteBase64||x.imagen||'';
 const compHtml=comp?`<img src="${comp}" style="width:100%;max-width:380px;border-radius:14px;border:2px solid #facc15;cursor:pointer;margin-top:8px" onclick="window.open('${comp}','_blank')"><div style="font-size:11px;color:#facc15;margin-top:4px">📎 ${x.comprobanteNombre||'comprobante'} - ${x.metodoPago||''} - Click ampliar</div>`:`<div class="pill" style="background:#ef444433;margin-top:8px">Sin comprobante - ${x.metodoPago||'Sin metodo'}</div>`;
-const li=document.createElement('li');
-li.className='item';
-li.style.flexDirection='column';
-li.style.alignItems='flex-start';
-li.style.border='1px solid #facc15';
-li.innerHTML=`<div style="width:100%"><div style="display:flex;justify-content:space-between;flex-wrap:wrap"><b style="font-size:15px">${x.nombreLocal||cfgExtra.nombre||cfgExtra.localNombre||'Local sin nombre'}</b><span class="pill" style="background:#facc15;color:#000">${x.plan||cfgExtra.plan||''} $${x.precio||''}</span></div><div style="background:#00000044;border-radius:10px;padding:8px;margin-top:8px;font-size:12px;line-height:1.5"><div>🏪 <b>Local:</b> ${x.nombreLocal||cfgExtra.localNombre||cfgExtra.nombre||'-'}</div><div>📧 <b>Email:</b> ${x.email||cfgExtra.email||'-'}</div><div>🆔 <b>UID:</b> ${x.uid||'-'}</div><div>📱 <b>Tel:</b> ${cfgExtra.telefono||cfgExtra.tel||x.telefono||'-'}</div><div>📍 <b>Dir:</b> ${cfgExtra.direccion||'-'}</div><div>💳 <b>Metodo:</b> ${x.metodoPago||'-'} | <b>Estado:</b> ${x.estado||'-'}</div><div>📅 <b>Solicitado:</b> ${x.creado?new Date(x.creado.seconds*1000).toLocaleString('es-AR'):''}</div></div></div>${compHtml}<div style="display:flex;gap:6px;margin-top:10px"><button class="btn small" style="background:#22c55e" onclick="aprobarPago('${doc.id}','${x.uid}','${x.plan}')">Aprobar 30d</button><button class="btn small ghost" onclick="rechazarPago('${doc.id}','${x.uid}')">Rechazar</button><button class="btn small ghost" onclick="verFicha('${x.uid}')">Ver ficha</button></div>`;
+const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.style.border='1px solid #facc15';
+li.innerHTML=`<div style="width:100%"><div style="display:flex;justify-content:space-between;flex-wrap:wrap"><b style="font-size:15px">${x.nombreLocal||cfgExtra.nombre||cfgExtra.localNombre||'Local sin nombre'}</b><span class="pill" style="background:#facc15;color:#000">${x.plan||cfgExtra.plan||''} $${x.precio||''}</span></div><div style="background:#00000044;border-radius:10px;padding:8px;margin-top:8px;font-size:12px;line-height:1.5"><div>🏪 <b>Local:</b> ${x.nombreLocal||cfgExtra.localNombre||cfgExtra.nombre||'-'}</div><div>📧 <b>Email:</b> ${x.email||cfgExtra.email||'-'}</div><div>🆔 <b>UID:</b> ${x.uid||'-'}</div><div>📱 <b>Tel:</b> ${cfgExtra.telefono||cfgExtra.tel||x.telefono||'-'}</div><div>📍 <b>Dir:</b> ${cfgExtra.direccion||'-'}</div><div>💳 <b>Metodo:</b> ${x.metodoPago||'-'}</div></div></div>${compHtml}<div style="display:flex;gap:6px;margin-top:10px"><button class="btn small" style="background:#22c55e" onclick="aprobarPago('${doc.id}','${x.uid}','${x.plan}')">Aprobar 30d</button><button class="btn small ghost" onclick="rechazarPago('${doc.id}','${x.uid}')">Rechazar</button></div>`;
 ul.appendChild(li);
 });
-}catch(e){
-try{
-const snap2=await db.collection('solicitudes').where('estado','==','pendiente').limit(100).get();
-if(snap2.empty){$('pagosList').innerHTML='<li class="item">No hay pagos ✅</li>';return;}
-$('pagosList').innerHTML='';
-snap2.forEach(doc=>{
-const x=doc.data();
-const cfgExtra=all.find(a=>a.id===x.uid)||{};
-const comp=x.comprobante||'';
-const compHtml=comp?`<img src="${comp}" style="width:100%;max-width:380px;border-radius:14px;border:2px solid #facc15;margin-top:8px">`:`<div class="pill" style="background:#ef444433">Sin comprobante</div>`;
-const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.innerHTML=`<div><b>${x.nombreLocal||cfgExtra.localNombre||''}</b> UID:${x.uid||''} ${x.plan||''} $${x.precio||''}<div style="font-size:11px">Tel:${cfgExtra.telefono||''} Email:${x.email||''}</div></div>${compHtml}<div style="display:flex;gap:6px;margin-top:8px"><button class="btn small" style="background:#22c55e" onclick="aprobarPago('${doc.id}','${x.uid}','${x.plan}')">Aprobar</button><button class="btn small ghost" onclick="rechazarPago('${doc.id}','${x.uid}')">Rechazar</button></div>`;$('pagosList').appendChild(li);
-});
-}catch(e2){$('pagosList').innerHTML='<li class="item">Error: '+e2.message+'</li>';}
-}
+}catch(e){$('pagosList').innerHTML='<li class="item">Error: '+e.message+'</li>';}
 }
 $('btnReloadPagos').onclick=loadPagos;
 window.aprobarPago=async(solicId,uid,plan)=>{if(!confirm('Aprobar 30 dias?'))return;const vence=new Date();vence.setDate(vence.getDate()+30);await db.collection('config').doc(uid).set({plan:plan,planActivo:true,visible:true,planVence:firebase.firestore.Timestamp.fromDate(vence),plan_estado:'aprobado',trialUsado:true},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'aprobado',aprobado_en:firebase.firestore.FieldValue.serverTimestamp()});toast('Aprobado 30d');loadPagos();load();};
@@ -248,65 +232,30 @@ window.rechazarPago=async(solicId,uid)=>{if(!confirm('Rechazar?'))return;await d
 window.activar48=async id=>{const vence=new Date();vence.setHours(vence.getHours()+48);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(vence),planActivo:true,visible:true},{merge:true});toast('48hs');load();};
 window.darPromo=async(id,dias)=>{const motivo=prompt(`Dar ${dias} dias - Motivo:`,dias==30?'Gentileza':'Promo');if(motivo===null)return;const hasta=new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Promo ${dias}d`);load();};
 window.darCustom=async(id)=>{const inp=prompt('Cuantos dias custom?');if(inp===null)return;const dias=Number(inp);if(isNaN(dias)||dias<=0){toast('Numero invalido');return;}const motivo=prompt(`Dar ${dias} dias - Motivo:`,'Custom');if(motivo===null)return;const hasta=new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Custom ${dias}d`);load();};
-window.verFicha=async id=>{try{const doc=await db.collection('config').doc(id).get();if(!doc.exists){toast('No existe');return;}const d=doc.data();selectedUid=id;$('modalTitle').textContent=d.localNombre||d.nombre||'Ficha';$('modalBody').innerHTML=`<div>Nombre: ${d.localNombre||d.nombre||'-'}</div><div>Email: ${d.email||'-'}</div><div>Tel: ${d.telefono||d.tel||'-'}</div><div>Dir: ${d.direccion||'-'}</div><div>Plan: ${d.plan||'-'}</div><div>Vence: ${fmtVence(d)}</div><div>Activo: ${estaActivo(d)?'Si':'No'}</div><div>UID: ${id}</div><div>TrialUsado: ${d.trialUsado?'Si':'No'}</div>`;$('userModal').classList.remove('hidden');}catch(e){toast(e.message);}};
+window.verFicha=async id=>{try{const doc=await db.collection('config').doc(id).get();if(!doc.exists){toast('No existe');return;}const d=doc.data();selectedUid=id;$('modalTitle').textContent=d.localNombre||d.nombre||'Ficha';$('modalBody').innerHTML=`<div>Nombre: ${d.localNombre||d.nombre||'-'}</div><div>Email: ${d.email||'-'}</div><div>Tel: ${d.telefono||d.tel||'-'}</div><div>Dir: ${d.direccion||'-'}</div><div>Plan: ${d.plan||'-'}</div><div>Vence: ${fmtVence(d)}</div><div>Activo: ${estaActivo(d)?'Si':'No'}</div><div>UID: ${id}</div>`;$('userModal').classList.remove('hidden');}catch(e){toast(e.message);}};
 $('modalClose').onclick=()=>{$('userModal').classList.add('hidden');};
 $('modalBloq').onclick=async()=>{if(!selectedUid)return;if(!confirm('Bloquear local?'))return;await db.collection('config').doc(selectedUid).set({bloqueado:true,planActivo:false,visible:false},{merge:true});toast('Bloqueado');$('userModal').classList.add('hidden');load();};
-async function loadSoporte(tipo){
-const ul=$('sList');ul.innerHTML='<li class="item">Cargando...</li>';
-try{
-let q=db.collection('soporte').orderBy('ts','desc').limit(100);
-if(tipo==='local')q=db.collection('soporte').where('origen','==','local').orderBy('ts','desc').limit(100);
-if(tipo==='cliente')q=db.collection('soporte').where('origen','==','cliente').orderBy('ts','desc').limit(100);
-const snap=await q.get();
-ul.innerHTML='';
-snap.forEach(doc=>{
-const x=doc.data();
-const esLocal=x.origen==='local';
-const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.style.border=esLocal?'1px solid #a855f7':'1px solid #22c55e';
-li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b style="color:${esLocal?'#a855f7':'#22c55e'}">${esLocal?'LOCAL':'CLIENTE'}</b><span class="pill">${x.tipo||''}</span></div><div style="font-size:12px;margin:6px 0">${x.mensaje||x.comentario||''}</div><div style="font-size:11px;color:#cfc9e6">${x.nombreLocal||x.nombreCliente||''} - ${x.email||''} UID:${x.uidLocal||x.uidCliente||''}</div>${x.imagen?`<img src="${x.imagen}" style="max-width:200px;border-radius:10px;margin-top:6px">`:''}<div style="display:flex;gap:6px;margin-top:8px"><button class="btn small ghost" onclick="borrarSoporte('${doc.id}')">Borrar</button></div>`;
-ul.appendChild(li);
-});
-if(snap.empty)ul.innerHTML='<li class="item">Sin soporte</li>';
-}catch(e){$('sList').innerHTML='<li class="item">Error: '+e.message+'</li>';}
-}
+async function loadSoporte(tipo){const ul=$('sList');ul.innerHTML='<li class="item">Cargando...</li>';try{let q=db.collection('soporte').orderBy('ts','desc').limit(100);if(tipo==='local')q=db.collection('soporte').where('origen','==','local').orderBy('ts','desc').limit(100);if(tipo==='cliente')q=db.collection('soporte').where('origen','==','cliente').orderBy('ts','desc').limit(100);const snap=await q.get();ul.innerHTML='';snap.forEach(doc=>{const x=doc.data();const esLocal=x.origen==='local';const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.style.border=esLocal?'1px solid #a855f7':'1px solid #22c55e';li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b style="color:${esLocal?'#a855f7':'#22c55e'}">${esLocal?'LOCAL':'CLIENTE'}</b><span class="pill">${x.tipo||''}</span></div><div style="font-size:12px;margin:6px 0">${x.mensaje||x.comentario||''}</div><div style="font-size:11px;color:#cfc9e6">${x.nombreLocal||x.nombreCliente||''} - ${x.email||''} UID:${x.uidLocal||x.uidCliente||''}</div>${x.imagen?`<img src="${x.imagen}" style="max-width:200px;border-radius:10px;margin-top:6px">`:''}<div style="display:flex;gap:6px;margin-top:8px"><button class="btn small ghost" onclick="borrarSoporte('${doc.id}')">Borrar</button></div>`;ul.appendChild(li);});if(snap.empty)ul.innerHTML='<li class="item">Sin soporte</li>';}catch(e){$('sList').innerHTML='<li class="item">Error: '+e.message+'</li>';}}
 window.borrarSoporte=async id=>{if(!confirm('Borrar?'))return;await db.collection('soporte').doc(id).delete();toast('Borrado');loadSoporte('todos');};
-async function loadUsers(){
-const ul=$('uList');ul.innerHTML='<li class="item">Cargando...</li>';
-try{
-let snap=await db.collection('users').limit(200).get();
-if(snap.empty)snap=await db.collection('config').limit(200).get();
-ul.innerHTML='';
-snap.forEach(d=>{
-if(['cobros','planes','adm','branding'].includes(d.id))return;
-const x=d.data();
-const cfgData=all.find(a=>a.id==d.id)||{};
-const activo=estaActivo(cfgData);
-const li=document.createElement('li');li.className='item';
-li.innerHTML=`<div><b>${x.nombre||cfgData.nombre||d.id.substring(0,12)}</b><div style="font-size:11px;color:#cfc9e6">${x.email||cfgData.email||''} - ${cfgData.plan||'-'} - ${activo?'ACTIVO':'VENCIDO'}</div><div style="font-size:10px">UID:${d.id}</div></div><div style="display:flex;gap:6px"><button class="btn small ghost" onclick="verFicha('${d.id}')">Ver</button><button class="btn small ghost" onclick="bloquearUser('${d.id}')">Bloquear</button></div>`;
-ul.appendChild(li);
-});
-}catch(e){$('uList').innerHTML='<li class="item">Error: '+e.message+'</li>';}
-}
+async function loadUsers(){const ul=$('uList');ul.innerHTML='<li class="item">Cargando...</li>';try{let snap=await db.collection('users').limit(200).get();if(snap.empty)snap=await db.collection('config').limit(200).get();ul.innerHTML='';snap.forEach(d=>{if(['cobros','planes','adm','branding'].includes(d.id))return;const x=d.data();const cfgData=all.find(a=>a.id==d.id)||{};const activo=estaActivo(cfgData);const li=document.createElement('li');li.className='item';li.innerHTML=`<div><b>${x.nombre||cfgData.nombre||d.id.substring(0,12)}</b><div style="font-size:11px;color:#cfc9e6">${x.email||cfgData.email||''} - ${cfgData.plan||'-'} - ${activo?'ACTIVO':'VENCIDO'}</div><div style="font-size:10px">UID:${d.id}</div></div><div style="display:flex;gap:6px"><button class="btn small ghost" onclick="verFicha('${d.id}')">Ver</button><button class="btn small ghost" onclick="bloquearUser('${d.id}')">Bloquear</button></div>`;ul.appendChild(li);});}catch(e){$('uList').innerHTML='<li class="item">Error: '+e.message+'</li>';}}
 window.bloquearUser=async id=>{if(!confirm('Bloquear?'))return;await db.collection('config').doc(id).set({bloqueado:true,planActivo:false,visible:false},{merge:true});toast('Bloqueado');loadUsers();load();};
 $('reload').onclick=load;
 $('reloadUsers').onclick=loadUsers;
-$('bus').oninput=()=>{const q=$('bus').value.toLowerCase();const g=$('grid');if(!g)return;Array.from(g.children).forEach(ch=>{ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'});};
+$('bus').oninput=()=>{const q=$('bus').value.toLowerCase();const g=$('grid');Array.from(g.children).forEach(ch=>{ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'});};
 $('busUsers').oninput=()=>{const q=$('busUsers').value.toLowerCase();Array.from($('uList').children).forEach(ch=>{ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'});};
 $('btnGuardarTarifas').onclick=async()=>{
-const base={nombre:$('pBaseNombre').value,limite:Number($('pBaseLim').value),precio:Number($('pBasePrecio').value)};
-const medio={nombre:$('pMedioNombre').value,limite:Number($('pMedioLim').value),precio:Number($('pMedioPrecio').value)};
-const premium={nombre:$('pPremNombre').value,limite:Number($('pPremLim').value),precio:Number($('pPremPrecio').value)};
-await db.collection('config').doc('planes').set({base,medio,premium},{merge:true});
-$('tarifaMsg').textContent='Guardado';toast('Tarifas guardadas');
+try{
+const base={nombre:$('pBaseNombre').value.trim()||'Básico',limite:Number($('pBaseLim').value)||0,precio:Number($('pBasePrecio').value)||0};
+const medio={nombre:$('pMedioNombre').value.trim()||'Medio',limite:Number($('pMedioLim').value)||0,precio:Number($('pMedioPrecio').value)||0};
+const premium={nombre:$('pPremNombre').value.trim()||'Premium',limite:Number($('pPremLim').value)||0,precio:Number($('pPremPrecio').value)||0};
+$('tarifaMsg').textContent='Guardando...';
+await db.collection('config').doc('planes').set({base,medio,premium,updated:firebase.firestore.FieldValue.serverTimestamp()});
+$('tarifaMsg').textContent='Guardado ✅ queda fijo';
+toast('Tarifas guardadas - ya refleja en LOCAL');
+}catch(e){$('tarifaMsg').textContent='Error: '+e.message;toast('Error: '+e.message);}
 };
-$('btnGuardarCobrosJona').onclick=async()=>{
-await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value,cbu:$('jonaCbu').value,titular:$('jonaTitular').value,whatsapp:$('jonaWsp').value,instrucciones:$('jonaInstr').value},{merge:true});
-$('msgCobrosJona').textContent='Guardado';toast('Cobros guardados');
-};
-$('btnGuardarHoras').onclick=async()=>{
-await db.collection('config').doc('adm').set({horasPlan:Number($('horasPlan').value||48)},{merge:true});
-$('ajMsg').textContent='Guardado';toast('Horas guardadas');load();
-};
+$('btnGuardarCobrosJona').onclick=async()=>{try{await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value,cbu:$('jonaCbu').value,titular:$('jonaTitular').value,whatsapp:$('jonaWsp').value,instrucciones:$('jonaInstr').value},{merge:true});$('msgCobrosJona').textContent='Guardado';toast('Cobros guardados');}catch(e){toast(e.message);}};
+$('btnGuardarHoras').onclick=async()=>{try{await db.collection('config').doc('adm').set({horasPlan:Number($('horasPlan').value||48)},{merge:true});$('ajMsg').textContent='Guardado';toast('Horas guardadas');load();}catch(e){toast(e.message);}};
 </script>
 </body>
 </html>
