@@ -7,21 +7,15 @@
 <style>
 :root{--stroke:#ffffff20}
 *{box-sizing:border-box}
-body{margin:0;font-family:Inter,system-ui;color:#fff;
-background:linear-gradient(160deg,#6a11cb,#7b1fa2,#3a0f6e,#0a0933);
-background-attachment:fixed}
+body{margin:0;font-family:Inter,system-ui;color:#fff;background:linear-gradient(160deg,#6a11cb,#7b1fa2,#3a0f6e,#0a0933);background-attachment:fixed}
 .hidden{display:none!important}
 .screen{display:none}
 .screen.active{display:block}
 .wrap{max-width:1200px;margin:0 auto;padding:16px}
-.topbar{position:sticky;top:0;z-index:20;display:flex;
-justify-content:space-between;align-items:center;
-padding:14px 18px;background:rgba(20,8,45,.9);
-border-bottom:1px solid var(--stroke)}
+.topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:rgba(20,8,45,.9);border-bottom:1px solid var(--stroke)}
 .brand{font-weight:900}
 .tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 2px}
-.tab{border:1px solid var(--stroke);background:#ffffff12;color:#e9e0ff;
-padding:10px 18px;border-radius:999px;cursor:pointer;font-weight:700;font-size:14px;white-space:nowrap}
+.tab{border:1px solid var(--stroke);background:#ffffff12;color:#e9e0ff;padding:10px 18px;border-radius:999px;cursor:pointer;font-weight:700;font-size:14px;white-space:nowrap}
 .tab.active{background:#fff;color:#3a0f6e}
 .btn{background:#a855f7;border:none;color:#fff;padding:.6rem .95rem;border-radius:12px;cursor:pointer;font-weight:800;font-size:14px}
 .btn.ghost{background:transparent;border:1px solid var(--stroke)}
@@ -80,7 +74,7 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 </div>
 <div id="pagos" class="screen">
 <div class="card" style="border:2px solid #facc15">
-<h3>💸 Solicitudes Pendientes</h3>
+<h3>💸 Solicitudes Pendientes - Con Datos Completos</h3>
 <button id="btnReloadPagos" class="btn small ghost" style="margin-top:8px">Recargar pagos</button>
 <ul id="pagosList" class="list" style="margin-top:12px"></ul>
 </div>
@@ -189,7 +183,7 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 </div>
 <div id="toast" class="toast hidden"></div>
 <script>
-const firebaseConfig={apiKey:"AIzaSyC57wshaJ2EuIBoBdXv18opL4u_Vuw2bAQ",authDomain:"reservar-cb70d.firebaseapp.com",projectId:"reservar-cb70d",storageBucket:"reservar-cb70d.firebasestorage.app",messagingSenderId:"630908928696",appId:"1:630908928696:web:5e89f5f2b2cc2b240e6a4d"};
+const firebaseConfig={apiKey:"AIzaSyC57wshaJ2EuIBoBdXv18opL4u_Vuw2bAQ",authDomain:"reservar-cb70d.firebaseapp.com",projectId:"reservar-cb70d",storageBucket:"reservar-cb70d.firebasestorage.app",messagingSenderId:"630908928696",appId:"1:630908928696:web:5e89f5f2b1cc2b240e6a4d"};
 firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();const db=firebase.firestore();
 const $=id=>document.getElementById(id);
@@ -213,54 +207,106 @@ async function load(){try{const s=await db.collection('config').get();all=s.docs
 window.filtrarKpi=(tipo)=>{filtroKpiActual=tipo;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelector('[data-s="planes"]').classList.add('active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$('planes').classList.add('active');renderLocalesFiltrados();};
 function renderLocalesFiltrados(){let lista=[...all];if(filtroKpiActual==='activos')lista=all.filter(estaActivo);if(filtroKpiActual==='vencidos')lista=all.filter(l=>!estaActivo(l));const g=$('grid');if(!g)return;g.innerHTML='';if(!lista.length){g.innerHTML=`<div class="card">Sin locales en ${filtroKpiActual}</div>`;return;}lista.forEach(l=>{let vence=fmtVence(l);const a=estaActivo(l);const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${l.promoMotivo||'PROMO'} ${l.promoHasta||vence}</span>`:'';
 const trialBadge=l.trialUsado?`<span class="pill" style="background:#a855f733">Trial usado</span>`:`<span class="pill" style="background:#22c55e33">Trial 30d</span>`;const logo=l.logoUrl?`<img src="${l.logoUrl}" style="width:40px;height:40px;border-radius:12px;object-fit:cover">`:'';const d=document.createElement('div');d.className='card';d.innerHTML=`<div style="display:flex;justify-content:space-between"><div style="display:flex;gap:8px;align-items:center">${logo}<b>${l.nombre||'Local'}</b></div><span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}</span></div><div style="font-size:12px;color:#cfc9e6;margin:8px 0">${l.email||''} - ${l.plan||'Basico'} ${promo} ${trialBadge}</div><div style="font-size:12px;margin-bottom:8px">Vence: ${vence}</div><div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button><button class="btn small ghost" onclick="darPromo('${l.id}',7)">+7</button><button class="btn small ghost" onclick="darPromo('${l.id}',15)">+15</button><button class="btn small ghost" onclick="darPromo('${l.id}',30)">+30 promo</button><button class="btn small ghost" style="background:#fff;color:#000;font-weight:900" onclick="darCustom('${l.id}')">+N</button><button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;g.appendChild(d);});}
-async function loadPagos(){const ul=$('pagosList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('solicitudes').where('estado','==','pendiente').limit(100).get();if(snap.empty){ul.innerHTML='<li class="item">No hay pagos ✅</li>';return;}ul.innerHTML='';snap.forEach(doc=>{const x=doc.data();const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b>${x.nombreLocal||'Local'}</b><span class="pill" style="background:#facc15;color:#000">${x.plan||''} $${x.precio||''}</span></div><div style="font-size:12px;color:#cfc9e6;margin:6px 0">${x.email||''} - UID:${x.uid||''}</div><div style="display:flex;gap:6px"><button class="btn small" style="background:#22c55e" onclick="aprobarPago('${doc.id}','${x.uid}','${x.plan}')">Aprobar 30d</button><button class="btn small ghost" onclick="rechazarPago('${doc.id}','${x.uid}')">Rechazar</button></div>`;ul.appendChild(li);});}catch(e){$('pagosList').innerHTML='<li class="item">Error: '+e.message+'</li>';}}
-$('btnReloadPagos').onclick=loadPagos;
-window.aprobarPago=async(solicId,uid,plan)=>{if(!confirm('Aprobar 30 dias?'))return;const vence=new Date();vence.setDate(vence.getDate()+30);await db.collection('config').doc(uid).set({plan:plan,planActivo:true,visible:true,planVence:firebase.firestore.Timestamp.fromDate(vence),plan_estado:'aprobado',trialUsado:true},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'aprobado',aprobado_en:firebase.firestore.FieldValue.serverTimestamp()});toast('Aprobado 30d');loadPagos();load();loadUsers();};
-window.rechazarPago=async(solicId,uid)=>{if(!confirm('Rechazar?'))return;await db.collection('config').doc(uid).set({planActivo:false,visible:false,plan_estado:'rechazado'},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'rechazado'});toast('Rechazado');loadPagos();load();};
-window.activar48=async id=>{const vence=new Date();vence.setHours(vence.getHours()+48);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(vence),planActivo:true,visible:true},{merge:true});toast('48hs');load();};
-window.darPromo=async(id,dias)=>{const motivo=prompt(`Dar ${dias} dias - Motivo:`,dias==30?'Gentileza':'Promo');if(motivo===null)return;const hasta=new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Promo ${dias}d`);load();loadUsers();};
-window.darCustom=async(id)=>{const inp=prompt('Cuantos dias custom? Ej: 45, 60, 90');if(inp===null)return;const dias=Number(inp);if(isNaN(dias)||dias<=0){toast('Numero invalido');return;}const motivo=prompt(`Dar ${dias} dias - Motivo:`, 'Custom');if(motivo===null)return;const hasta=new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Custom ${dias}d`);load();};
-async function loadUsers(){const ul=$('uList');ul.innerHTML='<li class="item">Cargando...</li>';try{let usersSnap=await db.collection('users').limit(200).get();if(usersSnap.empty){usersSnap=await db.collection('config').limit(200).get();}ul.innerHTML='';usersSnap.forEach(d=>{if(['cobros','planes','adm','branding'].includes(d.id))return;const x=d.data();const cfgData=all.find(a=>a.id==d.id)||{};const activo=estaActivo(cfgData);const vence=fmtVence(cfgData);const li=document.createElement('li');li.className='item';li.innerHTML=`<div><b>${x.nombre||cfgData.nombre||d.id.substring(0,10)+'...'}</b><div style="font-size:12px;color:#cfc9e6">${x.email||cfgData.email||''} - ${cfgData.plan||'-'} - ${activo?'ACTIVO':'VENCIDO'} - ${vence}</div></div><div style="display:flex;gap:6px"><button class="btn small ghost" onclick="verFicha('${d.id}')">Ver</button><button class="btn small ghost" onclick="bloquear('${d.id}')">Bloq</button></div>`;ul.appendChild(li);});}catch(e){$('uList').innerHTML='<li class="item">'+e.message+'</li>';}}
-$('reloadUsers').onclick=loadUsers;$('reload').onclick=load;
-window.verFicha=async id=>{const doc=await db.collection('config').doc(id).get();const uDoc=await db.collection('users').doc(id).get();const c=doc.exists?doc.data():{};const u=uDoc.exists?uDoc.data():{};selectedUid=id;$('modalTitle').textContent=c.nombre||u.nombre||u.email||c.email||id;$('modalBody').innerHTML=`<b>Email:</b> ${c.email||u.email||'-'}<br><b>Plan:</b> ${c.plan||'-'}<br><b>Activo:</b> ${c.planActivo?'Si':'No'}<br><b>Vence:</b> ${fmtVence(c)}<br><b>Trial:</b> ${c.trialUsado?'Usado':'No usado'}<br><b>Promo:</b> ${c.promoMotivo||'-'} hasta ${c.promoHasta||'-'}<br><b>Tel:</b> ${c.telefono||u.telefono||'-'}<br><b>UID:</b> ${id}<br>`;$('userModal').classList.remove('hidden');};
-$('modalClose').onclick=()=>{$('userModal').classList.add('hidden');};$('modalBloq').onclick=()=>{if(selectedUid){$('userModal').classList.add('hidden');bloquear(selectedUid);}};
-window.bloquear=async id=>{if(!confirm('Bloquear?'))return;await db.collection('config').doc(id).set({planActivo:false,visible:false},{merge:true});toast('Bloqueado');load();loadUsers();};
-async function loadSoporte(filtro='todos'){
-const ul=$('sList');ul.innerHTML='<li class="item">Cargando soporte...</li>';
+async function loadPagos(){
+const ul=$('pagosList');
+ul.innerHTML='<li class="item">Cargando...</li>';
 try{
-let q=db.collection('soporte').orderBy('ts','desc').limit(120);
-if(filtro!=='todos'){q=db.collection('soporte').where('origen','==',filtro).orderBy('ts','desc').limit(120);}
-const s=await q.get();
-if(s.empty){ul.innerHTML='<li class="item">Sin mensajes</li>';return;}
+const snap=await db.collection('solicitudes').where('estado','==','pendiente').orderBy('ts','desc').limit(100).get();
+if(snap.empty){ul.innerHTML='<li class="item">No hay pagos ✅</li>';return;}
 ul.innerHTML='';
-s.forEach(d=>{
-const x=d.data();
-const esLocal=x.origen==='local';
-const color=esLocal?'#a855f7':'#22c55e';
-const label=esLocal?'🟣 LOCAL':'🟢 CLIENTE';
-const nombre=x.nombreCliente||x.nombreLocal||x.nombre||x.emailCliente||x.email||x.clienteNombre||'Sin nombre';
-const mensaje=x.mensaje||x.msg||x.comentario||'Sin mensaje';
-const imagen=x.imagen||x.archivo||'';
-const img=imagen?`<br><img src="${imagen}" style="max-width:220px;border-radius:12px;margin-top:8px;border:2px solid ${color}">`:'';
-const fechaProb=x.fechaProblema||'-';const horaProb=x.horaProblema||'-';
-const fechaEnv=x.fechaEnvio||x.fechaHoraEnvio||'';
-const localInfo=x.nombreLocal||x.datosLocalCompleto?.localNombre||x.localData?.localNombre||'';
-const cliInfo=x.emailCliente||x.whatsappCliente||x.clienteData?.whats||'';
-const resInfo=x.reservaData?`<div style="font-size:11px;background:#0003;padding:6px;border-radius:8px;margin-top:6px">Reserva: ${x.reservaData.fechaHora||''} ${x.reservaData.servicio||''} $${x.reservaData.precio||''}</div>`:'';
-const cliData=x.clienteData||x.perfilCompleto?`<div style="font-size:11px;background:#22c55e22;padding:6px;border-radius:8px;margin-top:6px;border:1px solid #22c55e55">Cliente: ${x.clienteData?.nombre||x.perfilCompleto?.nombre||''} ${cliInfo} DNI:${x.clienteData?.dni||''}</div>`:'';
-const locData=x.localData||x.datosLocalCompleto?`<div style="font-size:11px;background:#a855f722;padding:6px;border-radius:8px;margin-top:6px;border:1px solid #a855f755">Local: ${localInfo} ${x.localData?.telefono||x.datosLocalCompleto?.telefono||''}</div>`:'';
-const li=document.createElement('li');li.className='item';li.style.borderLeft=`4px solid ${color}`;li.style.flexDirection='column';li.style.alignItems='flex-start';
-li.innerHTML=`<div style="width:100%"><div style="display:flex;gap:6px;flex-wrap:wrap"><b style="color:${color}">${label}</b><span class="pill">${x.tipo||x.tipoLocal||'consulta'}</span><span class="pill" style="background:${color}22">${fechaProb} ${horaProb}</span></div><div style="margin-top:6px"><b style="font-size:14px;color:#fff">${nombre}</b> <span style="font-size:11px;color:#cfc9e6">${localInfo?'- Local: '+localInfo:''}</span></div><div style="font-size:12px;color:#cfc9e6">Envio: ${fechaEnv} ${x.horaEnvio||''}</div><div style="font-size:13px;margin-top:8px;background:#fff1;padding:8px;border-radius:10px;border:1px solid ${color}55">${mensaje}${img}</div>${cliData}${locData}${resInfo}</div><div style="width:100%;display:flex;gap:6px;margin-top:8px"><button class="btn small ghost" onclick="delSoporte('${d.id}')">Borrar</button></div>`;
+snap.forEach(doc=>{
+const x=doc.data();
+const cfgExtra=all.find(a=>a.id===x.uid)||{};
+const comp=x.comprobante||x.comprobanteBase64||x.imagen||'';
+const compHtml=comp?`<img src="${comp}" style="width:100%;max-width:380px;border-radius:14px;border:2px solid #facc15;cursor:pointer;margin-top:8px" onclick="window.open('${comp}','_blank')"><div style="font-size:11px;color:#facc15;margin-top:4px">📎 ${x.comprobanteNombre||'comprobante'} - ${x.metodoPago||''} - Click ampliar</div>`:`<div class="pill" style="background:#ef444433;margin-top:8px">Sin comprobante - ${x.metodoPago||'Sin metodo'}</div>`;
+const li=document.createElement('li');
+li.className='item';
+li.style.flexDirection='column';
+li.style.alignItems='flex-start';
+li.style.border='1px solid #facc15';
+li.innerHTML=`<div style="width:100%"><div style="display:flex;justify-content:space-between;flex-wrap:wrap"><b style="font-size:15px">${x.nombreLocal||cfgExtra.nombre||cfgExtra.localNombre||'Local sin nombre'}</b><span class="pill" style="background:#facc15;color:#000">${x.plan||cfgExtra.plan||''} $${x.precio||''}</span></div><div style="background:#00000044;border-radius:10px;padding:8px;margin-top:8px;font-size:12px;line-height:1.5"><div>🏪 <b>Local:</b> ${x.nombreLocal||cfgExtra.localNombre||cfgExtra.nombre||'-'}</div><div>📧 <b>Email:</b> ${x.email||cfgExtra.email||'-'}</div><div>🆔 <b>UID:</b> ${x.uid||'-'}</div><div>📱 <b>Tel:</b> ${cfgExtra.telefono||cfgExtra.tel||x.telefono||'-'}</div><div>📍 <b>Dir:</b> ${cfgExtra.direccion||'-'}</div><div>💳 <b>Metodo:</b> ${x.metodoPago||'-'} | <b>Estado:</b> ${x.estado||'-'}</div><div>📅 <b>Solicitado:</b> ${x.creado?new Date(x.creado.seconds*1000).toLocaleString('es-AR'):''}</div></div></div>${compHtml}<div style="display:flex;gap:6px;margin-top:10px"><button class="btn small" style="background:#22c55e" onclick="aprobarPago('${doc.id}','${x.uid}','${x.plan}')">Aprobar 30d</button><button class="btn small ghost" onclick="rechazarPago('${doc.id}','${x.uid}')">Rechazar</button><button class="btn small ghost" onclick="verFicha('${x.uid}')">Ver ficha</button></div>`;
 ul.appendChild(li);
 });
-}catch(e){ul.innerHTML='<li class="item">Error: '+e.message+' (crea indice ts+origen)</li>';}
+}catch(e){
+try{
+const snap2=await db.collection('solicitudes').where('estado','==','pendiente').limit(100).get();
+if(snap2.empty){$('pagosList').innerHTML='<li class="item">No hay pagos ✅</li>';return;}
+$('pagosList').innerHTML='';
+snap2.forEach(doc=>{
+const x=doc.data();
+const cfgExtra=all.find(a=>a.id===x.uid)||{};
+const comp=x.comprobante||'';
+const compHtml=comp?`<img src="${comp}" style="width:100%;max-width:380px;border-radius:14px;border:2px solid #facc15;margin-top:8px">`:`<div class="pill" style="background:#ef444433">Sin comprobante</div>`;
+const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.innerHTML=`<div><b>${x.nombreLocal||cfgExtra.localNombre||''}</b> UID:${x.uid||''} ${x.plan||''} $${x.precio||''}<div style="font-size:11px">Tel:${cfgExtra.telefono||''} Email:${x.email||''}</div></div>${compHtml}<div style="display:flex;gap:6px;margin-top:8px"><button class="btn small" style="background:#22c55e" onclick="aprobarPago('${doc.id}','${x.uid}','${x.plan}')">Aprobar</button><button class="btn small ghost" onclick="rechazarPago('${doc.id}','${x.uid}')">Rechazar</button></div>`;$('pagosList').appendChild(li);
+});
+}catch(e2){$('pagosList').innerHTML='<li class="item">Error: '+e2.message+'</li>';}
 }
-window.delSoporte=async id=>{if(confirm('Borrar?')){await db.collection('soporte').doc(id).delete();toast('Borrado');loadSoporte('todos');}};
-$('bus').oninput=e=>{const q=e.target.value.toLowerCase();if(q.trim()===''){filtroKpiActual='todos';renderLocalesFiltrados();return;}const f=all.filter(l=>(l.nombre||'').toLowerCase().includes(q)||(l.email||'').toLowerCase().includes(q));const g=$('grid');g.innerHTML='';f.forEach(l=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<b>${l.nombre||'Local'}</b><div style="margin-top:8px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button> <button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;g.appendChild(d);});};
-$('busUsers').oninput=e=>{const q=e.target.value.toLowerCase();$('uList').querySelectorAll('li').forEach(li=>{li.style.display=li.textContent.toLowerCase().includes(q)?'flex':'none';});};
-$('btnGuardarTarifas').onclick=async()=>{const data={base:{nombre:$('pBaseNombre').value,limite:Number($('pBaseLim').value),precio:Number($('pBasePrecio').value)},medio:{nombre:$('pMedioNombre').value,limite:Number($('pMedioLim').value),precio:Number($('pMedioPrecio').value)},premium:{nombre:$('pPremNombre').value,limite:Number($('pPremLim').value),precio:Number($('pPremPrecio').value)},updated:firebase.firestore.FieldValue.serverTimestamp()};await db.collection('config').doc('planes').set(data,{merge:true});$('tarifaMsg').textContent='Guardado';toast('Tarifas');};
-$('btnGuardarHoras').onclick=async()=>{const h=Number($('horasPlan').value)||48;await db.collection('config').doc('adm').set({horasPlan:h},{merge:true});cfg.horasPlan=h;$('ajMsg').textContent='Guardado';load();};
-$('btnGuardarCobrosJona').onclick=async()=>{await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value.trim(),cbu:$('jonaCbu').value.trim(),titular:$('jonaTitular').value.trim(),whatsapp:$('jonaWsp').value.trim(),instrucciones:$('jonaInstr').value.trim(),actualizado:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});$('msgCobrosJona').textContent='Guardado';toast('Cobros');};
+}
+$('btnReloadPagos').onclick=loadPagos;
+window.aprobarPago=async(solicId,uid,plan)=>{if(!confirm('Aprobar 30 dias?'))return;const vence=new Date();vence.setDate(vence.getDate()+30);await db.collection('config').doc(uid).set({plan:plan,planActivo:true,visible:true,planVence:firebase.firestore.Timestamp.fromDate(vence),plan_estado:'aprobado',trialUsado:true},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'aprobado',aprobado_en:firebase.firestore.FieldValue.serverTimestamp()});toast('Aprobado 30d');loadPagos();load();};
+window.rechazarPago=async(solicId,uid)=>{if(!confirm('Rechazar?'))return;await db.collection('config').doc(uid).set({planActivo:false,visible:false,plan_estado:'rechazado'},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'rechazado'});toast('Rechazado');loadPagos();load();};
+window.activar48=async id=>{const vence=new Date();vence.setHours(vence.getHours()+48);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(vence),planActivo:true,visible:true},{merge:true});toast('48hs');load();};
+window.darPromo=async(id,dias)=>{const motivo=prompt(`Dar ${dias} dias - Motivo:`,dias==30?'Gentileza':'Promo');if(motivo===null)return;const hasta=new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Promo ${dias}d`);load();};
+window.darCustom=async(id)=>{const inp=prompt('Cuantos dias custom?');if(inp===null)return;const dias=Number(inp);if(isNaN(dias)||dias<=0){toast('Numero invalido');return;}const motivo=prompt(`Dar ${dias} dias - Motivo:`,'Custom');if(motivo===null)return;const hasta=new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Custom ${dias}d`);load();};
+window.verFicha=async id=>{try{const doc=await db.collection('config').doc(id).get();if(!doc.exists){toast('No existe');return;}const d=doc.data();selectedUid=id;$('modalTitle').textContent=d.localNombre||d.nombre||'Ficha';$('modalBody').innerHTML=`<div>Nombre: ${d.localNombre||d.nombre||'-'}</div><div>Email: ${d.email||'-'}</div><div>Tel: ${d.telefono||d.tel||'-'}</div><div>Dir: ${d.direccion||'-'}</div><div>Plan: ${d.plan||'-'}</div><div>Vence: ${fmtVence(d)}</div><div>Activo: ${estaActivo(d)?'Si':'No'}</div><div>UID: ${id}</div><div>TrialUsado: ${d.trialUsado?'Si':'No'}</div>`;$('userModal').classList.remove('hidden');}catch(e){toast(e.message);}};
+$('modalClose').onclick=()=>{$('userModal').classList.add('hidden');};
+$('modalBloq').onclick=async()=>{if(!selectedUid)return;if(!confirm('Bloquear local?'))return;await db.collection('config').doc(selectedUid).set({bloqueado:true,planActivo:false,visible:false},{merge:true});toast('Bloqueado');$('userModal').classList.add('hidden');load();};
+async function loadSoporte(tipo){
+const ul=$('sList');ul.innerHTML='<li class="item">Cargando...</li>';
+try{
+let q=db.collection('soporte').orderBy('ts','desc').limit(100);
+if(tipo==='local')q=db.collection('soporte').where('origen','==','local').orderBy('ts','desc').limit(100);
+if(tipo==='cliente')q=db.collection('soporte').where('origen','==','cliente').orderBy('ts','desc').limit(100);
+const snap=await q.get();
+ul.innerHTML='';
+snap.forEach(doc=>{
+const x=doc.data();
+const esLocal=x.origen==='local';
+const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.style.border=esLocal?'1px solid #a855f7':'1px solid #22c55e';
+li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b style="color:${esLocal?'#a855f7':'#22c55e'}">${esLocal?'LOCAL':'CLIENTE'}</b><span class="pill">${x.tipo||''}</span></div><div style="font-size:12px;margin:6px 0">${x.mensaje||x.comentario||''}</div><div style="font-size:11px;color:#cfc9e6">${x.nombreLocal||x.nombreCliente||''} - ${x.email||''} UID:${x.uidLocal||x.uidCliente||''}</div>${x.imagen?`<img src="${x.imagen}" style="max-width:200px;border-radius:10px;margin-top:6px">`:''}<div style="display:flex;gap:6px;margin-top:8px"><button class="btn small ghost" onclick="borrarSoporte('${doc.id}')">Borrar</button></div>`;
+ul.appendChild(li);
+});
+if(snap.empty)ul.innerHTML='<li class="item">Sin soporte</li>';
+}catch(e){$('sList').innerHTML='<li class="item">Error: '+e.message+'</li>';}
+}
+window.borrarSoporte=async id=>{if(!confirm('Borrar?'))return;await db.collection('soporte').doc(id).delete();toast('Borrado');loadSoporte('todos');};
+async function loadUsers(){
+const ul=$('uList');ul.innerHTML='<li class="item">Cargando...</li>';
+try{
+let snap=await db.collection('users').limit(200).get();
+if(snap.empty)snap=await db.collection('config').limit(200).get();
+ul.innerHTML='';
+snap.forEach(d=>{
+if(['cobros','planes','adm','branding'].includes(d.id))return;
+const x=d.data();
+const cfgData=all.find(a=>a.id==d.id)||{};
+const activo=estaActivo(cfgData);
+const li=document.createElement('li');li.className='item';
+li.innerHTML=`<div><b>${x.nombre||cfgData.nombre||d.id.substring(0,12)}</b><div style="font-size:11px;color:#cfc9e6">${x.email||cfgData.email||''} - ${cfgData.plan||'-'} - ${activo?'ACTIVO':'VENCIDO'}</div><div style="font-size:10px">UID:${d.id}</div></div><div style="display:flex;gap:6px"><button class="btn small ghost" onclick="verFicha('${d.id}')">Ver</button><button class="btn small ghost" onclick="bloquearUser('${d.id}')">Bloquear</button></div>`;
+ul.appendChild(li);
+});
+}catch(e){$('uList').innerHTML='<li class="item">Error: '+e.message+'</li>';}
+}
+window.bloquearUser=async id=>{if(!confirm('Bloquear?'))return;await db.collection('config').doc(id).set({bloqueado:true,planActivo:false,visible:false},{merge:true});toast('Bloqueado');loadUsers();load();};
+$('reload').onclick=load;
+$('reloadUsers').onclick=loadUsers;
+$('bus').oninput=()=>{const q=$('bus').value.toLowerCase();const g=$('grid');if(!g)return;Array.from(g.children).forEach(ch=>{ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'});};
+$('busUsers').oninput=()=>{const q=$('busUsers').value.toLowerCase();Array.from($('uList').children).forEach(ch=>{ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'});};
+$('btnGuardarTarifas').onclick=async()=>{
+const base={nombre:$('pBaseNombre').value,limite:Number($('pBaseLim').value),precio:Number($('pBasePrecio').value)};
+const medio={nombre:$('pMedioNombre').value,limite:Number($('pMedioLim').value),precio:Number($('pMedioPrecio').value)};
+const premium={nombre:$('pPremNombre').value,limite:Number($('pPremLim').value),precio:Number($('pPremPrecio').value)};
+await db.collection('config').doc('planes').set({base,medio,premium},{merge:true});
+$('tarifaMsg').textContent='Guardado';toast('Tarifas guardadas');
+};
+$('btnGuardarCobrosJona').onclick=async()=>{
+await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value,cbu:$('jonaCbu').value,titular:$('jonaTitular').value,whatsapp:$('jonaWsp').value,instrucciones:$('jonaInstr').value},{merge:true});
+$('msgCobrosJona').textContent='Guardado';toast('Cobros guardados');
+};
+$('btnGuardarHoras').onclick=async()=>{
+await db.collection('config').doc('adm').set({horasPlan:Number($('horasPlan').value||48)},{merge:true});
+$('ajMsg').textContent='Guardado';toast('Horas guardadas');load();
+};
 </script>
 </body>
 </html>
