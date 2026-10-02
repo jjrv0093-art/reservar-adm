@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>reservAR ADM FIX</title>
+<title>reservAR ADM</title>
 <style>
 :root{--stroke:#ffffff20}
 *{box-sizing:border-box}
@@ -37,7 +37,6 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 <body>
 <section id="auth" style="max-width:400px;margin:60px auto;background:#ffffff12;border:1px solid var(--stroke);border-radius:20px;padding:20px">
 <div class="brand" style="font-size:22px">reservAR ADM</div>
-<div style="color:#d9ccff;font-size:12px;margin-bottom:14px">Acceso superadmin</div>
 <input id="email" value="jjrv.0093@gmail.com">
 <input id="password" type="password" placeholder="Contraseña" style="margin-top:8px">
 <p id="err" style="color:#fca5a5;min-height:18px"></p>
@@ -45,9 +44,9 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 </section>
 <section id="app" class="hidden">
 <div class="topbar">
-<div class="brand">reservAR ADM FIX</div>
+<div class="brand">reservAR ADM</div>
 <div style="display:flex;gap:8px">
-<span class="pill">Trial unico + Bloqueo real</span>
+<span class="pill">ADM</span>
 <button id="logout" class="btn small ghost">Salir</button>
 </div>
 </div>
@@ -62,123 +61,50 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 <button class="tab" data-s="ajustes">Ajustes</button>
 </div>
 <div id="dash" class="screen active">
-<div class="card">
-<h3 id="sal">Hola</h3>
-<div id="kpis" style="display:flex;gap:8px;flex-wrap:wrap"></div>
-<p style="font-size:11px;color:#d9ccff;margin-top:8px">Toca Total / Activos / Vencidos para filtrar locales</p>
-</div>
-<div class="card">
-<h3>Resumen</h3>
-<div id="resumen"></div>
-</div>
+<div class="card"><h3 id="sal">Hola</h3><div id="kpis" style="display:flex;gap:8px;flex-wrap:wrap"></div></div>
+<div class="card"><h3>Resumen</h3><div id="resumen"></div></div>
 </div>
 <div id="pagos" class="screen">
 <div class="card" style="border:2px solid #facc15">
-<h3>💸 Solicitudes Pendientes</h3>
-<button id="btnReloadPagos" class="btn small ghost" style="margin-top:8px">Recargar pagos</button>
+<h3>💸 Solicitudes</h3>
+<button id="btnReloadPagos" class="btn small ghost" style="margin-top:8px">Recargar</button>
 <ul id="pagosList" class="list" style="margin-top:12px"></ul>
 </div>
 </div>
 <div id="planes" class="screen">
 <div class="card">
-<div style="display:flex;gap:8px">
-<input id="bus" placeholder="Buscar local...">
-<button id="reload" class="btn small ghost">Recargar</button>
-<button class="btn small ghost" onclick="filtrarKpi('todos')">Todos</button>
-</div>
+<div style="display:flex;gap:8px"><input id="bus" placeholder="Buscar..."><button id="reload" class="btn small ghost">Recargar</button><button class="btn small ghost" onclick="filtrarKpi('todos')">Todos</button></div>
 <div id="grid" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px"></div>
 </div>
 </div>
 <div id="tarifas" class="screen">
 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
-<div class="card">
-<b>Básico</b>
-<label>Nombre</label>
-<input id="pBaseNombre">
-<label>Limite/mes</label>
-<input id="pBaseLim" type="number">
-<label>Precio $</label>
-<input id="pBasePrecio" type="number">
+<div class="card"><b>Básico</b><label>Nombre</label><input id="pBaseNombre"><label>Limite</label><input id="pBaseLim" type="number"><label>Precio</label><input id="pBasePrecio" type="number"></div>
+<div class="card"><b>Medio</b><label>Nombre</label><input id="pMedioNombre"><label>Limite</label><input id="pMedioLim" type="number"><label>Precio</label><input id="pMedioPrecio" type="number"></div>
+<div class="card"><b>Premium</b><label>Nombre</label><input id="pPremNombre"><label>Limite</label><input id="pPremLim" type="number"><label>Precio</label><input id="pPremPrecio" type="number"></div>
 </div>
-<div class="card">
-<b>Medio</b>
-<label>Nombre</label>
-<input id="pMedioNombre">
-<label>Limite</label>
-<input id="pMedioLim" type="number">
-<label>Precio $</label>
-<input id="pMedioPrecio" type="number">
+<div class="card"><button id="btnGuardarTarifas" class="btn">Guardar</button><span id="tarifaMsg" style="color:#86efac;margin-left:8px"></span></div>
 </div>
-<div class="card">
-<b>Premium</b>
-<label>Nombre</label>
-<input id="pPremNombre">
-<label>Limite</label>
-<input id="pPremLim" type="number">
-<label>Precio $</label>
-<input id="pPremPrecio" type="number">
-</div>
-</div>
-<div class="card">
-<button id="btnGuardarTarifas" class="btn">Guardar tarifas</button>
-<span id="tarifaMsg" style="color:#86efac;margin-left:8px"></span>
-</div>
-</div>
-  <div id="soporte" class="screen">
+<div id="soporte" class="screen">
 <div class="card" style="border:2px solid #a855f7">
-<h3>Soporte Local vs Cliente</h3>
-<div style="display:flex;gap:6px;margin-bottom:10px">
-<button class="btn small ghost" onclick="loadSoporte('todos')">Todos</button>
-<button class="btn small" style="background:#a855f7" onclick="loadSoporte('local')">Locales</button>
-<button class="btn small" style="background:#22c55e" onclick="loadSoporte('cliente')">Clientes</button>
-</div>
+<h3>Soporte</h3>
+<div style="display:flex;gap:6px;margin-bottom:10px"><button class="btn small ghost" onclick="loadSoporte('todos')">Todos</button><button class="btn small" style="background:#a855f7" onclick="loadSoporte('local')">Locales</button><button class="btn small" style="background:#22c55e" onclick="loadSoporte('cliente')">Clientes</button></div>
 <ul id="sList" class="list"></ul>
 </div>
 </div>
 <div id="users" class="screen">
-<div class="card">
-<h3>Usuarios</h3>
-<div style="display:flex;gap:8px;margin-bottom:12px">
-<input id="busUsers" placeholder="Buscar usuario...">
-<button id="reloadUsers" class="btn small ghost">Recargar</button>
-</div>
-<ul id="uList" class="list"></ul>
-</div>
+<div class="card"><h3>Usuarios</h3><div style="display:flex;gap:8px;margin-bottom:12px"><input id="busUsers" placeholder="Buscar..."><button id="reloadUsers" class="btn small ghost">Recargar</button></div><ul id="uList" class="list"></ul></div>
 </div>
 <div id="ajustes" class="screen">
 <div class="card" style="border:2px solid #facc15">
-<h3>💸 MIS DATOS DE COBRO</h3>
-<label>Alias</label>
-<input id="jonaAlias">
-<label>CBU</label>
-<input id="jonaCbu">
-<label>Titular</label>
-<input id="jonaTitular">
-<label>WhatsApp</label>
-<input id="jonaWsp">
-<label>Instrucciones</label>
-<textarea id="jonaInstr"></textarea>
-<button id="btnGuardarCobrosJona" class="btn" style="margin-top:10px">Guardar mis datos</button>
-<span id="msgCobrosJona" style="color:#86efac"></span>
+<h3>Datos de cobro</h3><label>Alias</label><input id="jonaAlias"><label>CBU</label><input id="jonaCbu"><label>Titular</label><input id="jonaTitular"><label>WhatsApp</label><input id="jonaWsp"><label>Instrucciones</label><textarea id="jonaInstr"></textarea><button id="btnGuardarCobrosJona" class="btn" style="margin-top:10px">Guardar</button><span id="msgCobrosJona" style="color:#86efac"></span>
 </div>
-<div class="card">
-<h3>Horas de gracia</h3>
-<input id="horasPlan" type="number" value="48" style="max-width:200px">
-<button id="btnGuardarHoras" class="btn small" style="margin-top:8px">Guardar</button>
-<span id="ajMsg" style="color:#86efac"></span>
-</div>
+<div class="card"><h3>Gracia</h3><input id="horasPlan" type="number" value="48" style="max-width:200px"><button id="btnGuardarHoras" class="btn small" style="margin-top:8px">Guardar</button><span id="ajMsg" style="color:#86efac"></span></div>
 </div>
 </div>
 </section>
 <div id="userModal" style="position:fixed;inset:0;background:#0009;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px" class="hidden">
-<div class="card" style="max-width:500px;width:100%;background:#1a1033">
-<h3 id="modalTitle">Ficha</h3>
-<div id="modalBody" style="font-size:13px;line-height:1.6"></div>
-<div style="display:flex;gap:8px;margin-top:14px">
-<button id="modalClose" class="btn ghost">Cerrar</button>
-<button id="modalBloq" class="btn small ghost">Bloquear real</button>
-</div>
-</div>
+<div class="card" style="max-width:500px;width:100%;background:#1a1033"><h3 id="modalTitle">Ficha</h3><div id="modalBody" style="font-size:13px;line-height:1.6"></div><div style="display:flex;gap:8px;margin-top:14px"><button id="modalClose" class="btn ghost">Cerrar</button><button id="modalBloq" class="btn small ghost">Bloquear</button></div></div>
 </div>
 <div id="toast" class="toast hidden"></div>
 <script>
@@ -197,10 +123,7 @@ let selectedUid=null;
 let filtroKpiActual='todos';
 auth.onAuthStateChanged(async u=>{
 if(!u){$('auth').classList.remove('hidden');$('app').classList.add('hidden');return;}
-try{
-const udoc=await db.collection('users').doc(u.uid).get();
-if(!udoc.exists||udoc.data().rol!=='superadmin'){toast('No sos superadmin');await auth.signOut();return;}
-}catch(e){toast('Error rol: '+e.message);await auth.signOut();return;}
+try{const udoc=await db.collection('users').doc(u.uid).get();if(!udoc.exists||udoc.data().rol!=='superadmin'){toast('No autorizado');await auth.signOut();return;}}catch(e){toast(e.message);await auth.signOut();return;}
 $('auth').classList.add('hidden');$('app').classList.remove('hidden');$('sal').textContent='Hola '+u.email;
 try{
 const c=await db.collection('config').doc('adm').get();if(c.exists){cfg=c.data();$('horasPlan').value=cfg.horasPlan||48;}
@@ -214,30 +137,31 @@ function getVenceDate(l){if(!l)return null;const pv=l.planVence||l;if(!pv)return
 function estaActivo(l){if(!l)return false;if(l.bloqueado===true)return false;if(l.planActivo===false)return false;if(l.visible===false)return false;const v=getVenceDate(l);if(!v)return true;return (new Date()-v)/36e5<=(cfg.horasPlan||48);}
 function fmtVence(l){const d=getVenceDate(l);if(!d)return '-';return d.toLocaleDateString('es-AR');}
 function esc(t){if(!t)return '';return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-async function load(){try{const s=await db.collection('config').get();all=s.docs.filter(d=>!['cobros','planes','adm','branding'].includes(d.id)).map(d=>({id:d.id,...d.data()}));const activos=all.filter(estaActivo).length;$('kpis').innerHTML=`<span class="pill click" onclick="filtrarKpi('todos')" style="background:#ffffff22">Total ${all.length}</span><span class="pill click" onclick="filtrarKpi('activos')" style="background:#22c55e33">Activos ${activos}</span><span class="pill click" onclick="filtrarKpi('vencidos')" style="background:#ef444433">Vencidos ${all.length-activos}</span>`;$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs - Trial 30d unico por local</span>`;renderLocalesFiltrados();}catch(e){toast(e.message);}}
+function tsToDate(t){if(!t)return 0;if(t.toDate)return t.toDate().getTime();if(t.seconds)return t.seconds*1000;const d=new Date(t);return isNaN(d.getTime())?0:d.getTime();}
+async function load(){try{const s=await db.collection('config').get();all=s.docs.filter(d=>!['cobros','planes','adm','branding'].includes(d.id)).map(d=>({id:d.id,...d.data()}));const activos=all.filter(estaActivo).length;$('kpis').innerHTML=`<span class="pill click" onclick="filtrarKpi('todos')" style="background:#ffffff22">Total ${all.length}</span><span class="pill click" onclick="filtrarKpi('activos')" style="background:#22c55e33">Activos ${activos}</span><span class="pill click" onclick="filtrarKpi('vencidos')" style="background:#ef444433">Vencidos ${all.length-activos}</span>`;$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span>`;renderLocalesFiltrados();}catch(e){toast(e.message);}}
 window.filtrarKpi=tipo=>{filtroKpiActual=tipo;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelector('[data-s="planes"]').classList.add('active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$('planes').classList.add('active');renderLocalesFiltrados();};
-function renderLocalesFiltrados(){let lista=[...all];if(filtroKpiActual==='activos')lista=all.filter(estaActivo);if(filtroKpiActual==='vencidos')lista=all.filter(l=>!estaActivo(l));const g=$('grid');if(!g)return;g.innerHTML='';if(!lista.length){g.innerHTML=`<div class="card">Sin locales en ${filtroKpiActual}</div>`;return;}lista.forEach(l=>{const vence=fmtVence(l);const a=estaActivo(l);const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${esc(l.promoMotivo||'PROMO')} ${esc(l.promoHasta||vence)}</span>`:'';const trialBadge=l.trialUsado?`<span class="pill" style="background:#a855f733">Trial usado</span>`:`<span class="pill" style="background:#22c55e33">Trial 30d</span>`;const logo=l.logoUrl?`<img src="${esc(l.logoUrl)}" style="width:40px;height:40px;border-radius:12px;object-fit:cover">`:'';const d=document.createElement('div');d.className='card';d.innerHTML=`<div style="display:flex;justify-content:space-between"><div style="display:flex;gap:8px;align-items:center">${logo}<b>${esc(l.nombre||l.localNombre||'Local')}</b></div><span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}${l.bloqueado?' BLOQ':''}</span></div><div style="font-size:12px;color:#cfc9e6;margin:8px 0">${esc(l.email||'')} - ${esc(l.plan||'Basico')} ${promo} ${trialBadge}</div><div style="font-size:12px;margin-bottom:8px">Vence: ${esc(vence)}</div><div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button><button class="btn small ghost" onclick="darPromo('${l.id}',7)">+7</button><button class="btn small ghost" onclick="darPromo('${l.id}',15)">+15</button><button class="btn small ghost" onclick="darPromo('${l.id}',30)">+30</button><button class="btn small ghost" style="background:#fff;color:#000;font-weight:900" onclick="darCustom('${l.id}')">+N</button><button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;g.appendChild(d);});}
-async function loadPagos(){const ul=$('pagosList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('solicitudes').where('estado','==','pendiente').orderBy('ts','desc').limit(100).get();if(snap.empty){ul.innerHTML='<li class="item">No hay pagos ✅</li>';return;}ul.innerHTML='';for(const doc of snap.docs){const x=doc.data();let cfgExtra=all.find(a=>a.id===x.uid)||{};if(!cfgExtra.email){try{const cdoc=await db.collection('config').doc(x.uid).get();if(cdoc.exists)cfgExtra=cdoc.data();}catch(e){}}const comp=x.comprobante||x.comprobanteBase64||x.imagen||'';const compHtml=comp?`<img data-comp="${esc(comp).substring(0,200)}" style="width:100%;max-width:380px;border-radius:14px;border:2px solid #facc15;margin-top:8px;cursor:pointer" class="imgComp"><div style="font-size:11px;color:#facc15;margin-top:4px">📎 ${esc(x.comprobanteNombre||'comprobante')} - ${esc(x.metodoPago||'')}</div>`:`<div class="pill" style="background:#ef444433;margin-top:8px">Sin comprobante - ${esc(x.metodoPago||'')}</div>`;const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.style.border='1px solid #facc15';li.innerHTML=`<div style="width:100%"><div style="display:flex;justify-content:space-between;flex-wrap:wrap"><b style="font-size:15px">${esc(x.nombreLocal||cfgExtra.nombre||cfgExtra.localNombre||'Local')}</b><span class="pill" style="background:#facc15;color:#000">${esc(x.plan||cfgExtra.plan||'')} $${esc(String(x.precio||''))}</span></div><div style="background:#00000044;border-radius:10px;padding:8px;margin-top:8px;font-size:12px;line-height:1.5"><div>📧 ${esc(x.email||cfgExtra.email||'-')}</div><div>🆔 ${esc(x.uid||'-')}</div><div>📱 ${esc(cfgExtra.telefono||cfgExtra.tel||x.telefono||'-')}</div><div>📍 ${esc(cfgExtra.direccion||'-')}</div><div>💳 ${esc(x.metodoPago||'-')}</div></div></div>${compHtml}<div style="display:flex;gap:6px;margin-top:10px"><button class="btn small" style="background:#22c55e">Aprobar 30d</button><button class="btn small ghost">Rechazar</button></div>`;const btns=li.querySelectorAll('button');btns[0].onclick=()=>aprobarPago(doc.id,x.uid,x.plan);btns[1].onclick=()=>rechazarPago(doc.id,x.uid);const img=li.querySelector('.imgComp');if(img&&comp){img.onclick=()=>{const w=window.open();if(w){w.document.write(`<img src="${comp}" style="max-width:100%">`);}};}ul.appendChild(li);}}catch(e){$('pagosList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}}
+function renderLocalesFiltrados(){let lista=[...all];if(filtroKpiActual==='activos')lista=all.filter(estaActivo);if(filtroKpiActual==='vencidos')lista=all.filter(l=>!estaActivo(l));const g=$('grid');if(!g)return;g.innerHTML='';if(!lista.length){g.innerHTML=`<div class="card">Sin locales</div>`;return;}lista.forEach(l=>{const vence=fmtVence(l);const a=estaActivo(l);const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${esc(l.promoMotivo||'PROMO')} ${esc(l.promoHasta||vence)}</span>`:'';const trialBadge=l.trialUsado?`<span class="pill" style="background:#a855f733">Trial usado</span>`:`<span class="pill" style="background:#22c55e33">Trial</span>`;const logo=l.logoUrl?`<img src="${esc(l.logoUrl)}" style="width:40px;height:40px;border-radius:12px;object-fit:cover">`:'';const d=document.createElement('div');d.className='card';d.innerHTML=`<div style="display:flex;justify-content:space-between"><div style="display:flex;gap:8px;align-items:center">${logo}<b>${esc(l.nombre||l.localNombre||'Local')}</b></div><span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}${l.bloqueado?' BLOQ':''}</span></div><div style="font-size:12px;color:#cfc9e6;margin:8px 0">${esc(l.email||'')} - ${esc(l.plan||'')} ${promo} ${trialBadge}</div><div style="font-size:12px;margin-bottom:8px">Vence: ${esc(vence)}</div><div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button><button class="btn small ghost" onclick="darPromo('${l.id}',7)">+7</button><button class="btn small ghost" onclick="darPromo('${l.id}',15)">+15</button><button class="btn small ghost" onclick="darPromo('${l.id}',30)">+30</button><button class="btn small ghost" style="background:#fff;color:#000;font-weight:900" onclick="darCustom('${l.id}')">+N</button><button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;g.appendChild(d);});}
+async function loadPagos(){const ul=$('pagosList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('solicitudes').where('estado','==','pendiente').limit(100).get();if(snap.empty){ul.innerHTML='<li class="item">No hay pagos</li>';return;}let docs=snap.docs.map(d=>({id:d.id,...d.data()}));docs.sort((a,b)=>tsToDate(b.ts)-tsToDate(a.ts));ul.innerHTML='';for(const x of docs){let cfgExtra=all.find(a=>a.id===x.uid)||{};if(!cfgExtra.email){try{const cdoc=await db.collection('config').doc(x.uid).get();if(cdoc.exists)cfgExtra=cdoc.data();}catch(e){}}const comp=x.comprobante||x.comprobanteBase64||x.imagen||'';const compHtml=comp?`<img style="width:100%;max-width:380px;border-radius:14px;border:2px solid #facc15;margin-top:8px;cursor:pointer" class="imgComp"><div style="font-size:11px;color:#facc15;margin-top:4px">📎 ${esc(x.comprobanteNombre||'')} - ${esc(x.metodoPago||'')}</div>`:`<div class="pill" style="background:#ef444433;margin-top:8px">Sin comprobante</div>`;const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.style.border='1px solid #facc15';li.innerHTML=`<div style="width:100%"><div style="display:flex;justify-content:space-between;flex-wrap:wrap"><b style="font-size:15px">${esc(x.nombreLocal||cfgExtra.nombre||cfgExtra.localNombre||'Local')}</b><span class="pill" style="background:#facc15;color:#000">${esc(x.plan||cfgExtra.plan||'')} $${esc(String(x.precio||''))}</span></div><div style="background:#00000044;border-radius:10px;padding:8px;margin-top:8px;font-size:12px;line-height:1.5"><div>📧 ${esc(x.email||cfgExtra.email||'-')}</div><div>🆔 ${esc(x.uid||'-')}</div><div>📱 ${esc(cfgExtra.telefono||cfgExtra.tel||x.telefono||'-')}</div><div>📍 ${esc(cfgExtra.direccion||'-')}</div><div>💳 ${esc(x.metodoPago||'-')}</div></div></div>${compHtml}<div style="display:flex;gap:6px;margin-top:10px"><button class="btn small" style="background:#22c55e">Aprobar</button><button class="btn small ghost">Rechazar</button></div>`;const btns=li.querySelectorAll('button');btns[0].onclick=()=>aprobarPago(x.id,x.uid,x.plan);btns[1].onclick=()=>rechazarPago(x.id,x.uid);const img=li.querySelector('.imgComp');if(img&&comp){img.src=comp;img.onclick=()=>{const w=window.open();if(w){w.document.write(`<img src="${comp}" style="max-width:100%">`);}};}ul.appendChild(li);}}catch(e){$('pagosList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}}
 $('btnReloadPagos').onclick=loadPagos;
-async function aprobarPago(solicId,uid,plan){if(!confirm('Aprobar 30 dias desde HOY?'))return;const vence=new Date();vence.setDate(vence.getDate()+30);await db.collection('config').doc(uid).set({plan:plan||'Medio',planActivo:true,visible:true,bloqueado:false,planVence:firebase.firestore.Timestamp.fromDate(vence),plan_estado:'aprobado',trialUsado:true},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'aprobado',aprobado_en:firebase.firestore.FieldValue.serverTimestamp()});toast('Aprobado 30d');loadPagos();load();}
-async function rechazarPago(solicId,uid){if(!confirm('Rechazar pago?'))return;await db.collection('config').doc(uid).set({planActivo:false,visible:false,plan_estado:'rechazado'},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'rechazado'});toast('Rechazado');loadPagos();load();}
-window.activar48=async id=>{const base=getVenceDate(all.find(a=>a.id===id));let vence=base&&base>new Date()?new Date(base):new Date();vence.setHours(vence.getHours()+48);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(vence),planActivo:true,visible:true,bloqueado:false},{merge:true});toast('48hs extendidas desde vencimiento');load();};
-window.darPromo=async(id,dias)=>{const motivo=prompt(`Dar ${dias} dias - Motivo:`,dias==30?'Gentileza':'Promo');if(motivo===null)return;const base=getVenceDate(all.find(a=>a.id===id));let hasta=base&&base>new Date()?new Date(base):new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,bloqueado:false,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Promo ${dias}d extendida`);load();};
-window.darCustom=async id=>{const inp=prompt('Cuantos dias custom?');if(inp===null)return;const dias=Number(inp);if(isNaN(dias)||dias<=0){toast('Numero invalido');return;}const motivo=prompt(`Dar ${dias} dias - Motivo:`,'Custom');if(motivo===null)return;const base=getVenceDate(all.find(a=>a.id===id));let hasta=base&&base>new Date()?new Date(base):new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,bloqueado:false,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Custom ${dias}d`);load();};
-window.verFicha=async id=>{try{const doc=await db.collection('config').doc(id).get();if(!doc.exists){toast('No existe');return;}const d=doc.data();selectedUid=id;$('modalTitle').textContent=d.localNombre||d.nombre||'Ficha';$('modalBody').innerHTML=`<div>Nombre: ${esc(d.localNombre||d.nombre||'-')}</div><div>Email: ${esc(d.email||'-')}</div><div>Tel: ${esc(d.telefono||d.tel||'-')}</div><div>Dir: ${esc(d.direccion||'-')}</div><div>Plan: ${esc(d.plan||'-')}</div><div>Vence: ${esc(fmtVence(d))}</div><div>Bloqueado: ${d.bloqueado?'SI':'NO'}</div><div>Trial: ${d.trialUsado?'Usado':'Libre'}</div><div>Activo: ${estaActivo(d)?'Si':'No'}</div><div>UID: ${esc(id)}</div>`;$('userModal').classList.remove('hidden');}catch(e){toast(e.message);}};
+async function aprobarPago(solicId,uid,plan){if(!confirm('Aprobar 30 dias?'))return;const vence=new Date();vence.setDate(vence.getDate()+30);await db.collection('config').doc(uid).set({plan:plan||'Medio',planActivo:true,visible:true,bloqueado:false,planVence:firebase.firestore.Timestamp.fromDate(vence),plan_estado:'aprobado',trialUsado:true},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'aprobado',aprobado_en:firebase.firestore.FieldValue.serverTimestamp()});toast('Aprobado');loadPagos();load();}
+async function rechazarPago(solicId,uid){if(!confirm('Rechazar?'))return;await db.collection('config').doc(uid).set({planActivo:false,visible:false,plan_estado:'rechazado'},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'rechazado'});toast('Rechazado');loadPagos();load();}
+window.activar48=async id=>{const base=getVenceDate(all.find(a=>a.id===id));let vence=base&&base>new Date()?new Date(base):new Date();vence.setHours(vence.getHours()+48);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(vence),planActivo:true,visible:true,bloqueado:false},{merge:true});toast('48hs');load();};
+window.darPromo=async(id,dias)=>{const motivo=prompt(`Dar ${dias} dias - Motivo:`,dias==30?'Gentileza':'Promo');if(motivo===null)return;const base=getVenceDate(all.find(a=>a.id===id));let hasta=base&&base>new Date()?new Date(base):new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,bloqueado:false,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`${dias}d`);load();};
+window.darCustom=async id=>{const inp=prompt('Cuantos dias?');if(inp===null)return;const dias=Number(inp);if(isNaN(dias)||dias<=0){toast('Numero invalido');return;}const motivo=prompt(`Dar ${dias} dias - Motivo:`,'Custom');if(motivo===null)return;const base=getVenceDate(all.find(a=>a.id===id));let hasta=base&&base>new Date()?new Date(base):new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,bloqueado:false,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`${dias}d`);load();};
+window.verFicha=async id=>{try{const doc=await db.collection('config').doc(id).get();if(!doc.exists){toast('No existe');return;}const d=doc.data();selectedUid=id;$('modalTitle').textContent=d.localNombre||d.nombre||'Ficha';$('modalBody').innerHTML=`<div>Nombre: ${esc(d.localNombre||d.nombre||'-')}</div><div>Email: ${esc(d.email||'-')}</div><div>Tel: ${esc(d.telefono||d.tel||'-')}</div><div>Dir: ${esc(d.direccion||'-')}</div><div>Plan: ${esc(d.plan||'-')}</div><div>Vence: ${esc(fmtVence(d))}</div><div>Bloqueado: ${d.bloqueado?'SI':'NO'}</div><div>Activo: ${estaActivo(d)?'Si':'No'}</div><div>UID: ${esc(id)}</div>`;$('userModal').classList.remove('hidden');}catch(e){toast(e.message);}};
 $('modalClose').onclick=()=>{$('userModal').classList.add('hidden');};
-$('modalBloq').onclick=async()=>{if(!selectedUid)return;if(!confirm('Bloquear real?'))return;await db.collection('config').doc(selectedUid).set({bloqueado:true,planActivo:false,visible:false},{merge:true});toast('Bloqueado real');$('userModal').classList.add('hidden');load();};
-async function loadSoporte(tipo){const ul=$('sList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('soporte').orderBy('ts','desc').limit(150).get();let docs=snap.docs.map(d=>({id:d.id,...d.data()}));if(tipo==='local')docs=docs.filter(d=>d.origen==='local');if(tipo==='cliente')docs=docs.filter(d=>d.origen==='cliente');ul.innerHTML='';docs.forEach(x=>{const esLocal=x.origen==='local';const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.style.border=esLocal?'1px solid #a855f7':'1px solid #22c55e';li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b style="color:${esLocal?'#a855f7':'#22c55e'}">${esLocal?'LOCAL':'CLIENTE'}</b><span class="pill">${esc(x.tipo||'')}</span></div><div style="font-size:12px;margin:6px 0">${esc(x.mensaje||x.comentario||'')}</div><div style="font-size:11px;color:#cfc9e6">${esc(x.nombreLocal||x.nombreCliente||'')} - ${esc(x.email||'')} - ${esc(x.uidLocal||x.uidCliente||'')}</div>${x.imagen?`<img src="${x.imagen}" style="max-width:200px;border-radius:10px;margin-top:6px">`:''}<div style="display:flex;gap:6px;margin-top:8px"><button class="btn small ghost">Borrar</button></div>`;li.querySelector('button').onclick=()=>borrarSoporte(x.id);ul.appendChild(li);});if(!docs.length)ul.innerHTML='<li class="item">Sin soporte</li>';}catch(e){$('sList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}}
+$('modalBloq').onclick=async()=>{if(!selectedUid)return;if(!confirm('Bloquear?'))return;await db.collection('config').doc(selectedUid).set({bloqueado:true,planActivo:false,visible:false},{merge:true});toast('Bloqueado');$('userModal').classList.add('hidden');load();};
+async function loadSoporte(tipo){const ul=$('sList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('soporte').limit(150).get();let docs=snap.docs.map(d=>({id:d.id,...d.data()}));docs.sort((a,b)=>tsToDate(b.ts)-tsToDate(a.ts));if(tipo==='local')docs=docs.filter(d=>d.origen==='local');if(tipo==='cliente')docs=docs.filter(d=>d.origen==='cliente');ul.innerHTML='';docs.forEach(x=>{const esLocal=x.origen==='local';const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.style.border=esLocal?'1px solid #a855f7':'1px solid #22c55e';li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b style="color:${esLocal?'#a855f7':'#22c55e'}">${esLocal?'LOCAL':'CLIENTE'}</b><span class="pill">${esc(x.tipo||'')}</span></div><div style="font-size:12px;margin:6px 0">${esc(x.mensaje||x.comentario||'')}</div><div style="font-size:11px;color:#cfc9e6">${esc(x.nombreLocal||x.nombreCliente||'')} - ${esc(x.email||'')}</div>${x.imagen?`<img src="${x.imagen}" style="max-width:200px;border-radius:10px;margin-top:6px">`:''}<div style="display:flex;gap:6px;margin-top:8px"><button class="btn small ghost">Borrar</button></div>`;li.querySelector('button').onclick=()=>borrarSoporte(x.id);ul.appendChild(li);});if(!docs.length)ul.innerHTML='<li class="item">Sin soporte</li>';}catch(e){$('sList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}}
 window.borrarSoporte=async id=>{if(!confirm('Borrar?'))return;await db.collection('soporte').doc(id).delete();toast('Borrado');loadSoporte('todos');};
 async function loadUsers(){const ul=$('uList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('users').limit(200).get();ul.innerHTML='';snap.forEach(d=>{const x=d.data();const cfgData=all.find(a=>a.id==d.id)||{};const activo=estaActivo(cfgData);const li=document.createElement('li');li.className='item';li.innerHTML=`<div><b>${esc(x.nombre||x.name||cfgData.nombre||d.id.substring(0,12))}</b><div style="font-size:11px;color:#cfc9e6">${esc(x.email||cfgData.email||'')} - ${esc(x.rol||'')} - ${esc(cfgData.plan||'-')} - ${activo?'ACTIVO':'VENCIDO'}</div><div style="font-size:10px">UID:${esc(d.id)}</div></div><div style="display:flex;gap:6px"><button class="btn small ghost">Ver</button><button class="btn small ghost">Bloquear</button></div>`;const b=li.querySelectorAll('button');b[0].onclick=()=>verFicha(d.id);b[1].onclick=()=>bloquearUser(d.id);ul.appendChild(li);});}catch(e){$('uList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}}
-window.bloquearUser=async id=>{if(!confirm('Bloquear usuario?'))return;await db.collection('config').doc(id).set({bloqueado:true,planActivo:false,visible:false},{merge:true});toast('Bloqueado');loadUsers();load();};
+window.bloquearUser=async id=>{if(!confirm('Bloquear?'))return;await db.collection('config').doc(id).set({bloqueado:true,planActivo:false,visible:false},{merge:true});toast('Bloqueado');loadUsers();load();};
 $('reload').onclick=load;
 $('reloadUsers').onclick=loadUsers;
 $('bus').oninput=()=>{const q=$('bus').value.toLowerCase();Array.from($('grid').children).forEach(ch=>{ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'});};
 $('busUsers').oninput=()=>{const q=$('busUsers').value.toLowerCase();Array.from($('uList').children).forEach(ch=>{ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'});};
-$('btnGuardarTarifas').onclick=async()=>{try{const base={nombre:$('pBaseNombre').value.trim()||'Básico',limite:Number($('pBaseLim').value)||0,precio:Number($('pBasePrecio').value)||0};const medio={nombre:$('pMedioNombre').value.trim()||'Medio',limite:Number($('pMedioLim').value)||0,precio:Number($('pMedioPrecio').value)||0};const premium={nombre:$('pPremNombre').value.trim()||'Premium',limite:Number($('pPremLim').value)||0,precio:Number($('pPremPrecio').value)||0};$('tarifaMsg').textContent='Guardando...';await db.collection('config').doc('planes').set({base,medio,premium,updated:firebase.firestore.FieldValue.serverTimestamp()});$('tarifaMsg').textContent='Guardado ✅';toast('Tarifas guardadas');}catch(e){$('tarifaMsg').textContent='Error: '+e.message;}};
-$('btnGuardarCobrosJona').onclick=async()=>{try{await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value,cbu:$('jonaCbu').value,titular:$('jonaTitular').value,whatsapp:$('jonaWsp').value,instrucciones:$('jonaInstr').value},{merge:true});$('msgCobrosJona').textContent='Guardado';toast('Cobros guardados');}catch(e){toast(e.message);}};
-$('btnGuardarHoras').onclick=async()=>{try{await db.collection('config').doc('adm').set({horasPlan:Number($('horasPlan').value||48)},{merge:true});$('ajMsg').textContent='Guardado';toast('Horas guardadas');load();}catch(e){toast(e.message);}};
+$('btnGuardarTarifas').onclick=async()=>{try{const base={nombre:$('pBaseNombre').value.trim()||'Básico',limite:Number($('pBaseLim').value)||0,precio:Number($('pBasePrecio').value)||0};const medio={nombre:$('pMedioNombre').value.trim()||'Medio',limite:Number($('pMedioLim').value)||0,precio:Number($('pMedioPrecio').value)||0};const premium={nombre:$('pPremNombre').value.trim()||'Premium',limite:Number($('pPremLim').value)||0,precio:Number($('pPremPrecio').value)||0};$('tarifaMsg').textContent='Guardando...';await db.collection('config').doc('planes').set({base,medio,premium,updated:firebase.firestore.FieldValue.serverTimestamp()});$('tarifaMsg').textContent='Guardado';toast('Guardado');}catch(e){$('tarifaMsg').textContent='Error: '+e.message;}};
+$('btnGuardarCobrosJona').onclick=async()=>{try{await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value,cbu:$('jonaCbu').value,titular:$('jonaTitular').value,whatsapp:$('jonaWsp').value,instrucciones:$('jonaInstr').value},{merge:true});$('msgCobrosJona').textContent='Guardado';toast('Guardado');}catch(e){toast(e.message);}};
+$('btnGuardarHoras').onclick=async()=>{try{await db.collection('config').doc('adm').set({horasPlan:Number($('horasPlan').value||48)},{merge:true});$('ajMsg').textContent='Guardado';toast('Guardado');load();}catch(e){toast(e.message);}};
 </script>
 </body>
 </html>
