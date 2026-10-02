@@ -164,7 +164,7 @@ z-index:99
 <p id="err" style="color:#fca5a5;min-height:18px"></p>
 <button id="loginBtn" class="btn full">Entrar</button>
 </section>
-<section id="app" class="hidden">
+ <section id="app" class="hidden">
 <div class="topbar">
 <div class="brand">reservAR ADM</div>
 <div style="display:flex;gap:8px">
@@ -334,8 +334,10 @@ const p=$('password').value.trim();
 $('err').textContent='Conectando...';
 try{
 await auth.signInWithEmailAndPassword(e,p);
+$('err').textContent='';
 }catch(er){
 $('err').textContent=er.message;
+console.log(er);
 }
 };
 $('logout').onclick=()=>auth.signOut();
@@ -356,27 +358,18 @@ let cfg={horasPlan:48};
 let selectedUid=null;
 let filtroKpiActual='todos';
 let filtroPagos='pendiente';
+</script>
+<script>
 auth.onAuthStateChanged(async u=>{
 if(!u){
 $('auth').classList.remove('hidden');
 $('app').classList.add('hidden');
 return;
 }
-try{
-const udoc=await db.collection('users').doc(u.uid).get();
-if(!udoc.exists||udoc.data().rol!=='superadmin'){
-toast('No autorizado');
-await auth.signOut();
-return;
-}
-}catch(e){
-toast(e.message);
-await auth.signOut();
-return;
-}
+if(u.email==='jjrv.0093@gmail.com'){
 $('auth').classList.add('hidden');
 $('app').classList.remove('hidden');
-$('sal').textContent='Hola '+u.email;
+$('sal').textContent='Hola '+u.email+' OWNER';
 try{
 const c=await db.collection('config').doc('adm').get();
 if(c.exists){
@@ -408,6 +401,25 @@ $('jonaInstr').value=cc.instrucciones||'';
 }catch(e){
 toast(e.message);
 }
+load();
+loadPagos();
+return;
+}
+try{
+const udoc=await db.collection('users').doc(u.uid).get();
+if(!udoc.exists||udoc.data().rol!=='superadmin'){
+toast('No autorizado - falta rol superadmin');
+await auth.signOut();
+return;
+}
+}catch(e){
+toast(e.message);
+await auth.signOut();
+return;
+}
+$('auth').classList.add('hidden');
+$('app').classList.remove('hidden');
+$('sal').textContent='Hola '+u.email;
 load();
 loadPagos();
 });
@@ -471,6 +483,7 @@ const diff=(hoy-fd)/86400000;
 if(diff<7)return 'ESTA SEMANA';
 return 'ANTERIOR';
 }
+</script>
 <script>
 async function load(){
 try{
@@ -568,34 +581,16 @@ sep.innerHTML=`<b>${g}</b>`;
 ul.appendChild(sep);
 }
 let cfgExtra=all.find(a=>a.id===x.uid)||{};
-if(!cfgExtra.email){
-try{
-const cdoc=await db.collection('config').doc(x.uid).get();
-if(cdoc.exists)cfgExtra=cdoc.data();
-}catch(e){}
-}
-const comp=x.comprobante||x.comprobanteBase64||x.imagen||'';
-const compHtml=comp?`<img style="width:100%;max-width:380px;border-radius:14px;border:2px solid #facc15;margin-top:8px;cursor:pointer" class="imgComp"><div style="font-size:11px;color:#facc15;margin-top:4px">${esc(fmtFecha(x.ts))} - ${esc(x.comprobanteNombre||'')} - ${esc(x.metodoPago||'')}</div>`:`<div class="pill" style="background:#ef444433;margin-top:8px">Sin comprobante - ${esc(fmtFecha(x.ts))}</div>`;
+const comp=x.comprobante||'';
 const li=document.createElement('li');
 li.className='item';
 li.style.flexDirection='column';
 li.style.alignItems='flex-start';
-li.style.border=filtroPagos==='pendiente'?'1px solid #facc15':filtroPagos==='aprobado'?'1px solid #22c55e':'1px solid #ef4444';
-li.innerHTML=`<div style="width:100%"><div style="display:flex;justify-content:space-between;flex-wrap:wrap"><b style="font-size:15px">${esc(x.nombreLocal||cfgExtra.nombre||cfgExtra.localNombre||'Local')}</b><span class="pill" style="background:#facc15;color:#000">${esc(x.plan||cfgExtra.plan||'')} $${esc(String(x.precio||''))}</span></div><div style="background:#00000044;border-radius:10px;padding:8px;margin-top:8px;font-size:12px;line-height:1.5"><div>Email: ${esc(x.email||cfgExtra.email||'-')}</div><div>ID: ${esc(x.uid||'-')}</div><div>Tel: ${esc(cfgExtra.telefono||cfgExtra.tel||x.telefono||'-')}</div><div>Dir: ${esc(cfgExtra.direccion||'-')}</div><div>Pago: ${esc(x.metodoPago||'-')} - ${esc(fmtFecha(x.ts))}</div></div></div>${compHtml}${filtroPagos==='pendiente'?`<div style="display:flex;gap:6px;margin-top:10px"><button class="btn small" style="background:#22c55e">Aprobar</button><button class="btn small ghost">Rechazar</button></div>`:filtroPagos==='aprobado'?`<div style="margin-top:8px"><span class="pill" style="background:#22c55e33">Aprobado ${esc(fmtFecha(x.aprobado_en))}</span></div>`:`<div style="margin-top:8px"><span class="pill" style="background:#ef444433">Rechazado</span></div>`}`;
+li.innerHTML=`<div style="width:100%"><b>${esc(x.nombreLocal||'Local')}</b> <span class="pill" style="background:#facc15;color:#000">${esc(x.plan||'')}</span><div style="font-size:12px">${esc(x.email||'')} - ${esc(fmtFecha(x.ts))}</div></div>${comp?`<img src="${comp}" style="width:100%;max-width:380px;border-radius:14px;margin-top:8px">`:''}<div style="display:flex;gap:6px;margin-top:10px">${filtroPagos==='pendiente'?'<button class="btn small" style="background:#22c55e">Aprobar</button><button class="btn small ghost">Rechazar</button>':''}</div>`;
 if(filtroPagos==='pendiente'){
 const btns=li.querySelectorAll('button');
 btns[0].onclick=()=>aprobarPago(x.id,x.uid,x.plan,btns[0]);
 btns[1].onclick=()=>rechazarPago(x.id,x.uid,btns[1]);
-}
-const img=li.querySelector('.imgComp');
-if(img&&comp){
-img.src=comp;
-img.onclick=()=>{
-const w=window.open();
-if(w){
-w.document.write(`<img src="${comp}" style="max-width:100%">`);
-}
-};
 }
 ul.appendChild(li);
 }
@@ -604,57 +599,21 @@ $('pagosList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;
 }
 }
 async function aprobarPago(solicId,uid,plan,btn){
-if(btn){
-btn.textContent='Aprobando...';
-btn.disabled=true;
-}
-if(!confirm('Aprobar 30 dias?')){
-if(btn){
-btn.textContent='Aprobar';
-btn.disabled=false;
-}
-return;
-}
+if(btn){btn.textContent='Aprobando...';btn.disabled=true;}
+if(!confirm('Aprobar 30 dias?')){if(btn){btn.textContent='Aprobar';btn.disabled=false;}return;}
 const vence=new Date();
 vence.setDate(vence.getDate()+30);
-await db.collection('config').doc(uid).set({
-plan:plan||'Medio',
-planActivo:true,
-visible:true,
-bloqueado:false,
-planVence:firebase.firestore.Timestamp.fromDate(vence),
-plan_estado:'aprobado',
-trialUsado:true
-},{merge:true});
-await db.collection('solicitudes').doc(solicId).update({
-estado:'aprobado',
-aprobado_en:firebase.firestore.FieldValue.serverTimestamp()
-});
+await db.collection('config').doc(uid).set({plan:plan||'Medio',planActivo:true,visible:true,bloqueado:false,planVence:firebase.firestore.Timestamp.fromDate(vence),plan_estado:'aprobado',trialUsado:true},{merge:true});
+await db.collection('solicitudes').doc(solicId).update({estado:'aprobado',aprobado_en:firebase.firestore.FieldValue.serverTimestamp()});
 toast('Aprobado');
 loadPagos();
 load();
 }
 async function rechazarPago(solicId,uid,btn){
-if(btn){
-btn.textContent='Rechazando...';
-btn.disabled=true;
-}
-if(!confirm('Rechazar?')){
-if(btn){
-btn.textContent='Rechazar';
-btn.disabled=false;
-}
-return;
-}
-await db.collection('config').doc(uid).set({
-planActivo:false,
-visible:false,
-plan_estado:'rechazado'
-},{merge:true});
-await db.collection('solicitudes').doc(solicId).update({
-estado:'rechazado',
-rechazado_en:firebase.firestore.FieldValue.serverTimestamp()
-});
+if(btn){btn.textContent='Rechazando...';btn.disabled=true;}
+if(!confirm('Rechazar?')){if(btn){btn.textContent='Rechazar';btn.disabled=false;}return;}
+await db.collection('config').doc(uid).set({planActivo:false,visible:false,plan_estado:'rechazado'},{merge:true});
+await db.collection('solicitudes').doc(solicId).update({estado:'rechazado',rechazado_en:firebase.firestore.FieldValue.serverTimestamp()});
 toast('Rechazado');
 loadPagos();
 load();
@@ -663,31 +622,16 @@ window.activar48=async id=>{
 const base=getVenceDate(all.find(a=>a.id===id));
 let vence=base&&base>new Date()?new Date(base):new Date();
 vence.setHours(vence.getHours()+48);
-await db.collection('config').doc(id).set({
-planVence:firebase.firestore.Timestamp.fromDate(vence),
-planActivo:true,
-visible:true,
-bloqueado:false
-},{merge:true});
+await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(vence),planActivo:true,visible:true,bloqueado:false},{merge:true});
 toast('48hs');
 load();
 };
 window.darPromo=async(id,dias)=>{
-const motivo=prompt(`Dar ${dias} dias - Motivo:`,dias==30?'Gentileza':'Promo');
+const motivo=prompt(`Dar ${dias} dias`,dias==30?'Gentileza':'Promo');
 if(motivo===null)return;
-const base=getVenceDate(all.find(a=>a.id===id));
-let hasta=base&&base>new Date()?new Date(base):new Date();
+let hasta=new Date();
 hasta.setDate(hasta.getDate()+dias);
-await db.collection('config').doc(id).set({
-planVence:firebase.firestore.Timestamp.fromDate(hasta),
-planActivo:true,
-visible:true,
-bloqueado:false,
-promoGratis:true,
-promoHasta:hasta.toLocaleDateString('es-AR'),
-promoMotivo:motivo,
-trialUsado:true
-},{merge:true});
+await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,bloqueado:false,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});
 toast(`${dias}d`);
 load();
 };
@@ -695,25 +639,10 @@ window.darCustom=async id=>{
 const inp=prompt('Cuantos dias?');
 if(inp===null)return;
 const dias=Number(inp);
-if(isNaN(dias)||dias<=0){
-toast('Numero invalido');
-return;
-}
-const motivo=prompt(`Dar ${dias} dias - Motivo:`,'Custom');
-if(motivo===null)return;
-const base=getVenceDate(all.find(a=>a.id===id));
-let hasta=base&&base>new Date()?new Date(base):new Date();
+if(isNaN(dias)||dias<=0){toast('Numero invalido');return;}
+let hasta=new Date();
 hasta.setDate(hasta.getDate()+dias);
-await db.collection('config').doc(id).set({
-planVence:firebase.firestore.Timestamp.fromDate(hasta),
-planActivo:true,
-visible:true,
-bloqueado:false,
-promoGratis:true,
-promoHasta:hasta.toLocaleDateString('es-AR'),
-promoMotivo:motivo,
-trialUsado:true
-},{merge:true});
+await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,bloqueado:false,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:'Custom',trialUsado:true},{merge:true});
 toast(`${dias}d`);
 load();
 };
@@ -722,53 +651,34 @@ load();
 window.verFicha=async id=>{
 try{
 const doc=await db.collection('config').doc(id).get();
-if(!doc.exists){
-toast('No existe');
-return;
-}
+if(!doc.exists){toast('No existe');return;}
 const d=doc.data();
 selectedUid=id;
-$('modalTitle').textContent=d.localNombre||d.nombre||'Ficha';
-$('modalBody').innerHTML=`<div>Nombre: ${esc(d.localNombre||d.nombre||'-')}</div><div>Email: ${esc(d.email||'-')}</div><div>Tel: ${esc(d.telefono||d.tel||'-')}</div><div>Dir: ${esc(d.direccion||'-')}</div><div>Plan: ${esc(d.plan||'-')}</div><div>Vence: ${esc(fmtVence(d))}</div><div>Bloqueado: ${d.bloqueado?'SI':'NO'}</div><div>Activo: ${estaActivo(d)?'Si':'No'}</div><div>UID: ${esc(id)}</div>`;
+$('modalTitle').textContent=d.localNombre||'Ficha';
+$('modalBody').innerHTML=`<div>Nombre: ${esc(d.localNombre||'-')}</div><div>Email: ${esc(d.email||'-')}</div><div>Plan: ${esc(d.plan||'-')}</div><div>Vence: ${esc(fmtVence(d))}</div><div>Bloqueado: ${d.bloqueado?'SI':'NO'}</div><div>UID: ${esc(id)}</div>`;
 let pausasHtml='';
 try{
 const pSnap=await db.collection('config').doc(id).collection('pausasFechas').get();
-if(!pSnap.empty){
-pausasHtml='<b>Pausas por día:</b><br>'+pSnap.docs.map(p=>esc(p.id)).join(', ');
-}else{
-pausasHtml='Sin pausas por día';
-}
-}catch(e){
-pausasHtml='Sin pausas';
-}
+pausasHtml=pSnap.empty?'Sin pausas':pSnap.docs.map(p=>esc(p.id)).join(', ');
+}catch(e){pausasHtml='Sin pausas';}
 $('modalPausas').innerHTML=`<div style="background:#00000044;border-radius:8px;padding:8px;font-size:11px">${pausasHtml}</div>`;
 $('userModal').classList.remove('hidden');
-}catch(e){
-toast(e.message);
-}
+}catch(e){toast(e.message);}
 };
-$('modalClose').onclick=()=>{
-$('userModal').classList.add('hidden');
-};
+$('modalClose').onclick=()=>{$('userModal').classList.add('hidden');};
 $('modalBloq').onclick=async()=>{
 if(!selectedUid)return;
 if(!confirm('Bloquear?'))return;
-await db.collection('config').doc(selectedUid).set({
-bloqueado:true,
-planActivo:false,
-visible:false
-},{merge:true});
+await db.collection('config').doc(selectedUid).set({bloqueado:true,planActivo:false,visible:false},{merge:true});
 toast('Bloqueado');
 $('userModal').classList.add('hidden');
 load();
 };
 $('modalDesPausas').onclick=async()=>{
 if(!selectedUid)return;
-if(!confirm('Quitar todas las pausas por día de este local?'))return;
+if(!confirm('Quitar pausas?'))return;
 const snap=await db.collection('config').doc(selectedUid).collection('pausasFechas').get();
-for(const doc of snap.docs){
-await doc.ref.delete();
-}
+for(const doc of snap.docs){await doc.ref.delete();}
 toast('Pausas quitadas');
 $('userModal').classList.add('hidden');
 };
@@ -789,14 +699,12 @@ li.className='item';
 li.style.flexDirection='column';
 li.style.alignItems='flex-start';
 li.style.border=esLocal?'1px solid #a855f7':'1px solid #22c55e';
-li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b style="color:${esLocal?'#a855f7':'#22c55e'}">${esLocal?'LOCAL':'CLIENTE'}</b><span class="pill">${esc(x.tipo||'')}</span></div><div style="font-size:12px;margin:6px 0">${esc(x.mensaje||x.comentario||'')}</div><div style="font-size:11px;color:#cfc9e6">Local: ${esc(x.nombreLocal||'')} - Cliente: ${esc(x.nombreCliente||x.email||'')}</div><div style="font-size:11px;color:#cfc9e6">Reserva: ${esc(x.idReserva||'')} Fecha: ${esc(x.fechaProblema||'')} ${esc(x.horaProblema||'')} - ${esc(x.fechaHoraProblema||'')}</div>${x.imagen?`<img src="${x.imagen}" style="max-width:200px;border-radius:10px;margin-top:6px">`:''}<div style="display:flex;gap:6px;margin-top:8px"><button class="btn small ghost">Borrar</button></div>`;
+li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b style="color:${esLocal?'#a855f7':'#22c55e'}">${esLocal?'LOCAL':'CLIENTE'}</b><span class="pill">${esc(x.tipo||'')}</span></div><div style="font-size:12px;margin:6px 0">${esc(x.mensaje||'')}</div><div style="font-size:11px;color:#cfc9e6">Local: ${esc(x.nombreLocal||'')} - Cliente: ${esc(x.nombreCliente||'')}</div>${x.imagen?`<img src="${x.imagen}" style="max-width:200px;border-radius:10px;margin-top:6px">`:''}<div style="margin-top:8px"><button class="btn small ghost">Borrar</button></div>`;
 li.querySelector('button').onclick=()=>borrarSoporte(x.id);
 ul.appendChild(li);
 });
 if(!docs.length)ul.innerHTML='<li class="item">Sin soporte</li>';
-}catch(e){
-$('sList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;
-}
+}catch(e){$('sList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}
 }
 window.borrarSoporte=async id=>{
 if(!confirm('Borrar?'))return;
@@ -804,8 +712,6 @@ await db.collection('soporte').doc(id).delete();
 toast('Borrado');
 loadSoporte('todos');
 };
-</script>
-<script>
 async function loadUsers(){
 const ul=$('uList');
 ul.innerHTML='<li class="item">Cargando...</li>';
@@ -814,33 +720,27 @@ const snap=await db.collection('users').limit(200).get();
 ul.innerHTML='';
 snap.forEach(d=>{
 const x=d.data();
-const cfgData=all.find(a=>a.id==d.id)||{};
-const activo=estaActivo(cfgData);
 const li=document.createElement('li');
 li.className='item';
-li.innerHTML=`<div><b>${esc(x.nombre||x.name||cfgData.nombre||d.id.substring(0,12))}</b><div style="font-size:11px;color:#cfc9e6">${esc(x.email||cfgData.email||'')} - ${esc(x.rol||'')} - ${esc(cfgData.plan||'-')} - ${activo?'ACTIVO':'VENCIDO'}</div><div style="font-size:10px">UID:${esc(d.id)}</div></div><div style="display:flex;gap:6px"><button class="btn small ghost">Ver</button><button class="btn small ghost">Bloquear</button></div>`;
+li.innerHTML=`<div><b>${esc(x.email||d.id)}</b><div style="font-size:11px">${esc(x.rol||'')} - ${esc(d.id)}</div></div><div style="display:flex;gap:6px"><button class="btn small ghost">Ver</button><button class="btn small ghost">Bloquear</button></div>`;
 const b=li.querySelectorAll('button');
 b[0].onclick=()=>verFicha(d.id);
 b[1].onclick=()=>bloquearUser(d.id);
 ul.appendChild(li);
 });
-}catch(e){
-$('uList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;
-}
+}catch(e){$('uList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}
 }
 window.bloquearUser=async id=>{
 if(!confirm('Bloquear?'))return;
-await db.collection('config').doc(id).set({
-bloqueado:true,
-planActivo:false,
-visible:false
-},{merge:true});
+await db.collection('config').doc(id).set({bloqueado:true,planActivo:false,visible:false},{merge:true});
 toast('Bloqueado');
 loadUsers();
 load();
 };
 $('reload').onclick=load;
 $('reloadUsers').onclick=loadUsers;
+</script>
+<script>
 $('bus').oninput=()=>{
 const q=$('bus').value.toLowerCase();
 Array.from($('grid').children).forEach(ch=>{
@@ -855,60 +755,29 @@ ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'
 };
 $('btnGuardarTarifas').onclick=async()=>{
 try{
-const base={
-nombre:$('pBaseNombre').value.trim()||'Básico',
-limite:Number($('pBaseLim').value)||0,
-precio:Number($('pBasePrecio').value)||0
-};
-const medio={
-nombre:$('pMedioNombre').value.trim()||'Medio',
-limite:Number($('pMedioLim').value)||0,
-precio:Number($('pMedioPrecio').value)||0
-};
-const premium={
-nombre:$('pPremNombre').value.trim()||'Premium',
-limite:Number($('pPremLim').value)||0,
-precio:Number($('pPremPrecio').value)||0
-};
+const base={nombre:$('pBaseNombre').value.trim()||'Básico',limite:Number($('pBaseLim').value)||0,precio:Number($('pBasePrecio').value)||0};
+const medio={nombre:$('pMedioNombre').value.trim()||'Medio',limite:Number($('pMedioLim').value)||0,precio:Number($('pMedioPrecio').value)||0};
+const premium={nombre:$('pPremNombre').value.trim()||'Premium',limite:Number($('pPremLim').value)||0,precio:Number($('pPremPrecio').value)||0};
 $('tarifaMsg').textContent='Guardando...';
-await db.collection('config').doc('planes').set({
-base,
-medio,
-premium,
-updated:firebase.firestore.FieldValue.serverTimestamp()
-});
+await db.collection('config').doc('planes').set({base,medio,premium,updated:firebase.firestore.FieldValue.serverTimestamp()});
 $('tarifaMsg').textContent='Guardado';
 toast('Guardado');
-}catch(e){
-$('tarifaMsg').textContent='Error: '+e.message;
-}
+}catch(e){$('tarifaMsg').textContent='Error: '+e.message;}
 };
 $('btnGuardarCobrosJona').onclick=async()=>{
 try{
-await db.collection('config').doc('cobros').set({
-alias:$('jonaAlias').value,
-cbu:$('jonaCbu').value,
-titular:$('jonaTitular').value,
-whatsapp:$('jonaWsp').value,
-instrucciones:$('jonaInstr').value
-},{merge:true});
+await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value,cbu:$('jonaCbu').value,titular:$('jonaTitular').value,whatsapp:$('jonaWsp').value,instrucciones:$('jonaInstr').value},{merge:true});
 $('msgCobrosJona').textContent='Guardado';
 toast('Guardado');
-}catch(e){
-toast(e.message);
-}
+}catch(e){toast(e.message);}
 };
 $('btnGuardarHoras').onclick=async()=>{
 try{
-await db.collection('config').doc('adm').set({
-horasPlan:Number($('horasPlan').value||48)
-},{merge:true});
+await db.collection('config').doc('adm').set({horasPlan:Number($('horasPlan').value||48)},{merge:true});
 $('ajMsg').textContent='Guardado';
 toast('Guardado');
 load();
-}catch(e){
-toast(e.message);
-}
+}catch(e){toast(e.message);}
 };
 </script>
 </body>
