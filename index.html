@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ADMI - Dios</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Manrope',sans-serif;background:#0f0a1e;color:#fff}
@@ -13,119 +16,135 @@ body{font-family:'Manrope',sans-serif;background:#0f0a1e;color:#fff}
 .login-card h1{font-weight:800;font-size:24px;color:#fff}
 .login-card h1 span{color:#a855f7}
 .login-card input{width:100%;padding:14px 16px;border-radius:999px;border:1px solid #3a0f6e;background:#12082e;color:#fff;outline:none;margin-top:12px}
-.login-card button{width:100%;padding:14px;border-radius:999px;border:none;background:linear-gradient(135deg,#6a11cb,#7b1fa2);color:#fff;font-weight:800;margin-top:16px}
+.login-card button{width:100%;padding:14px;border-radius:999px;border:none;background:linear-gradient(135deg,#6a11cb,#7b1fa2);color:#fff;font-weight:800;margin-top:16px;cursor:pointer}
 .header{position:sticky;top:0;z-index:10;background:rgba(15,10,30,.9);backdrop-filter:blur(10px);border-bottom:1px solid #3a0f6e;padding:14px;display:flex;justify-content:space-between;align-items:center}
 .logo{font-weight:800;font-size:20px;color:#fff}
 .logo span{color:#a855f7}
 .tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 14px;scrollbar-width:none}
 .tabs::-webkit-scrollbar{display:none}
-.tab{white-space:nowrap;padding:8px 16px;border-radius:999px;border:1px solid #3a0f6e;background:#1e1042;color:#a855f7;font-weight:700;font-size:13px}
+.tab{white-space:nowrap;padding:8px 16px;border-radius:999px;border:1px solid #3a0f6e;background:#1e1042;color:#a855f7;font-weight:700;font-size:13px;cursor:pointer}
 .tab.active{background:linear-gradient(135deg,#6a11cb,#7b1fa2);color:#fff;border-color:#6a11cb}
 .panel{padding:14px}
 .card{background:#1e1042;border:1px solid #3a0f6e;border-radius:18px;padding:14px;margin-bottom:12px}
 .card-title{font-weight:700;font-size:14px;color:#fff}
-.card-sub{font-size:12px;color:#a855f7;margin-top:4px}
+.card-sub{font-size:12px;color:#a855f7;margin-top:4px;word-break:break-all}
 .badge{display:inline-block;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;margin-top:8px}
 .badge-cliente{background:rgba(168,85,247,.2);color:#a855f7;border:1px solid #a855f7}
 .badge-local{background:rgba(106,17,203,.3);color:#c4b5fd;border:1px solid #6a11cb}
 .grid{display:grid;grid-template-columns:1fr;gap:12px}
 .img-thumb{width:100%;border-radius:12px;margin-top:10px;max-height:180px;object-fit:cover}
 .btn-row{display:flex;gap:8px;margin-top:12px}
-.btn{flex:1;padding:10px;border-radius:999px;border:none;font-weight:700;font-size:12px}
+.btn{flex:1;padding:10px;border-radius:999px;border:none;font-weight:700;font-size:12px;cursor:pointer}
 .btn-del{background:rgba(239,68,68,.15);color:#f87171;border:1px solid #ef4444}
 .btn-ok{background:linear-gradient(135deg,#6a11cb,#7b1fa2);color:#fff}
 .empty{padding:40px 20px;text-align:center;color:#a855f7}
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 </head>
 <body>
 <div id="login" class="login-box"><div class="login-card"><h1>ADMI <span>DIOS</span></h1><input id="email" type="email" placeholder="jjrv.0093@gmail.com"><input id="pass" type="password" placeholder="Password"><button onclick="doLogin()">Entrar</button><div id="loginMsg" style="margin-top:12px;font-size:12px;color:#f87171"></div></div></div>
-<div id="app" style="display:none"><div class="header"><div class="logo">MAS <span>VENTAS</span> ADMI</div><button onclick="doLogout()" style="border:none;background:#1e1042;color:#a855f7;padding:8px 14px;border-radius:999px;border:1px solid #3a0f6e;font-weight:700">Salir</button></div><div class="tabs" id="tabs"></div><div class="panel" id="panel"></div></div>
+<div id="app" style="display:none"><div class="header"><div class="logo">MAS <span>VENTAS</span> ADMI</div><button onclick="doLogout()" style="border:none;background:#1e1042;color:#a855f7;padding:8px 14px;border-radius:999px;border:1px solid #3a0f6e;font-weight:700;cursor:pointer">Salir</button></div><div class="tabs" id="tabs"></div><div class="panel" id="panel"></div></div>
 <script>
-const fb={apiKey:"AIzaSyD8o4eR9k0g8o6d5o4eR9k0g8o6d5o",authDomain:"reservar-cb70d.firebaseapp.com",projectId:"reservar-cb70d",storageBucket:"reservar-cb70d.firebasestorage.app",messagingSenderId:"123456789012",appId:"1:123456789012:web:abcd1234efgh5678ijkl"};
-firebase.initializeApp(fb);
+const firebaseConfig={apiKey:"AIzaSyC57wshaJ2EuIBoBdXv18opL4u_Vuw2bAQ",authDomain:"reservar-cb70d.firebaseapp.com",projectId:"reservar-cb70d",storageBucket:"reservar-cb70d.firebasestorage.app",messagingSenderId:"630908928696",appId:"1:630908928696:web:5e89f5f2b1cc2b240e6a4d",measurementId:"G-2HMNZ69E4G"};
+firebase.initializeApp(firebaseConfig);
 const db=firebase.firestore();
+const auth=firebase.auth();
 const OWNER_EMAIL='jjrv.0093@gmail.com';
 let currentTab='soporte';
-let cacheSoporte=[];
-function doLogin(){let e=document.getElementById('email').value.trim();let p=document.getElementById('pass').value.trim();let msg=document.getElementById('loginMsg');if(e.toLowerCase()!==OWNER_EMAIL){msg.textContent='Solo OWNER puede entrar';return;}if(!p){msg.textContent='Falta password';return;}localStorage.setItem('admi_auth','true');showApp();}
-function doLogout(){localStorage.removeItem('admi_auth');document.getElementById('login').style.display='flex';document.getElementById('app').style.display='none';}
-function showApp(){if(localStorage.getItem('admi_auth')!=='true')return;document.getElementById('login').style.display='none';document.getElementById('app').style.display='block';renderTabs();cargarSoporteFirebase();}
-function getTabsList(){return ['soporte','reservas','catalogo','clientes'];}
-function renderTabs(){let box=document.getElementById('tabs');let html='';getTabsList().forEach(t=>{html+=`<button class="tab ${t===currentTab?'active':''}" onclick="setTab('${t}')">${t.toUpperCase()}</button>`;});box.innerHTML=html;}
+const $=id=>document.getElementById(id);
+async function doLogin(){
+let e=$('email').value.trim().toLowerCase();
+let p=$('pass').value.trim();
+let msg=$('loginMsg');
+if(!e||!p){msg.textContent='Completa mail y pass';return}
+if(e!==OWNER_EMAIL){msg.textContent='Solo OWNER puede entrar';return}
+try{await auth.signInWithEmailAndPassword(e,p)}catch(err){msg.textContent=err.message}
+}
+function doLogout(){auth.signOut()}
+auth.onAuthStateChanged(u=>{
+if(!u){$('login').style.display='flex';$('app').style.display='none';return}
+if(u.email.toLowerCase()!==OWNER_EMAIL){$('loginMsg').textContent='No autorizado';auth.signOut();return}
+$('login').style.display='none';$('app').style.display='block';renderTabs();render();
+});
+function getTabsList(){return ['soporte','reservas','catalogo','clientes','pagos']}
+function renderTabs(){
+let box=$('tabs');let html='';
+getTabsList().forEach(t=>{html+=`<button class="tab ${t===currentTab?'active':''}" onclick="setTab('${t}')">${t.toUpperCase()}</button>`});
+box.innerHTML=html;
+}
 function setTab(t){currentTab=t;renderTabs();render();}
-async function cargarSoporteFirebase(){
-const panel=document.getElementById('panel');
-panel.innerHTML=`<div class="empty">Cargando Firebase reservar-cb70d...</div>`;
+async function render(){
+let panel=$('panel');panel.innerHTML='<div class="empty">Cargando...</div>';
 try{
-const snap=await db.collection('soporte').orderBy('ts','desc').limit(200).get();
-cacheSoporte=[];
-snap.forEach(d=>{cacheSoporte.push({id:d.id,...d.data()})});
-render();
-db.collection('soporte').orderBy('ts','desc').limit(200).onSnapshot(s=>{
-cacheSoporte=[];s.forEach(d=>{cacheSoporte.push({id:d.id,...d.data()})});render();
-});
-}catch(e){
-panel.innerHTML=`<div class="empty">Error ${e.message}</div>`;
-}
-}
-function render(){
-let panel=document.getElementById('panel');
 if(currentTab==='soporte'){
-if(cacheSoporte.length===0){panel.innerHTML=`<div class="empty">Si no hizo reserva no figura nada, si hizo le figura - Firebase conectado reservar-cb70d</div>`;return;}
+let snap=await db.collection('soporte').orderBy('fecha','desc').limit(100).get();
+if(snap.empty){panel.innerHTML='<div class="empty">Si no hizo reserva no figura nada, si hizo le figura</div>';return}
 let html='<div class="grid">';
-cacheSoporte.forEach((r,i)=>{
-let origen=r.origen||r.clienteData?.origen||r.datosReservaCompleto?.clienteData?.origen||'desconocido';
+snap.forEach(doc=>{
+let r=doc.data();
+let origen=(r.origen||r.clienteData?.origen||'local').toLowerCase();
 let badgeClass=origen.includes('cliente')?'badge-cliente':'badge-local';
-let nombre=r.producto?.nombre||r.datosReservaCompleto?.producto?.nombre||r.mensaje||'Sin mensaje';
-let idReserva=r.idReserva||r.datosReservaCompleto?.idReserva||'sin-id';
-let uidLocal=r.uidLocal||r.datosReservaCompleto?.uidLocal||r.clienteData?.uid||'sin-uid';
-let img=r.imagen||r.producto?.imagen||r.datosReservaCompleto?.producto?.imagen||'';
-let fecha=r.fecha||r.fechaHoraProblema||r.datosReservaCompleto?.fecha||'';
-html+=`<div class="card"><div class="card-title">${nombre}</div><div class="card-sub">ID Reserva: ${idReserva}</div><div class="card-sub">UID Local: ${uidLocal}</div><div class="card-sub">Fecha: ${fecha}</div><div class="badge ${badgeClass}">${origen.toUpperCase()}</div>${img?`<img class="img-thumb" src="${img}">`:''}<div class="btn-row"><button class="btn btn-del" onclick="delSoporte('${r.id}')">Borrar</button><button class="btn btn-ok" onclick="verDatos(${i})">Ver datosReservaCompleto</button></div></div>`;
+let nombre=r.producto?.nombre||r.datosReservaCompleto?.producto?.nombre||r.mensaje||r.texto||'Soporte';
+let idReserva=r.idReserva||r.datosReservaCompleto?.idReserva||doc.id;
+let uid=r.uidLocal||r.datosReservaCompleto?.uidLocal||r.clienteData?.uid||r.uid||'';
+let img=r.imagen||r.foto||r.comprobante||r.producto?.imagen||r.datosReservaCompleto?.producto?.imagen||'';
+let fecha=r.fecha?.toDate?r.fecha.toDate().toLocaleString(): (r.fecha||r.fechaHoraProblema||'');
+let esImg=img.startsWith('data:image')||img.startsWith('http');
+html+=`<div class="card"><div class="card-title">${nombre}</div><div class="card-sub">ID: ${idReserva}</div><div class="card-sub">UID: ${uid}</div><div class="card-sub">${fecha}</div><div class="badge ${badgeClass}">${origen.toUpperCase()}</div>${esImg?`<img class="img-thumb" src="${img}">`:''}<div class="card-sub">${r.email||''}</div><div class="btn-row"><button class="btn btn-del" onclick="delDoc('soporte','${doc.id}')">Borrar</button><button class="btn btn-ok" onclick="verDatosSoporte('${doc.id}')">Ver completo</button></div></div>`;
 });
-html+='</div>';
-panel.innerHTML=html;
-return;
+html+='</div>';panel.innerHTML=html;return;
 }
 if(currentTab==='reservas'){
-panel.innerHTML=`<div class="grid"><div class="card"><div class="card-title">Reservas en vivo desde Firebase</div><div id="resLive"></div></div></div>`;
-cargarReservasLive();
-return;
+let snap=await db.collection('reservas').orderBy('fecha','desc').limit(150).get();
+if(snap.empty){panel.innerHTML='<div class="empty">No hay reservas</div>';return}
+let html='<div class="grid">';
+snap.forEach(doc=>{
+let r=doc.data();
+html+=`<div class="card"><div class="card-title">${r.producto?.nombre||r.localNombre||'Reserva'}</div><div class="card-sub">${r.producto?.precio?'$'+r.producto.precio:''} ${r.precio?'$'+r.precio:''}</div><div class="card-sub">ID: ${r.idReserva||doc.id}</div><div class="card-sub">UID: ${r.uidLocal||r.localId||''}</div><div class="card-sub">Cliente: ${r.clienteNombre||r.clienteData?.nombre||''}</div><div class="badge badge-cliente">${(r.clienteData?.origen||'cliente').toUpperCase()}</div><div class="btn-row"><button class="btn btn-del" onclick="delDoc('reservas','${doc.id}')">Borrar</button></div></div>`;
+});
+html+='</div>';panel.innerHTML=html;return;
 }
 if(currentTab==='catalogo'){
-panel.innerHTML=`<div class="grid"><div class="card"><div class="card-title">Catálogo en vivo</div><div id="catLive"></div></div></div>`;
-cargarCatalogoLive();
-return;
-}
-panel.innerHTML=`<div class="empty">Panel ${currentTab} - Firebase reservar-cb70d conectado</div>`;
-}
-async function cargarReservasLive(){
-const box=document.getElementById('resLive');
-if(!box)return;
-const snap=await db.collection('reservas').orderBy('ts','desc').limit(100).get();
-let html='';
-snap.forEach(d=>{
-const r=d.data();
-html+=`<div style="padding:8px 0;border-bottom:1px solid #3a0f6e"><div style="font-weight:700">${r.producto?.nombre||r.servicio||'Reserva'}</div><div style="font-size:11px;color:#a855f7">${r.idReserva||''} - ${r.uidLocal||''} - ${r.origen||''}</div></div>`;
+let snap=await db.collection('config').get();
+let html='<div class="grid">';let count=0;
+snap.forEach(doc=>{
+if(doc.id==='planes'||doc.id==='cobros') return;
+let p=doc.data();if(!p.nombreLocal && !p.nombre && !p.logo) return;
+count++;
+html+=`<div class="card"><div class="card-title">${p.nombreLocal||p.nombre||doc.id}</div><div class="card-sub">Visible: ${p.visible} Bloqueado: ${p.bloqueado}</div><div class="card-sub">Plan: ${p.plan||'casa'} Usos: ${p.usosMes||0}</div>${p.logo?`<img class="img-thumb" src="${p.logo}">`:''}<div class="btn-row"><button class="btn btn-del" onclick="bloquear('${doc.id}',true)">Bloquear</button><button class="btn btn-ok" onclick="bloquear('${doc.id}',false)">Activar</button></div></div>`;
 });
-box.innerHTML=html||'Vacío';
+if(count===0) html+='<div class="empty">Catalogo vacio</div>';
+html+='</div>';panel.innerHTML=html;return;
 }
-async function cargarCatalogoLive(){
-const box=document.getElementById('catLive');
-if(!box)return;
-const snap=await db.collection('catalogo').orderBy('ts','desc').limit(100).get();
-let html='';
-snap.forEach(d=>{
-const p=d.data();
-html+=`<div style="display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #3a0f6e"><img src="${p.imagen}" style="width:48px;height:48px;border-radius:8px;object-fit:cover"><div><div style="font-weight:700">${p.nombre}</div><div style="font-size:11px">$${p.precio} - ${p.uidLocal||''}</div></div></div>`;
+if(currentTab==='clientes'){
+let snap=await db.collection('users').limit(200).get();
+if(snap.empty){panel.innerHTML='<div class="empty">No hay clientes</div>';return}
+let html='<div class="grid">';
+for(let doc of snap.docs){
+let u=doc.data();
+let cfgSnap=await db.collection('config').doc(doc.id).get();
+let c=cfgSnap.exists?cfgSnap.data():{};
+let bloq=c.bloqueado===true;
+html+=`<div class="card"><div class="card-title">${u.email||doc.id}</div><div class="card-sub">Rol: ${u.rol||''} Plan: ${c.plan||'casa'} UsosMes: ${c.usosMes||0}</div><div class="card-sub">${bloq?'<span style=color:#f87171>BLOQUEADO</span>':'<span style=color:#10b981>ACTIVO</span>'}</div><div class="btn-row"><button class="btn ${bloq?'btn-ok':'btn-del'}" onclick="bloquear('${doc.id}',${!bloq})">${bloq?'Desbloquear':'Bloquear'}</button><button class="btn btn-del" onclick="borrarUser('${doc.id}')">Borrar</button></div></div>`;
+}
+html+='</div>';panel.innerHTML=html;return;
+}
+if(currentTab==='pagos'){
+let snap=await db.collection('solicitudes').orderBy('fecha','desc').limit(100).get();
+if(snap.empty){panel.innerHTML='<div class="empty">No hay pagos</div>';return}
+let html='<div class="grid">';
+snap.forEach(doc=>{
+let x=doc.data();
+html+=`<div class="card"><div class="card-title">${x.email||x.uid||doc.id}</div><div class="card-sub">Plan: ${x.planNuevo||x.plan||''} Estado: ${x.estado||'pendiente'}</div>${x.comprobante?`<a href="${x.comprobante}" target=_blank style="color:#a855f7">Ver comprobante</a>`:''}<div class="btn-row"><button class="btn btn-ok" onclick="aprobar('${doc.id}')">Aprobar</button></div></div>`;
 });
-box.innerHTML=html||'Vacío';
+html+='</div>';panel.innerHTML=html;return;
 }
-async function delSoporte(id){if(!confirm('Borrar?'))return;await db.collection('soporte').doc(id).delete();}
-function verDatos(i){let r=cacheSoporte[i];alert(JSON.stringify(r.datosReservaCompleto||r,null,2));}
-showApp();
+}catch(e){panel.innerHTML=`<div class="empty">Error: ${e.message}</div>`}
+}
+async function delDoc(col,id){if(!confirm('Borrar '+id+'?')) return;await db.collection(col).doc(id).delete();render();}
+async function bloquear(uid,bloq){await db.collection('config').doc(uid).set({bloqueado:bloq,activo:!bloq,visible:!bloq},{merge:true});render();}
+async function borrarUser(uid){if(!confirm('Borrar user '+uid+'?')) return;await db.collection('config').doc(uid).delete();await db.collection('users').doc(uid).delete();render();}
+async function aprobar(id){await db.collection('solicitudes').doc(id).update({estado:'aprobado'});render();}
+async function verDatosSoporte(id){let d=await db.collection('soporte').doc(id).get();alert(JSON.stringify(d.data(),null,2).slice(0,4000));}
 </script>
 </body>
 </html>
