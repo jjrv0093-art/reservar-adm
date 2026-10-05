@@ -1,1 +1,409 @@
-<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport"content="width=device-width,initial-scale=1"><title>reservAR ADM</title><style>:root{--stroke:#ffffff20;}*{box-sizing:border-box}body{margin:0;font-family:Inter,system-ui;color:#fff;background:linear-gradient(160deg,#6a11cb,#7b1fa2,#3a0f6e,#0a0933);background-attachment:fixed}.hidden{display:none!important}.screen{display:none}.screen.active{display:block}.wrap{max-width:1200px;margin:0 auto;padding:16px}.topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:rgba(20,8,45,.9);border-bottom:1px solid var(--stroke)}.brand{font-weight:900}.tabs{display:flex;gap:8px;overflow-x:auto;padding:10px 2px}.tab{border:1px solid var(--stroke);background:#ffffff12;color:#e9e0ff;padding:10px 18px;border-radius:999px;cursor:pointer;font-weight:700;font-size:14px;white-space:nowrap}.tab.active{background:#fff;color:#3a0f6e}.btn{background:#a855f7;border:none;color:#fff;padding:.6rem .95rem;border-radius:12px;cursor:pointer;font-weight:800;font-size:14px}.btn.ghost{background:transparent;border:1px solid var(--stroke)}.btn.small{padding:.4rem .7rem;font-size:12px}.btn.full{width:100%}.card{background:#ffffff14;border:1px solid var(--stroke);border-radius:20px;padding:18px;margin-bottom:14px}.pill{padding:7px 12px;border-radius:999px;border:1px solid var(--stroke);background:#ffffff18;font-size:12px;font-weight:700}.pill.click{cursor:pointer;transition:.15s}.pill.click:active{transform:scale(.95)}input,select,textarea{width:100%;padding:.65rem .8rem;border-radius:12px;border:1px solid #ffffff22;background:#1a1033cc;color:#fff}label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}.list{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}.item{padding:12px;border:1px solid var(--stroke);border-radius:14px;background:#ffffff0f;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#fff;color:#111;padding:12px 18px;border-radius:999px;font-weight:900;z-index:99}</style><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script></head><body><sectionid="auth"style="max-width:400px;margin:60px auto;background:#ffffff12;border:1px solid var(--stroke);border-radius:20px;padding:20px"><divclass="brand"style="font-size:22px">reservAR ADM</div><divstyle="color:#d9ccff;font-size:12px;margin-bottom:14px">Trial 30d unico</div><inputid="email"value="jjrv.0093@gmail.com"><inputid="password"type="password"placeholder="Contraseña"style="margin-top:8px"><pid="err"style="color:#fca5a5;min-height:18px"></p><buttonid="loginBtn"class="btn full">Entrar</button></section><sectionid="app"class="hidden"><divclass="topbar"><divclass="brand">reservAR ADM</div><divstyle="display:flex;gap:8px"><spanclass="pill">Trial unico</span><buttonid="logout"class="btn small ghost">Salir</button></div></div><divclass="wrap"><divclass="tabs"><buttonclass="tab active"data-s="dash">Inicio</button><buttonclass="tab"data-s="pagos"style="background:#facc15;color:#000">💸 Pagos</button><buttonclass="tab"data-s="planes">Locales</button><buttonclass="tab"data-s="tarifas">Tarifas</button><buttonclass="tab"data-s="soporte">Soporte</button><buttonclass="tab"data-s="users">Usuarios</button><buttonclass="tab"data-s="ajustes">Ajustes</button></div><divid="dash"class="screen active"><divclass="card"><h3id="sal">Hola ADMI</h3><divid="kpis"class="kpi"style="display:flex;gap:8px;flex-wrap:wrap"></div><pstyle="font-size:11px;color:#d9ccff;margin-top:8px">Toca Total / Activos / Vencidos para filtrar</p></div></p></div><divclass="card"><h3>30 dias por unica vez</h3><divid="resumen"></div></div></div><divid="pagos"class="screen"><divclass="card"style="border:2px solid #facc15"><h3>💸 Solicitudes Pendientes</h3><buttonid="btnReloadPagos"class="btn small ghost"style="margin-top:8px">Recargar pagos</button><ulid="pagosList"class="list"style="margin-top:12px"></ul></div></div><divid="planes"class="screen"><divclass="card"><divstyle="display:flex;gap:8px"><inputid="bus"placeholder="Buscar local..."><buttonid="reload"class="btn small ghost">Recargar</button><buttonclass="btn small ghost"onclick="filtrarKpi('todos')">Todos</button></div><divid="grid"style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px"></div></div></div><divid="tarifas"class="screen"><divstyle="display:grid;grid-template-columns:repeat(3,1fr);gap:12px"><divclass="card"><b>Básico</b><label>Nombre</label><inputid="pBaseNombre"value="Básico"><label>Limite/mes</label><inputid="pBaseLim"type="number"value="100"><label>Precio $</label><inputid="pBasePrecio"type="number"value="5000"></div><divclass="card"><b>Medio</b><label>Nombre</label><inputid="pMedioNombre"value="Medio"><label>Limite</label><inputid="pMedioLim"type="number"value="300"><label>Precio $</label><inputid="pMedioPrecio"type="number"value="9000"></div><divclass="card"><b>Premium</b><label>Nombre</label><inputid="pPremNombre"value="Premium"><label>Limite</label><inputid="pPremLim"type="number"value="999999"><label>Precio $</label><inputid="pPremPrecio"type="number"value="15000"></div></div><divclass="card"><buttonid="btnGuardarTarifas"class="btn">Guardar tarifas</button><spanid="tarifaMsg"style="color:#86efac;margin-left:8px"></span></div></div><divid="soporte"class="screen"><divclass="card"><h3>Soporte LOCAL vs CLIENTE</h3><divstyle="display:flex;gap:6px;margin-bottom:10px"><buttonclass="btn small ghost"onclick="loadSoporte('todos')">Todos</button><buttonclass="btn small ghost"onclick="loadSoporte('local')">Solo Locales</button><buttonclass="btn small ghost"onclick="loadSoporte('cliente')">Solo Clientes</button></div><ulid="sList"class="list"></ul></div></div><divid="users"class="screen"><divclass="card"><h3>Usuarios</h3><pstyle="font-size:11px;color:#d9ccff">Clientes: solo Ver/Bloquear sin dias</p><divstyle="display:flex;gap:8px;margin-bottom:12px"><inputid="busUsers"placeholder="Buscar usuario..."><buttonid="reloadUsers"class="btn small ghost">Recargar</button></div><ulid="uList"class="list"></ul></div></div><divid="ajustes"class="screen"><divclass="card"style="border:2px solid #facc15"><h3>💸 MIS DATOS DE COBRO</h3><label>Alias</label><inputid="jonaAlias"><label>CBU</label><inputid="jonaCbu"><label>Titular</label><inputid="jonaTitular"><label>WhatsApp</label><inputid="jonaWsp"><label>Instrucciones</label><textareaid="jonaInstr"></textarea><buttonid="btnGuardarCobrosJona"class="btn"style="margin-top:10px">Guardar mis datos</button><spanid="msgCobrosJona"style="color:#86efac"></span></div><divclass="card"><h3>Horas de gracia</h3><inputid="horasPlan"type="number"value="48"style="max-width:200px"><buttonid="btnGuardarHoras"class="btn small"style="margin-top:8px">Guardar</button><spanid="ajMsg"style="color:#86efac"></span></div></div></div></section><divid="userModal"style="position:fixed;inset:0;background:#0009;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px"class="hidden"><divclass="card"style="max-width:500px;width:100%;background:#1a1033"><h3id="modalTitle">Ficha</h3><divid="modalBody"style="font-size:13px;line-height:1.6"></div><divstyle="display:flex;gap:8px;margin-top:14px"><buttonid="modalClose"class="btn ghost">Cerrar</button><buttonid="modalBloq"class="btn small ghost">Bloquear</button></div></div></div><divid="toast"class="toast hidden"></div><script>const firebaseConfig={apiKey:"AIzaSyC57wshaJ2EuIBoBdXv18opL4u_Vuw2bAQ",authDomain:"reservar-cb70d.firebaseapp.com",projectId:"reservar-cb70d",storageBucket:"reservar-cb70d.firebasestorage.app",messagingSenderId:"630908928696",appId:"1:630908928696:web:5e89f5f2b2cc2b240e6a4d"};firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const db=firebase.firestore();const $=id=>document.getElementById(id);const toast=m=>{const t=$('toast');t.textContent=m;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),2500);};$('loginBtn').onclick=async()=>{const e=$('email').value.trim();const p=$('password').value.trim();$('err').textContent='Conectando...';try{await auth.signInWithEmailAndPassword(e,p);}catch(er){$('err').textContent=er.message;}};$('logout').onclick=()=>auth.signOut();document.querySelectorAll('.tab').forEach(t=>{t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));t.classList.add('active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$(t.dataset.s).classList.add('active');if(t.dataset.s==='planes') renderLocalesFiltrados();if(t.dataset.s==='pagos') loadPagos();if(t.dataset.s==='soporte') loadSoporte('todos');if(t.dataset.s==='users') loadUsers();};});let all=[];let cfg={horasPlan:48};let selectedUid=null;let filtroKpiActual='todos';auth.onAuthStateChanged(async u=>{if(!u){$('auth').classList.remove('hidden');$('app').classList.add('hidden');return;}if(u.email.toLowerCase()!=='jjrv.0093@gmail.com'){toast('No sos ADMI');await auth.signOut();return;}$('auth').classList.add('hidden');$('app').classList.remove('hidden');$('sal').textContent='Hola ADMI '+u.email;try{const c=await db.collection('config').doc('adm').get();if(c.exists){cfg=c.data();$('horasPlan').value=cfg.horasPlan||48;}const pt=await db.collection('config').doc('planes').get();if(pt.exists){const d=pt.data();$('pBaseNombre').value=d.base?.nombre||'Básico';$('pBaseLim').value=d.base?.limite||100;$('pBasePrecio').value=d.base?.precio||5000;$('pMedioNombre').value=d.medio?.nombre||'Medio';$('pMedioLim').value=d.medio?.limite||300;$('pMedioPrecio').value=d.medio?.precio||9000;$('pPremNombre').value=d.premium?.nombre||'Premium';$('pPremLim').value=d.premium?.limite||999999;$('pPremPrecio').value=d.premium?.precio||15000;}const cob=await db.collection('config').doc('cobros').get();if(cob.exists){const c=cob.data();$('jonaAlias').value=c.alias||'';$('jonaCbu').value=c.cbu||'';$('jonaTitular').value=c.titular||'';$('jonaWsp').value=c.whatsapp||c.wsp||'';$('jonaInstr').value=c.instrucciones||'';}}catch(e){}load();loadPagos();}); function estaActivo(l){if(l.planActivo===false) return false;if(l.visible===false) return false;if(!l.planVence) return true;let v=null;try{if(l.planVence.toDate) v=l.planVence.toDate();else if(l.planVence.seconds) v=new Date(l.planVence.seconds*1000);else v=new Date(l.planVence);}catch(e){}if(!v||isNaN(v.getTime())) return true;return (new Date()-v)/36e5<=(cfg.horasPlan||48);}function fmtVence(l){if(!l) return '-';const pv=l.planVence||l;if(!pv) return '-';try{if(pv.toDate) return pv.toDate().toLocaleDateString('es-AR');if(pv.seconds) return new Date(pv.seconds*1000).toLocaleDateString('es-AR');const d=new Date(pv);if(isNaN(d.getTime())) return '-';return d.toLocaleDateString('es-AR');}catch(e){return '-';}}async function load(){try{const s=await db.collection('config').get();all=s.docs.filter(d=>d.id!=='cobros'&&d.id!=='planes'&&d.id!=='adm'&&d.id!=='branding').map(d=>({id:d.id,...d.data()}));const activos=all.filter(estaActivo).length;$('kpis').innerHTML=`<span class="pill click" onclick="filtrarKpi('todos')" style="background:#ffffff22;cursor:pointer">Total ${all.length}</span><span class="pill click" onclick="filtrarKpi('activos')" style="background:#22c55e33;cursor:pointer">Activos ${activos}</span><span class="pill click" onclick="filtrarKpi('vencidos')" style="background:#ef444433;cursor:pointer">Vencidos ${all.length-activos}</span>`;$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span><span class="pill">Trial unico</span>`;renderLocalesFiltrados();}catch(e){toast(e.message);}}window.filtrarKpi=(tipo)=>{filtroKpiActual=tipo;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelector('[data-s="planes"]').classList.add('active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$('planes').classList.add('active');renderLocalesFiltrados();};function renderLocalesFiltrados(){let lista=[...all];if(filtroKpiActual==='activos') lista=all.filter(estaActivo);if(filtroKpiActual==='vencidos') lista=all.filter(l=>!estaActivo(l));const g=$('grid');if(!g) return;g.innerHTML='';if(!lista.length){g.innerHTML=`<div class="card">Sin locales en ${filtroKpiActual}</div>`;return;}lista.forEach(l=>{let vence=fmtVence(l);const a=estaActivo(l);const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${l.promoMotivo||'PROMO'} ${l.promoHasta||vence}</span>`:'';const trialBadge=l.trialUsado?`<span class="pill" style="background:#a855f733">Trial usado</span>`:`<span class="pill" style="background:#22c55e33">Trial 30d</span>`;const logo=l.logoUrl?`<img src="${l.logoUrl}" style="width:40px;height:40px;border-radius:12px;object-fit:cover">`:'';const d=document.createElement('div');d.className='card';d.innerHTML=`<div style="display:flex;justify-content:space-between"><div style="display:flex;gap:8px;align-items:center">${logo}<b>${l.nombre||'Local'}</b></div><span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}</span></div><div style="font-size:12px;color:#cfc9e6;margin:8px 0">${l.email||''} - ${l.plan||'Basico'} ${promo} ${trialBadge}</div><div style="font-size:12px;margin-bottom:8px">Vence: ${vence}</div><div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button><button class="btn small ghost" onclick="darPromo('${l.id}',7)">+7</button><button class="btn small ghost" onclick="darPromo('${l.id}',15)">+15</button><button class="btn small ghost" onclick="darPromo('${l.id}',30)">+30 promo</button><button class="btn small ghost" style="background:#fff;color:#000;font-weight:900" onclick="darCustom('${l.id}')">+N</button><button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;g.appendChild(d);});} async function loadPagos(){const ul=$('pagosList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('solicitudes').where('estado','==','pendiente').limit(100).get();if(snap.empty){ul.innerHTML='<li class="item">No hay pagos ✅</li>';return;}ul.innerHTML='';snap.forEach(doc=>{const x=doc.data();const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b>${x.nombreLocal||'Local'}</b><span class="pill" style="background:#facc15;color:#000">${x.plan||''} $${x.precio||''}</span></div><div style="font-size:12px;color:#cfc9e6;margin:6px 0">${x.email||''} - UID:${x.uid||''}</div><div style="display:flex;gap:6px"><button class="btn small" style="background:#22c55e" onclick="aprobarPago('${doc.id}','${x.uid}','${x.plan}')">Aprobar 30d</button><button class="btn small ghost" onclick="rechazarPago('${doc.id}','${x.uid}')">Rechazar</button></div>`;ul.appendChild(li);});}catch(e){$('pagosList').innerHTML='<li class="item">Error: '+e.message+'</li>';}}$('btnReloadPagos').onclick=loadPagos;window.aprobarPago=async(solicId,uid,plan)=>{if(!confirm('Aprobar 30 dias?')) return;const vence=new Date();vence.setDate(vence.getDate()+30);await db.collection('config').doc(uid).set({plan:plan,planActivo:true,visible:true,planVence:firebase.firestore.Timestamp.fromDate(vence),plan_estado:'aprobado',trialUsado:true},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'aprobado',aprobado_en:firebase.firestore.FieldValue.serverTimestamp()});toast('Aprobado 30d');loadPagos();load();loadUsers();};window.rechazarPago=async(solicId,uid)=>{if(!confirm('Rechazar?')) return;await db.collection('config').doc(uid).set({planActivo:false,visible:false,plan_estado:'rechazado'},{merge:true});await db.collection('solicitudes').doc(solicId).update({estado:'rechazado'});toast('Rechazado');loadPagos();load();};window.activar48=async id=>{const vence=new Date();vence.setHours(vence.getHours()+48);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(vence),planActivo:true,visible:true},{merge:true});toast('48hs');load();};window.darPromo=async(id,dias)=>{const motivo=prompt(`Dar ${dias} dias - Motivo:`,dias==30?'Gentileza':'Promo');if(motivo===null) return;const hasta=new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Promo ${dias}d`);load();loadUsers();};window.darCustom=async(id)=>{const inp=prompt('Cuantos dias custom? Ej: 45, 60, 90');if(inp===null) return;const dias=Number(inp);if(isNaN(dias)||dias<=0){toast('Numero invalido');return;}const motivo=prompt(`Dar ${dias} dias - Motivo:`, 'Custom');if(motivo===null) return;const hasta=new Date();hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`Custom ${dias}d`);load();}; async function loadUsers(){const ul=$('uList');ul.innerHTML='<li class="item">Cargando...</li>';try{let usersSnap=await db.collection('users').limit(200).get();if(usersSnap.empty){usersSnap=await db.collection('config').limit(200).get();}ul.innerHTML='';usersSnap.forEach(d=>{if(['cobros','planes','adm','branding'].includes(d.id)) return;const x=d.data();const cfgData=all.find(a=>a.id==d.id)||{};const activo=estaActivo(cfgData);const vence=fmtVence(cfgData);const li=document.createElement('li');li.className='item';li.innerHTML=`<div><b>${x.nombre||cfgData.nombre||d.id.substring(0,10)+'...'}</b><div style="font-size:12px;color:#cfc9e6">${x.email||cfgData.email||''} - ${cfgData.plan||'-'} - ${activo?'ACTIVO':'VENCIDO'} - ${vence}</div></div><div style="display:flex;gap:6px"><button class="btn small ghost" onclick="verFicha('${d.id}')">Ver</button><button class="btn small ghost" onclick="bloquear('${d.id}')">Bloq</button></div>`;ul.appendChild(li);});}catch(e){$('uList').innerHTML='<li class="item">'+e.message+'</li>';}}$('reloadUsers').onclick=loadUsers;$('reload').onclick=load;window.verFicha=async id=>{const doc=await db.collection('config').doc(id).get();const uDoc=await db.collection('users').doc(id).get();const c=doc.exists?doc.data():{};const u=uDoc.exists?uDoc.data():{};selectedUid=id;$('modalTitle').textContent=c.nombre||u.nombre||u.email||c.email||id;$('modalBody').innerHTML=`<b>Email:</b> ${c.email||u.email||'-'}<br><b>Plan:</b> ${c.plan||'-'}<br><b>Activo:</b> ${c.planActivo?'Si':'No'}<br><b>Vence:</b> ${fmtVence(c)}<br><b>Trial:</b> ${c.trialUsado?'Usado':'No usado'}<br><b>Promo:</b> ${c.promoMotivo||'-'} hasta ${c.promoHasta||'-'}<br><b>Tel:</b> ${c.telefono||u.telefono||'-'}<br><b>UID:</b> ${id}<br>`;$('userModal').classList.remove('hidden');};$('modalClose').onclick=()=>{$('userModal').classList.add('hidden');};$('modalBloq').onclick=()=>{if(selectedUid){$('userModal').classList.add('hidden');bloquear(selectedUid);}};window.bloquear=async id=>{if(!confirm('Bloquear?')) return;await db.collection('config').doc(id).set({planActivo:false,visible:false},{merge:true});toast('Bloqueado');load();loadUsers();};async function loadSoporte(filtro='todos'){const ul=$('sList');ul.innerHTML='<li class="item">Cargando soporte...</li>';try{let q=db.collection('soporte').orderBy('ts','desc').limit(100);if(filtro!=='todos'){q=db.collection('soporte').where('origen','==',filtro).orderBy('ts','desc').limit(100);}const s=await q.get();if(s.empty){ul.innerHTML='<li class="item">Sin mensajes</li>';return;}ul.innerHTML='';s.forEach(d=>{const x=d.data();const esLocal=x.origen==='local';const color=esLocal?'#a855f7':'#22c55e';const label=esLocal?'🟣 LOCAL':'🟢 CLIENTE';const img=x.imagen?`<br><img src="${x.imagen}" style="max-width:200px;border-radius:12px;margin-top:6px">`:'';const li=document.createElement('li');li.className='item';li.style.borderLeft=`4px solid ${color}`;li.innerHTML=`<div style="flex:1"><div style="display:flex;gap:6px"><b style="color:${color}">${label}</b><span class="pill">${x.tipo||'queja'}</span></div><div style="margin-top:6px"><b>${x.nombre||x.email||''}</b></div><div style="font-size:12px">${x.mensaje||''}${img}</div></div><div><button class="btn small ghost" onclick="delSoporte('${d.id}')">Borrar</button></div>`;ul.appendChild(li);});}catch(e){ul.innerHTML='<li class="item">Error: '+e.message+'</li>';}}window.delSoporte=async id=>{if(confirm('Borrar?')){await db.collection('soporte').doc(id).delete();toast('Borrado');loadSoporte('todos');}};$('bus').oninput=e=>{const q=e.target.value.toLowerCase();if(q.trim()===''){filtroKpiActual='todos';renderLocalesFiltrados();return;}const f=all.filter(l=>(l.nombre||'').toLowerCase().includes(q)||(l.email||'').toLowerCase().includes(q));const g=$('grid');g.innerHTML='';f.forEach(l=>{const d=document.createElement('div');d.className='card';d.innerHTML=`<b>${l.nombre||'Local'}</b><div style="margin-top:8px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button> <button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;g.appendChild(d);});};$('busUsers').oninput=e=>{const q=e.target.value.toLowerCase();$('uList').querySelectorAll('li').forEach(li=>{li.style.display=li.textContent.toLowerCase().includes(q)?'flex':'none';});};$('btnGuardarTarifas').onclick=async()=>{const data={base:{nombre:$('pBaseNombre').value,limite:Number($('pBaseLim').value),precio:Number($('pBasePrecio').value)},medio:{nombre:$('pMedioNombre').value,limite:Number($('pMedioLim').value),precio:Number($('pMedioPrecio').value)},premium:{nombre:$('pPremNombre').value,limite:Number($('pPremLim').value),precio:Number($('pPremPrecio').value)},updated:firebase.firestore.FieldValue.serverTimestamp()};await db.collection('config').doc('planes').set(data,{merge:true});$('tarifaMsg').textContent='Guardado';toast('Tarifas');};$('btnGuardarHoras').onclick=async()=>{const h=Number($('horasPlan').value)||48;await db.collection('config').doc('adm').set({horasPlan:h},{merge:true});cfg.horasPlan=h;$('ajMsg').textContent='Guardado';load();};$('btnGuardarCobrosJona').onclick=async()=>{await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value.trim(),cbu:$('jonaCbu').value.trim(),titular:$('jonaTitular').value.trim(),whatsapp:$('jonaWsp').value.trim(),instrucciones:$('jonaInstr').value.trim(),actualizado:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});$('msgCobrosJona').textContent='Guardado';toast('Cobros');};</script></body></html>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ADMI - Dios</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+body{
+font-family:'Manrope',sans-serif;
+background:#0f0a1e;
+color:#fff;
+}
+.login-box{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+padding:20px;
+}
+.login-card{
+background:#1e1042;
+border:1px solid #3a0f6e;
+border-radius:24px;
+padding:28px;
+width:100%;
+max-width:360px;
+}
+.login-card h1{
+font-weight:800;
+font-size:24px;
+color:#fff;
+}
+.login-card h1 span{
+color:#a855f7;
+}
+.login-card input{
+width:100%;
+padding:14px 16px;
+border-radius:999px;
+border:1px solid #3a0f6e;
+background:#12082e;
+color:#fff;
+outline:none;
+margin-top:12px;
+}
+.login-card button{
+width:100%;
+padding:14px;
+border-radius:999px;
+border:none;
+background:linear-gradient(135deg,#6a11cb,#7b1fa2);
+color:#fff;
+font-weight:800;
+margin-top:16px;
+}
+.header{
+position:sticky;
+top:0;
+z-index:10;
+background:rgba(15,10,30,.9);
+backdrop-filter:blur(10px);
+border-bottom:1px solid #3a0f6e;
+padding:14px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+.logo{
+font-weight:800;
+font-size:20px;
+color:#fff;
+}
+.logo span{
+color:#a855f7;
+}
+.tabs{
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding:12px 14px;
+scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{
+display:none;
+}
+.tab{
+white-space:nowrap;
+padding:8px 16px;
+border-radius:999px;
+border:1px solid #3a0f6e;
+background:#1e1042;
+color:#a855f7;
+font-weight:700;
+font-size:13px;
+}
+.tab.active{
+background:linear-gradient(135deg,#6a11cb,#7b1fa2);
+color:#fff;
+border-color:#6a11cb;
+}
+<style>
+.panel{
+padding:14px;
+}
+.card{
+background:#1e1042;
+border:1px solid #3a0f6e;
+border-radius:18px;
+padding:14px;
+margin-bottom:12px;
+}
+.card-title{
+font-weight:700;
+font-size:14px;
+color:#fff;
+}
+.card-sub{
+font-size:12px;
+color:#a855f7;
+margin-top:4px;
+}
+.badge{
+display:inline-block;
+padding:4px 10px;
+border-radius:999px;
+font-size:11px;
+font-weight:800;
+margin-top:8px;
+}
+.badge-cliente{
+background:rgba(168,85,247,.2);
+color:#a855f7;
+border:1px solid #a855f7;
+}
+.badge-local{
+background:rgba(106,17,203,.3);
+color:#c4b5fd;
+border:1px solid #6a11cb;
+}
+.grid{
+display:grid;
+grid-template-columns:1fr;
+gap:12px;
+}
+.img-thumb{
+width:100%;
+border-radius:12px;
+margin-top:10px;
+max-height:180px;
+object-fit:cover;
+}
+.btn-row{
+display:flex;
+gap:8px;
+margin-top:12px;
+}
+.btn{
+flex:1;
+padding:10px;
+border-radius:999px;
+border:none;
+font-weight:700;
+font-size:12px;
+}
+.btn-del{
+background:rgba(239,68,68,.15);
+color:#f87171;
+border:1px solid #ef4444;
+}
+.btn-ok{
+background:linear-gradient(135deg,#6a11cb,#7b1fa2);
+color:#fff;
+}
+.empty{
+padding:40px 20px;
+text-align:center;
+color:#a855f7;
+}
+</style>
+</head>
+<body>
+<div id="login" class="login-box">
+<div class="login-card">
+<h1>
+ADMI <span>DIOS</span>
+</h1>
+<input id="email" type="email" placeholder="jjrv.0093@gmail.com">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="doLogin()">
+Entrar
+</button>
+<div id="loginMsg" style="margin-top:12px;font-size:12px;color:#f87171"></div>
+</div>
+</div>
+<div id="app" style="display:none">
+<div class="header">
+<div class="logo">
+MAS <span>VENTAS</span> ADMI
+</div>
+<button onclick="doLogout()" style="border:none;background:#1e1042;color:#a855f7;padding:8px 14px;border-radius:999px;border:1px solid #3a0f6e;font-weight:700">
+Salir
+</button>
+</div>
+<div class="tabs" id="tabs"></div>
+<div class="panel" id="panel"></div>
+</div>
+<script>
+const OWNER_EMAIL='jjrv.0093@gmail.com';
+const ADMIN_KEY='admin_catalog_v2';
+const RESERVAS_KEY='reservas_para_admi';
+const SOPORTE_KEY='soporte_admi_v6';
+let currentTab='soporte';
+function doLogin(){
+let e=document.getElementById('email').value.trim();
+let p=document.getElementById('pass').value.trim();
+let msg=document.getElementById('loginMsg');
+if(e.toLowerCase()!==OWNER_EMAIL){
+msg.textContent='Solo OWNER puede entrar';
+return;
+}
+if(!p){
+msg.textContent='Falta password';
+return;
+}
+localStorage.setItem('admi_auth','true');
+showApp();
+}
+function doLogout(){
+localStorage.removeItem('admi_auth');
+document.getElementById('login').style.display='flex';
+document.getElementById('app').style.display='none';
+}
+function showApp(){
+if(localStorage.getItem('admi_auth')!=='true') return;
+document.getElementById('login').style.display='none';
+document.getElementById('app').style.display='block';
+renderTabs();
+render();
+}
+function getTabsList(){
+return [
+'soporte',
+'reservas',
+'catalogo',
+'clientes',
+'pagos'
+];
+}
+function renderTabs(){
+let box=document.getElementById('tabs');
+let html='';
+getTabsList().forEach(t=>{
+html+=`<button class="tab ${t===currentTab?'active':''}" onclick="setTab('${t}')">${t.toUpperCase()}</button>`;
+});
+box.innerHTML=html;
+}
+function setTab(t){
+currentTab=t;
+renderTabs();
+render();
+}
+function getSoporte(){
+try{
+let a=JSON.parse(localStorage.getItem(SOPORTE_KEY)||'[]');
+let b=JSON.parse(localStorage.getItem(RESERVAS_KEY)||'[]');
+return [...a,...b].sort((x,y)=>new Date(y.fecha||y.fechaHoraProblema)-new Date(x.fecha||x.fechaHoraProblema));
+}catch(e){
+return [];
+}
+}
+function getReservas(){
+try{
+return JSON.parse(localStorage.getItem(RESERVAS_KEY)||'[]');
+}catch(e){
+return [];
+}
+}
+function getCatalogo(){
+try{
+return JSON.parse(localStorage.getItem(ADMIN_KEY)||'[]');
+}catch(e){
+return [];
+}
+}
+<script>
+function render(){
+let panel=document.getElementById('panel');
+if(currentTab==='soporte'){
+let data=getSoporte();
+if(data.length===0){
+panel.innerHTML=`<div class="empty">Si no hizo reserva no figura nada, si hizo le figura</div>`;
+return;
+}
+let html='<div class="grid">';
+data.forEach((r,i)=>{
+let origen=r.origen||r.clienteData?.origen||'desconocido';
+let badgeClass=origen.includes('cliente')?'badge-cliente':'badge-local';
+let nombre=r.producto?.nombre||r.datosReservaCompleto?.producto?.nombre||r.mensaje||'Sin mensaje';
+let idReserva=r.idReserva||r.datosReservaCompleto?.idReserva||'sin-id';
+let uid=r.uidLocal||r.datosReservaCompleto?.uidLocal||r.clienteData?.uid||'sin-uid';
+let img=r.imagen||r.producto?.imagen||r.datosReservaCompleto?.producto?.imagen||'';
+let fecha=r.fecha||r.fechaHoraProblema||r.datosReservaCompleto?.fecha||'';
+html+=`
+<div class="card">
+<div class="card-title">${nombre}</div>
+<div class="card-sub">ID Reserva: ${idReserva}</div>
+<div class="card-sub">UID Local: ${uid}</div>
+<div class="card-sub">Fecha: ${fecha}</div>
+<div class="badge ${badgeClass}">${origen.toUpperCase()}</div>
+${img?`<img class="img-thumb" src="${img}">`:''}
+<div class="btn-row">
+<button class="btn btn-del" onclick="delSoporte(${i})">Borrar</button>
+<button class="btn btn-ok" onclick="verDatos(${i})">Ver datosReservaCompleto</button>
+</div>
+</div>
+`;
+});
+html+='</div>';
+panel.innerHTML=html;
+return;
+}
+if(currentTab==='reservas'){
+let data=getReservas();
+if(data.length===0){
+panel.innerHTML=`<div class="empty">No hay reservas</div>`;
+return;
+}
+let html='<div class="grid">';
+data.forEach((r,i)=>{
+html+=`
+<div class="card">
+<div class="card-title">${r.producto?.nombre||'Reserva'}</div>
+<div class="card-sub">${r.producto?.precio?'$'+r.producto.precio:''}</div>
+<div class="card-sub">${r.idReserva||''}</div>
+<div class="card-sub">${r.uidLocal||''}</div>
+<div class="badge badge-cliente">${(r.clienteData?.origen||'cliente').toUpperCase()}</div>
+<div class="btn-row">
+<button class="btn btn-del" onclick="delReserva(${i})">Borrar</button>
+</div>
+</div>
+`;
+});
+html+='</div>';
+panel.innerHTML=html;
+return;
+}
+if(currentTab==='catalogo'){
+let data=getCatalogo();
+if(data.length===0){
+panel.innerHTML=`<div class="empty">Catálogo vacío</div>`;
+return;
+}
+let html='<div class="grid">';
+data.forEach((p,i)=>{
+html+=`
+<div class="card">
+<div class="card-title">${p.nombre}</div>
+<div class="card-sub">$${p.precio} - ${p.categoria}</div>
+<img class="img-thumb" src="${p.imagen}">
+<div class="btn-row">
+<button class="btn btn-del" onclick="delProd(${i})">Borrar</button>
+</div>
+</div>
+`;
+});
+html+='</div>';
+panel.innerHTML=html;
+return;
+}
+panel.innerHTML=`<div class="empty">Panel ${currentTab} - Si no hizo reserva no figura nada</div>`;
+}
+function delSoporte(i){
+let a=JSON.parse(localStorage.getItem(SOPORTE_KEY)||'[]');
+let b=JSON.parse(localStorage.getItem(RESERVAS_KEY)||'[]');
+let all=[...a,...b];
+all.splice(i,1);
+let newA=all.filter(x=>!x.idReserva||!x.producto);
+let newB=all.filter(x=>x.idReserva&&x.producto);
+localStorage.setItem(SOPORTE_KEY,JSON.stringify(newA));
+localStorage.setItem(RESERVAS_KEY,JSON.stringify(newB));
+render();
+}
+function delReserva(i){
+let b=JSON.parse(localStorage.getItem(RESERVAS_KEY)||'[]');
+b.splice(i,1);
+localStorage.setItem(RESERVAS_KEY,JSON.stringify(b));
+render();
+}
+function delProd(i){
+let c=getCatalogo();
+c.splice(i,1);
+localStorage.setItem(ADMIN_KEY,JSON.stringify(c));
+render();
+}
+function verDatos(i){
+let data=getSoporte();
+let r=data[i];
+alert(JSON.stringify(r.datosReservaCompleto||r,null,2));
+}
+showApp();
+</script>
+</body>
+</html>
