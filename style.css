@@ -2,428 +2,159 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ADMI DIOS - reservAR</title>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>reservAR ADMI</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:#0f0a1e;color:#fff;font-family:Inter,sans-serif}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+body{background:#f5f0ff;color:#1a1a1a;padding:0 8px 90px}
+:root{--p:#6a11cb;--p2:#7b1fa2;--p3:#3a0f6e}
+.top{position:sticky;top:0;z-index:99;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;padding:12px;border-radius:0 0 16px 16px;display:flex;justify-content:space-between;align-items:center}
+.card{background:#fff;border-radius:16px;padding:12px;margin:10px 0;box-shadow:0 2px 12px rgba(106,17,203,.12);border:1px solid #eee}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;font-weight:700;font-size:15px;margin:6px 0}
+.btn:active{transform:scale(.98)}
+.input{width:100%;padding:12px;border:1px solid #ddd;border-radius:10px;margin:6px 0;font-size:14px}
+.badge{padding:4px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.badge-ok{background:#e8f5e9;color:#2e7d32}.badge-warn{background:#fff3e0;color:#ef6c00}.badge-bad{background:#fce4ec;color:#c62828}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding:8px 0;position:sticky;top:56px;background:#f5f0ff;z-index:98}
+.tab{white-space:nowrap;padding:8px 12px;border-radius:20px;background:#fff;border:1px solid #ddd;font-size:12px;font-weight:600}
+.tab.active{background:var(--p);color:#fff;border-color:var(--p)}
 .hidden{display:none!important}
-.auth{max-width:360px;margin:80px auto;padding:24px;background:#1a1035;border:1px solid #6a11cb;border-radius:16px}
-.auth h2{color:#a855f7;margin-bottom:12px}
-.auth input{width:100%;padding:10px;margin:6px 0;border-radius:8px;border:1px solid #ffffff22;background:#0f0a1e;color:#fff}
-.btn{background:linear-gradient(90deg,#6a11cb,#7b1fa2);color:#fff;border:none;padding:10px 16px;border-radius:10px;cursor:pointer;font-weight:700}
-.btn.ghost{background:transparent;border:1px solid #ffffff30}
-.btn.small{padding:6px 10px;font-size:12px}
-.full{width:100%}
-.pill{padding:4px 8px;border-radius:20px;font-size:11px;background:#3a0f6e}
-.card{background:#1a1035;border:1px solid #ffffff15;border-radius:14px;padding:16px;margin-bottom:12px}
-.topbar{background:#1a1035;border-bottom:1px solid #6a11cb;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
-.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:12px 16px}
-.tab{background:#ffffff10;border:none;color:#cfc9e6;padding:8px 12px;border-radius:8px;cursor:pointer}
-.tab.active{background:#6a11cb;color:#fff}
-.wrap{padding:12px 16px}
-.item{display:flex;justify-content:space-between;align-items:center;padding:10px;border:1px solid #ffffff10;border-radius:10px;margin-bottom:6px}
-.list{list-style:none}
-.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.formgrid.full{grid-column:1/-1}
-label{font-size:11px;color:#cfc9e6}
-input,select,textarea{width:100%;padding:8px;border-radius:8px;border:1px solid #ffffff20;background:#0f0a1e;color:#fff}
-.toast{position:fixed;bottom:20px;right:20px;background:#6a11cb;padding:12px 16px;border-radius:10px;z-index:99}
-.modal{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:100}
-.modal-box{background:#1a1035;border:1px solid #a855f7;border-radius:14px;padding:20px;max-width:600px;width:90%;max-height:85vh;overflow:auto}
 </style>
 </head>
 <body>
-<section id="auth" class="auth">
-<h2>ADMI DIOS</h2>
-<p style="font-size:12px;color:#cfc9e6">Solo jjrv.0093@gmail.com</p>
-<input id="email" type="email" placeholder="tu correo">
-<input id="password" type="password" placeholder="pass">
-<p id="loginMsg" style="color:#fca5a5;font-size:12px"></p>
-<button id="loginBtn" class="btn full">Entrar</button>
-</section>
-<section id="app" class="hidden">
-<div class="topbar">
-<div style="font-weight:900;color:#a855f7">reservAR ADMI DIOS</div>
-<div>
-<span id="userPill" class="pill"></span>
-<button id="btnLogout" class="btn small ghost">Salir</button>
-</div>
-</div>
+<div class="top"><div><b>reservAR</b> ADMI<br><small id="userMail" style="font-size:10px;opacity:.8"></small></div><button id="btnLogout" style="background:rgba(255,255,255,.2);border:none;color:#fff;padding:6px 10px;border-radius:8px;font-size:12px">Salir</button></div>
+<div id="loginBox" class="card"><h3>Acceso</h3><input id="mail" class="input" placeholder="mail"><input id="pass" class="input" type="password" placeholder="pass"><button id="btnLogin" class="btn">Entrar</button><small>Solo jjrv.0093@gmail.com - proyecto reservar-cb70d</small></div>
+<div id="app" class="hidden">
 <div class="tabs">
-<button class="tab active" data-screen="dash">Dash</button>
-<button class="tab" data-screen="locales">Locales</button>
-<button class="tab" data-screen="solicitudes">Solicitudes Plan</button>
-<button class="tab" data-screen="planes">Planes/Promo</button>
-<button class="tab" data-screen="cobros">Cobros/Branding</button>
-<button class="tab" data-screen="soporte">Soporte DIOS</button>
+<div class="tab active" data-t="dash">Dash</div><div class="tab" data-t="locales">Locales</div><div class="tab" data-t="solic">Solicitudes</div><div class="tab" data-t="planes">Planes</div><div class="tab" data-t="landing">Landing</div><div class="tab" data-t="cobros">Cobros</div><div class="tab" data-t="soporte">Soporte</div>
 </div>
-<div class="wrap">
-<section id="dash" class="screen active">
-<div class="card">
-<h3>Dash</h3>
-<div id="kpis" style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"></div>
+<div id="sec-dash" class="sec"><div class="card"><h3>Dash - 100 locales</h3><div id="kpis"></div><div style="display:flex;gap:6px;margin-top:8px"><input id="buscador" class="input" placeholder="Buscar nombre mail alias dire"></div></div></div>
+<div id="sec-locales" class="sec hidden"><div class="card"><h3>Locales <small id="totalLoc"></small></h3><div id="listaLocales"></div></div></div>
+<div id="sec-solic" class="sec hidden"><div class="card"><h3>Solicitudes Pendientes vieja primero</h3><div id="listaSolic"></div></div><div class="card"><h3>Aprobadas</h3><div id="listaAprob"></div></div></div>
+<div id="sec-planes" class="sec hidden"><div class="card"><h3>Planes y Restantes 14/10/6/5</h3><div id="formPlanes"></div></div></div>
+<div id="sec-landing" class="sec hidden"><div class="card"><h3>Landing Control - sin tocar landing.html</h3>
+<label>Mantenimiento ON/OFF</label><select id="landMant" class="input"><option value="off">OFF - Online</option><option value="on">ON - Mantenimiento</option></select>
+<label>Titulo Landing</label><input id="landTitulo" class="input">
+<label>Texto</label><textarea id="landTexto" class="input"></textarea>
+<label>Casa 50 mostrar</label><select id="landCasa" class="input"><option value="on">Mostrar</option><option value="off">Agotado</option></select>
+<button id="btnSaveLanding" class="btn">Guardar Landing</button>
+</div></div>
+<div id="sec-cobros" class="sec hidden"><div class="card"><h3>Cobros - Alias CBU - se ve en landing</h3>
+<input id="cAlias" class="input" placeholder="Alias"><input id="cCbu" class="input" placeholder="CBU"><input id="cTitular" class="input" placeholder="Titular"><input id="cBanco" class="input" placeholder="Banco"><textarea id="cInstr" class="input" placeholder="Instrucciones pago"></textarea><input id="cWpp" class="input" placeholder="WhatsApp 549..."><button id="btnSaveCobros" class="btn">Guardar Cobros</button>
+</div></div>
+<div id="sec-soporte" class="sec hidden"><div class="card"><h3>Soporte</h3>
+<div style="display:flex;gap:6px"><select id="fOrigen" class="input"><option value="todos">Origen todos</option><option value="cliente">cliente</option><option value="local">local</option><option value="flotante">flotante</option></select><select id="fEstado" class="input"><option value="todos">Estado todos</option><option value="pendiente">pendiente</option><option value="resuelto">resuelto</option></select></div>
+<div id="listaSoporte"></div></div></div>
 </div>
-</section>
-<section id="locales" class="screen hidden">
-<div class="card">
-<h3>Locales (filtra planes,cobros,branding,adm)</h3>
-<div class="row" style="display:flex;gap:6px;margin:8px 0">
-<input id="buscarLocal" placeholder="Buscar nombre,mail,alias">
-<select id="filtroEstadoLocal">
-<option value="todos">Todos</option>
-<option value="activos">Activos</option>
-<option value="bloqueados">Bloqueados</option>
-<option value="vencidos">Vencidos</option>
-</select>
-</div>
-<ul id="listaLocales" class="list"></ul>
-</div>
-</section>
-<section id="solicitudes" class="screen hidden">
-<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-<div class="card" style="border-color:#f59e0b">
-<h3 style="color:#f59e0b">PENDIENTES - orden viejo primero</h3>
-<p style="font-size:11px;color:#cfc9e6">Fotos solo en detalle para no explotar</p>
-<ul id="listaPendientes" class="list"></ul>
-</div>
-<div class="card" style="border-color:#86efac">
-<h3 style="color:#86efac">APROBADOS</h3>
-<ul id="listaAprobados" class="list"></ul>
-</div>
-</div>
-</section>
-<div id="modalSolicitud" class="modal hidden">
-<div class="modal-box">
-<h3 id="modalSolTitulo">Detalle solicitud</h3>
-<div id="modalSolBody" style="margin-top:10px"></div>
-<img id="modalSolFoto" style="width:100%;border-radius:10px;margin-top:10px;display:none">
-<div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap">
-<button id="btnAprobarSol" class="btn small">Aprobar +30 dias</button>
-<button id="btnRechazarSol" class="btn small ghost">Rechazar</button>
-<button id="btnBloquearSol" class="btn small ghost" style="border-color:#ef4444;color:#fca5a5">Bloquear + motivo</button>
-<button id="btnWASol" class="btn small ghost">WA directo</button>
-<button id="btnDescargarComp" class="btn small ghost">Descargar comprobante</button>
-<button id="btnCerrarModalSol" class="btn small ghost">Cerrar</button>
-</div>
-<input id="inputMotivoBloqueo" placeholder="Motivo bloqueo" style="margin-top:8px">
-<p id="modalSolMsg" style="color:#86efac;font-size:12px"></p>
-</div>
-</div>
-<section id="planes" class="screen hidden">
-<div class="card">
-<h3>Planes y Promo 14/10/6</h3>
-<div class="formgrid">
-<div>
-<label>Basico precio $</label>
-<input id="planBasicoPrecio" type="number">
-<label>Restantes</label>
-<input id="planBasicoRest" type="number">
-</div>
-<div>
-<label>Medio precio $</label>
-<input id="planMedioPrecio" type="number">
-<label>Restantes</label>
-<input id="planMedioRest" type="number">
-</div>
-<div>
-<label>Premium precio $</label>
-<input id="planPremiumPrecio" type="number">
-<label>Restantes</label>
-<input id="planPremiumRest" type="number">
-</div>
-<div>
-<label>Casa precio $</label>
-<input id="planCasaPrecio" type="number">
-<label>Restantes</label>
-<input id="planCasaRest" type="number">
-</div>
-</div>
-<button id="btnGuardarPlanes" class="btn" style="margin-top:8px">Guardar planes</button>
-<span id="planesMsg" style="color:#86efac"></span>
-</div>
-</section>
-<section id="cobros" class="screen hidden">
-<div class="card">
-<h3>Cobros - donde te pagan membresia</h3>
-<div class="formgrid">
-<div><label>Alias</label><input id="cobAliasAdm"></div>
-<div><label>CBU</label><input id="cobCBUAdm"></div>
-<div><label>Titular</label><input id="cobTitularAdm"></div>
-<div><label>Banco</label><input id="cobBancoAdm"></div>
-<div class="full"><label>Instrucciones</label><textarea id="cobInstrAdm"></textarea></div>
-</div>
-<button id="btnGuardarCobrosAdm" class="btn">Guardar cobros</button>
-</div>
-<div class="card">
-<h3>Branding + Mantenimiento</h3>
-<div class="formgrid">
-<div><label>Logo URL</label><input id="brandLogo"></div>
-<div><label>Color primario</label><input id="brandColor" value="#6a11cb"></div>
-<div><label>Titulo index</label><input id="brandTitulo"></div>
-<div><label>Mantenimiento ON/OFF</label><select id="brandMant"><option value="false">OFF</option><option value="true">ON - bajar pagina</option></select></div>
-</div>
-<button id="btnGuardarBrand" class="btn">Guardar branding</button>
-</div>
-</section>
-<section id="soporte" class="screen hidden">
-<div class="card" style="border-color:#a855f7">
-<h3 style="color:#a855f7">SOPORTE DIOS - cliente y local no se ven</h3>
-<div style="display:flex;gap:6px;margin:8px 0;flex-wrap:wrap">
-<select id="filtroOrigen">
-<option value="todos">Todos origen</option>
-<option value="cliente">Solo CLIENTE</option>
-<option value="local">Solo LOCAL</option>
-<option value="local_flotante">Flotante local</option>
-</select>
-<select id="filtroEstadoSop">
-<option value="todos">Todos estados</option>
-<option value="pendiente">Pendiente</option>
-<option value="resuelto">Resuelto</option>
-</select>
-<input id="filtroFechaSop" type="date">
-<button id="btnFiltrarSop" class="btn small">Filtrar</button>
-</div>
-<ul id="listaSoporteDios" class="list"></ul>
-</div>
-</section>
-</div>
-</section>
-<div id="modalSoporte" class="modal hidden">
-<div class="modal-box" style="max-width:700px">
-<h3 id="modalSopTitulo">Detalle soporte</h3>
-<div id="modalSopBody" style="margin-top:10px;font-size:13px"></div>
-<img id="modalSopFoto" style="width:100%;border-radius:10px;margin-top:10px;display:none;cursor:zoom-in">
-<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
-<button id="btnMarcarResuelto" class="btn small">Marcar resuelto</button>
-<button id="btnWASop" class="btn small ghost">WA cliente/local</button>
-<button id="btnMailSop" class="btn small ghost">Mail</button>
-<button id="btnBorrarSop" class="btn small ghost" style="border-color:#ef4444">Borrar con confirm</button>
-<button id="btnCerrarModalSop" class="btn small ghost">Cerrar</button>
-</div>
-<div id="confirmBorrarSop" class="hidden" style="margin-top:8px">
-<p style="font-size:12px">Escribi ELIMINAR para borrar</p>
-<input id="inputConfirmBorrar" placeholder="ELIMINAR">
-<button id="btnConfirmBorrarFinal" class="btn small" style="background:#ef4444">Confirmar borrar</button>
-</div>
-</div>
-</div>
-<div id="toast" class="toast hidden"></div>
-<script>
-const firebaseConfig={
-apiKey:"AIzaSyC57wshaJ2EuIBoBdXv18opL4u_Vuw2bAQ",
-authDomain:"reservar-cb70d.firebaseapp.com",
-projectId:"reservar-cb70d",
-storageBucket:"reservar-cb70d.firebasestorage.app",
-messagingSenderId:"630908928696",
-appId:"1:630908928696:web:5e89f5f2b1cc2b240e6a4d"
-};
-firebase.initializeApp(firebaseConfig);
-const auth=firebase.auth();
-const db=firebase.firestore();
-const SUPERADMIN="jjrv.0093@gmail.com";
-const $=id=>document.getElementById(id);
-const $$=s=>Array.from(document.querySelectorAll(s));
-const toast=m=>{const t=$('toast');t.textContent=m;t.classList.remove('hidden');setTimeout(()=>t.classList.add('hidden'),2500)};
-let selSolicitud=null,selSoporte=null;
-function goScreen(id){$$('.screen').forEach(s=>s.classList.add('hidden'));const el=$(id);if(el)el.classList.remove('hidden');$$('.tab').forEach(t=>t.classList.toggle('active',t.dataset.screen===id));}
-$$('.tab').forEach(t=>t.addEventListener('click',()=>goScreen(t.dataset.screen)));
-$('loginBtn').addEventListener('click',async()=>{
-try{await auth.signInWithEmailAndPassword($('email').value,$('password').value)}catch(e){$('loginMsg').textContent=e.message}
-});
-$('btnLogout').addEventListener('click',()=>auth.signOut());
-auth.onAuthStateChanged(async u=>{
-if(!u){$('auth').classList.remove('hidden');$('app').classList.add('hidden');return}
-if(u.email!==SUPERADMIN){$('loginMsg').textContent='No sos superadmin';await auth.signOut();return}
-$('auth').classList.add('hidden');$('app').classList.remove('hidden');$('userPill').textContent=u.email;cargarTodo();
-});
+<div id="modal" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:999;padding:12px;overflow:auto"><div class="card" id="modalBody"></div><button onclick="document.getElementById('modal').classList.add('hidden')" class="btn">Cerrar</button></div>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,getDoc,setDoc,updateDoc,collection,getDocs,query,orderBy,limit,runTransaction,addDoc,deleteDoc,where,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyDummy",authDomain:"reservar-cb70d.firebaseapp.com",projectId:"reservar-cb70d"};
+const app=initializeApp(firebaseConfig); const auth=getAuth(app); const db=getFirestore(app);
+const SUPER="jjrv.0093@gmail.com";
+let allLocales=[], allSolic=[], allSoporte=[];
+function getDeviceId(){let id=localStorage.getItem('deviceId'); if(!id){id='dev_'+Math.random().toString(36).slice(2)+'_'+Date.now(); localStorage.setItem('deviceId',id)} return id;}
+function getHuella(){try{return btoa(navigator.userAgent+'|'+navigator.language+'|'+screen.width+'x'+screen.height+'|'+Intl.DateTimeFormat().resolvedOptions().timeZone+'|'+navigator.platform).slice(0,80)}catch{return 'no-huella'}}
+function normDir(s){return (s||'').toLowerCase().trim().replace(/\s+/g,' ').replace(/av\.?|avenida/g,'av').replace(/\./g,'')}
+function diasRest(v){if(!v) return -999; const hoy=new Date(); hoy.setHours(0,0,0,0); const ven=new Date(v); ven.setHours(0,0,0,0); return Math.ceil((ven-hoy)/86400000);}
+ async function checkAuth(user){if(!user || user.email.toLowerCase()!==SUPER){document.getElementById('app').classList.add('hidden'); document.getElementById('loginBox').classList.remove('hidden'); return} document.getElementById('loginBox').classList.add('hidden'); document.getElementById('app').classList.remove('hidden'); document.getElementById('userMail').innerText=user.email; cargarTodo();}
+document.getElementById('btnLogin').onclick=async()=>{try{await signInWithEmailAndPassword(auth,mail.value.trim().toLowerCase(),pass.value)}catch(e){alert('Login fail: '+e.message)}};
+document.getElementById('btnLogout').onclick=()=>signOut(auth);
+onAuthStateChanged(auth,checkAuth);
+document.querySelectorAll('.tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active')); t.classList.add('active'); document.querySelectorAll('.sec').forEach(s=>s.classList.add('hidden')); document.getElementById('sec-'+t.dataset.t).classList.remove('hidden');});
 async function cargarTodo(){
-cargarKpis();cargarLocales();cargarSolicitudes();cargarPlanes();cargarCobrosBrand();cargarSoporteDios();
+const snap=await getDocs(collection(db,'config'));
+allLocales=[]; snap.forEach(d=>{if(d.id==='planes'||d.id==='cobros'||d.id==='adm'||d.id==='landing') return; allLocales.push({id:d.id,...d.data()})});
+const qS=query(collection(db,'solicitudes'),orderBy('creado','asc'),limit(200)); const sS=await getDocs(qS); allSolic=[]; sS.forEach(d=>allSolic.push({id:d.id,...d.data()}));
+const qSup=query(collection(db,'soporte'),orderBy('fecha','desc'),limit(200)); const sSup=await getDocs(qSup); allSoporte=[]; sSup.forEach(d=>allSoporte.push({id:d.id,...d.data()}));
+renderDash(); renderLocales(); renderSolic(); renderSoporte(); cargarPlanes(); cargarCobros(); cargarLanding();
 }
-async function cargarKpis(){
-const snapC=await db.collection('config').get();
-let activos=0,bloq=0,total=0;
-snapC.forEach(d=>{const id=d.id;if(['planes','cobros','branding','adm'].includes(id))return;total++;const x=d.data();if(x.bloqueado)bloq++;else if(x.planActivo)activos++;});
-const snapS=await db.collection('soporte').get();
-$('kpis').innerHTML=`<span class="pill">Locales:${total}</span><span class="pill">Activos:${activos}</span><span class="pill">Bloqueados:${bloq}</span><span class="pill">Soporte:${snapS.size}</span>`;
+function renderDash(){
+let act=allLocales.filter(l=>l.planActivo&&diasRest(l.planVence)>=0).length;
+let venc=allLocales.filter(l=>!l.planActivo||diasRest(l.planVence)<0).length;
+let dup=allLocales.filter(l=>l.duplicadoSospechoso).length;
+let pend=allSolic.filter(s=>s.estado==='pendiente').length;
+document.getElementById('kpis').innerHTML=`<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+<div class="card" onclick="document.querySelector('[data-t=locales]').click()"><b>${act}</b><br>Activos</div>
+<div class="card" onclick="document.querySelector('[data-t=locales]').click()" style="border-color:#ef6c00"><b>${venc}</b><br>Vencidos/Bloq</div>
+<div class="card"><b>${pend}</b><br>Pendientes</div><div class="card" style="border-color:#c62828"><b>${dup}</b><br>Duplicados huella</div></div>`;
 }
-async function cargarLocales(){
-const ul=$('listaLocales');const bus=($('buscarLocal').value||'').toLowerCase();
-const fEst=$('filtroEstadoLocal').value;
-const snap=await db.collection('config').get();
-ul.innerHTML='';
-snap.forEach(doc=>{
-const id=doc.id;if(['planes','cobros','branding','adm'].includes(id))return;
-const d=doc.data();
-const nombre=(d.localNombre||d.nombre||d.email||id).toLowerCase();
-if(bus&&!nombre.includes(bus)&&!(d.email||'').toLowerCase().includes(bus))return;
-const esBloq=!!d.bloqueado;const esVenc=d.planVence&& (d.planVence.toDate?d.planVence.toDate():new Date(d.planVence))<new Date();
-if(fEst==='activos'&&esBloq)return;if(fEst==='bloqueados'&&!esBloq)return;if(fEst==='vencidos'&&!esVenc)return;
-const li=document.createElement('li');li.className='item';
-li.innerHTML=`<div><b>${d.localNombre||id}</b><div style="font-size:11px">${d.email||''} - Plan:${d.plan||'-'} Vence:${d.planVence?(d.planVence.toDate?d.planVence.toDate():new Date(d.planVence)).toLocaleDateString('es-AR'):'-'} ${esBloq?'<span style=color:#fca5a5>BLOQUEADO</span>':''} ${d.motivoBloqueo?'('+d.motivoBloqueo+')':''}</div></div><div style="display:flex;gap:4px"><button class="btn small ghost" data-ver="${doc.id}">Ver</button><button class="btn small" data-bloq="${doc.id}">${esBloq?'Desbloq':'Bloq'}</button></div>`;
-ul.appendChild(li);
-});
-ul.querySelectorAll('[data-bloq]').forEach(b=>b.addEventListener('click',async()=>{
-const uid=b.dataset.bloq;const doc=await db.collection('config').doc(uid).get();const cur=doc.data();
-const motivo=prompt('Motivo bloqueo/desbloqueo:')||'';
-await db.collection('config').doc(uid).collection('historial').add({accion:cur.bloqueado?'desbloqueo':'bloqueo',motivo,antes:{bloqueado:cur.bloqueado,planActivo:cur.planActivo},fecha:firebase.firestore.FieldValue.serverTimestamp(),ts:Date.now(),quien:SUPERADMIN});
-await db.runTransaction(async t=>{
-const d=await t.get(db.collection('config').doc(uid));
-const bloqAct=!!d.data().bloqueado;
-t.update(db.collection('config').doc(uid),{bloqueado:!bloqAct,planActivo:bloqAct,motivoBloqueo:!bloqAct?motivo:''});
-});
-toast('Cambiado + backup');cargarLocales();cargarKpis();
-}));
+function renderLocales(f=''){
+const b=(f||'').toLowerCase(); const cont=document.getElementById('listaLocales'); cont.innerHTML='';
+allLocales.filter(l=>{if(!b) return true; return JSON.stringify(l).toLowerCase().includes(b)}).forEach(l=>{
+const dr=diasRest(l.planVence); let badge=dr>=3?`<span class="badge badge-ok">${dr}d</span>`:dr>=0?`<span class="badge badge-warn">${dr}d</span>`:`<span class="badge badge-bad">Venc ${dr}d</span>`;
+const dup=l.duplicadoSospechoso?`<span class="badge badge-warn">⚠️ DUP ${l.duplicadoMotivo||''}</span>`:'' ;
+cont.innerHTML+=`<div class="card"><b>${l.nombreLocal||l.id}</b> ${badge} ${dup}<br><small>${l.email||''} - ${l.plan||'sin plan'} - Limite:${l.limite||50} - dev:${(l.deviceId||'').slice(0,8)} huella:${(l.huella||'').slice(0,12)}<br>Dire:${l.direccion||''}</small><br><button class="btn" style="padding:8px" onclick="verLocal('${l.id}')">Ver/Bloq</button></div>`;
+}); document.getElementById('totalLoc').innerText=`${allLocales.length}/100`;
 }
-$('buscarLocal').addEventListener('input',cargarLocales);
-$('filtroEstadoLocal').addEventListener('change',cargarLocales);
-let cacheSolicitudes=[];
-async function cargarSolicitudes(){
-const snap=await db.collection('config').get();
-cacheSolicitudes=[];
-snap.forEach(doc=>{
-const id=doc.id;if(['planes','cobros','branding','adm'].includes(id))return;
-const d=doc.data();
-if(d.solicitudPlanEstado==='pendiente'||d.solicitudPlan){
-cacheSolicitudes.push({uid:id,...d,fechaTs:d.fechaSolicitud?d.fechaSolicitud.toDate?d.fechaSolicitud.toDate().getTime():new Date(d.fechaSolicitud).getTime():d.ts||0});
+document.getElementById('buscador').oninput=e=>renderLocales(e.target.value);
+window.verLocal=async(id)=>{
+const d=await getDoc(doc(db,'config',id)); const l=d.data(); document.getElementById('modal').classList.remove('hidden');
+document.getElementById('modalBody').innerHTML=`<h3>${l.nombreLocal}</h3><small>${l.email}<br>Plan:${l.plan} vence:${l.planVence} dias:${diasRest(l.planVence)}<br>Dire norm:${normDir(l.direccion)}<br>Huella:${l.huella}<br>Device:${l.deviceId}<br>Limite:${l.limite}<br>Aviso:${l.planAviso||''}</small><br><br><input id="motBloq" class="input" placeholder="Motivo bloqueo"><button class="btn" onclick="bloqLocal('${id}')">Bloquear</button><button class="btn" style="background:#2e7d32" onclick="desbloqLocal('${id}')">Desbloquear</button>`;
+};
+window.bloqLocal=async(id)=>{const mot=document.getElementById('motBloq').value||'Bloqueado por admin'; await updateDoc(doc(db,'config',id),{planActivo:false,planAviso:mot}); await addDoc(collection(db,'config',id,'historial'),{accion:'bloqueo',motivo:mot,por:SUPER,fecha:serverTimestamp()}); alert('Bloq'); cargarTodo(); document.getElementById('modal').classList.add('hidden');};
+window.desbloqLocal=async(id)=>{await updateDoc(doc(db,'config',id),{planActivo:true,planAviso:''}); alert('Desbloq'); cargarTodo(); document.getElementById('modal').classList.add('hidden');};
+function renderSolic(){
+const c=document.getElementById('listaSolic'); const ca=document.getElementById('listaAprob'); c.innerHTML=''; ca.innerHTML='';
+allSolic.filter(s=>s.estado==='pendiente').forEach(s=>{
+c.innerHTML+=`<div class="card"><b>${s.nombreLocal||s.uid}</b> - ${s.planSolicitado} $${s.precioSnapshot||''}<br><small>${s.email} - ${s.direccion||''} - dev:${(s.deviceId||'').slice(0,8)}<br>${new Date(s.creado?.seconds? s.creado.seconds*1000 : s.creado).toLocaleString()}</small>${s.fotoBase64?`<img src="${s.fotoBase64}" class="comp" style="max-height:180px">`:''}<br><button class="btn" onclick="aprobar('${s.id}')">Aprobar +30d MAX hoy/vence</button><button class="btn" style="background:#c62828" onclick="rechazar('${s.id}')">Rechazar</button></div>`;
+});
+allSolic.filter(s=>s.estado==='aprobado').slice(0,20).forEach(s=>{ca.innerHTML+=`<div class="card"><small>${s.email} - ${s.planSolicitado} - ${s.planVence||''}</small></div>`});
 }
+window.aprobar=async(idSol=>{
+if(!navigator.onLine){alert('Sin internet'); return}
+const ref=doc(db,'solicitudes',idSol);
+await runTransaction(db, async(tr)=>{
+const sDoc=await tr.get(ref); if(!sDoc.exists()) throw 'no existe'; const s=sDoc.data(); if(s.estado==='aprobado') throw 'ya aprobado';
+const refAdm=doc(db,'config','planes'); const admSnap=await tr.get(refAdm); const planes=admSnap.exists()? admSnap.data():{};
+const restoKey=s.planSolicitado==='casa'?'restanteCasa':s.planSolicitado==='inicial'?'restanteInicial':s.planSolicitado==='pro'?'restantePro':'restanteIlimitado';
+if((planes[restoKey]||0)<=0 && s.planSolicitado!=='ilimitado') throw 'AGOTADO restantes 0';
+const refLocal=doc(db,'config',s.uid); const localSnap=await tr.get(refLocal); const local=localSnap.exists()? localSnap.data():{};
+const venceActual=local.planVence? new Date(local.planVence): new Date(); const hoy=new Date(); hoy.setHours(0,0,0,0);
+const base= venceActual>hoy? venceActual:hoy; base.setDate(base.getDate()+ (s.dias||30));
+const nuevoVence=base.toISOString().slice(0,10);
+tr.update(refLocal,{plan:s.planSolicitado,planActivo:true,planVence:nuevoVence,planAviso:'',limite: s.planSolicitado==='casa'?50:s.planSolicitado==='inicial'?100:s.planSolicitado==='pro'?300:999999});
+if(planes[restoKey]!=null) tr.update(refAdm,{[restoKey]: (planes[restoKey]-1)});
+tr.update(ref,{estado:'aprobado',planVence:nuevoVence,aprobadoPor:SUPER,aprobadoEn:serverTimestamp()});
 });
-cacheSolicitudes.sort((a,b)=>a.fechaTs-b.fechaTs);
-const ulP=$('listaPendientes');const ulA=$('listaAprobados');
-ulP.innerHTML='';ulA.innerHTML='';
-const snapCfg=await db.collection('config').doc('planes').get();
-const snapPlanes=snapCfg.exists?snapCfg.data():{};
-let aprobadosCache=[];
-const snapAll=await db.collection('config').get();
-snapAll.forEach(doc=>{const d=doc.data();if(d.planEstado==='activo'&&d.planVence)aprobadosCache.push({uid:doc.id,...d})});
-aprobadosCache.sort((a,b)=>(a.planVence.toDate?a.planVence.toDate():new Date(a.planVence))-(b.planVence.toDate?b.planVence.toDate():new Date(b.planVence)));
-cacheSolicitudes.forEach(s=>{
-const li=document.createElement('li');li.className='item';
-li.innerHTML=`<div><b>${s.localNombre||s.uid}</b> - ${s.solicitudPlan||s.planSolicitado||s.plan||''}<div style="font-size:11px">${new Date(s.fechaTs).toLocaleString('es-AR')} - ${s.solicitudPlanPrecio||''}</div></div><button class="btn small" data-det="${s.uid}">Ver detalle</button>`;
-ulP.appendChild(li);
+alert('Aprobado'); cargarTodo();
 });
-aprobadosCache.slice(0,50).forEach(s=>{
-const li=document.createElement('li');li.className='item';
-const vence=s.planVence.toDate?s.planVence.toDate():new Date(s.planVence);
-const dias=Math.ceil((vence-new Date())/86400000);
-li.innerHTML=`<div>${s.localNombre||s.uid} - ${s.plan} - vence ${vence.toLocaleDateString('es-AR')} - ${dias}d rest</div>`;
-ulA.appendChild(li);
-});
-ulP.querySelectorAll('[data-det]').forEach(b=>b.addEventListener('click',()=>abrirModalSol(b.dataset.det)));
+window.rechazar=async(id)=>{await updateDoc(doc(db,'solicitudes',id),{estado:'rechazado'}); cargarTodo();};
+async function cargarPlanes(){const d=await getDoc(doc(db,'config','planes')); const p=d.exists()? d.data():{precioCasa:5000,precioInicial:9000,precioPro:15000,precioIlimitado:25000,restanteCasa:14,restanteInicial:10,restantePro:6,restanteIlimitado:5};
+document.getElementById('formPlanes').innerHTML=`
+<input id="pCasa" class="input" type="number" value="${p.precioCasa}" placeholder="Casa $"><input id="rCasa" class="input" type="number" value="${p.restanteCasa}" placeholder="Rest Casa 14">
+<input id="pIni" class="input" type="number" value="${p.precioInicial}"><input id="rIni" class="input" type="number" value="${p.restanteInicial}">
+<input id="pPro" class="input" type="number" value="${p.precioPro}"><input id="rPro" class="input" type="number" value="${p.restantePro}">
+<input id="pIli" class="input" type="number" value="${p.precioIlimitado}"><input id="rIli" class="input" type="number" value="${p.restanteIlimitado}">
+<button class="btn" onclick="savePlanes()">Guardar Planes - snapshot precio</button>`;
 }
-function abrirModalSol(uid){
-const s=cacheSolicitudes.find(x=>x.uid===uid);if(!s)return;selSolicitud=s;
-$('modalSolTitulo').textContent=s.localNombre||uid;
-$('modalSolBody').innerHTML=`<div>Plan:${s.solicitudPlan||s.plan} Precio:${s.solicitudPlanPrecio||''}<br>Email:${s.email||''} Tel:${s.telefono||''} WA:${s.waLocal||s.telefono||''}<br>Fecha solicitud:${new Date(s.fechaTs).toLocaleString('es-AR')}<br>Alias:${s.cobAlias||''} CBU:${s.cobCBU||''}<br>Comprobante: ${s.fotoComprobante||s.comprobanteBase64?'1 foto comprimida': 'sin foto'}</div>`;
-const foto=s.fotoComprobante||s.comprobanteBase64||'';
-if(foto){$('modalSolFoto').src=foto;$('modalSolFoto').style.display='block';}else{$('modalSolFoto').style.display='none';}
-$('modalSolicitud').classList.remove('hidden');
+window.savePlanes=async()=>{
+if((rCasa.value||0)<0||(rIni.value||0)<0||(rPro.value||0)<0||(rIli.value||0)<0){alert('Restantes no puede ser negativo'); return}
+await setDoc(doc(db,'config','planes'),{precioCasa:+pCasa.value,restanteCasa:+rCasa.value,precioInicial:+pIni.value,restanteInicial:+rIni.value,precioPro:+pPro.value,restantePro:+rPro.value,precioIlimitado:+pIli.value,restanteIlimitado:+rIli.value,update:serverTimestamp()},{merge:true}); alert('Planes guardados - landing se actualiza sola');
+};
+async function cargarCobros(){const d=await getDoc(doc(db,'config','cobros')); const c=d.exists()? d.data():{}; cAlias.value=c.alias||''; cCbu.value=c.cbu||''; cTitular.value=c.titular||''; cBanco.value=c.banco||''; cInstr.value=c.instrucciones||''; cWpp.value=c.wpp||'';}
+document.getElementById('btnSaveCobros').onclick=async()=>{await setDoc(doc(db,'config','cobros'),{alias:cAlias.value,cbu:cCbu.value,titular:cTitular.value,banco:cBanco.value,instrucciones:cInstr.value,wpp:cWpp.value,update:serverTimestamp()},{merge:true}); alert('Cobros guardados - landing actualizada');};
+async function cargarLanding(){const d=await getDoc(doc(db,'config','landing')); const l=d.exists()? d.data():{mantenimiento:'off',titulo:'reservAR',texto:'Reservas online'}; landMant.value=l.mantenimiento; landTitulo.value=l.titulo; landTexto.value=l.texto; landCasa.value=l.casa||'on';}
+document.getElementById('btnSaveLanding').onclick=async()=>{await setDoc(doc(db,'config','landing'),{mantenimiento:landMant.value,titulo:landTitulo.value,texto:landTexto.value,casa:landCasa.value,update:serverTimestamp()},{merge:true}); alert('Landing guardada');};
+function renderSoporte(){
+const o=fOrigen.value, e=fEstado.value; const cont=document.getElementById('listaSoporte'); cont.innerHTML='';
+allSoporte.filter(s=>{if(o!=='todos'&&s.origen!==o) return false; if(e!=='todos'&&s.estado!==e) return false; return true;}).forEach(s=>{
+cont.innerHTML+=`<div class="card"><b>${s.origen} - ${s.estado}</b> <span class="badge ${s.estado==='pendiente'?'badge-warn':'badge-ok'}">${s.estado}</span><br><small>${s.email||''} - Local:${s.nombreLocal||s.uid} - ${s.direccion||''}<br>Reserva:${s.idReserva||''} FechaProb:${s.fechaProblema||''} ${s.horaProblema||''}<br>${s.mensaje||''}</small>${s.fotoBase64?`<img src="${s.fotoBase64}" class="comp" style="max-height:160px">`:''}<br><button class="btn" style="padding:8px" onclick="verSoporte('${s.id}')">Ver WA Mail</button></div>`;
+});
 }
-$('btnCerrarModalSol').addEventListener('click',()=>$('modalSolicitud').classList.add('hidden'));
-$('btnAprobarSol').addEventListener('click',async()=>{
-if(!selSolicitud)return;
-const uid=selSolicitud.uid;
-const planSel=selSolicitud.solicitudPlan||'medio';
-const vence=new Date();vence.setDate(vence.getDate()+30);
-await db.runTransaction(async t=>{
-const ref=db.collection('config').doc(uid);
-const d=await t.get(ref);
-t.update(ref,{plan:planSel,planEstado:'activo',planActivo:true,planVence:vence,solicitudPlanEstado:'aprobado',fechaAprobacion:firebase.firestore.FieldValue.serverTimestamp(),bloqueado:false});
-const refPlanes=db.collection('config').doc('planes');
-const pDoc=await t.get(refPlanes);
-if(pDoc.exists){
-const pd=pDoc.data();
-const key='restantes_'+planSel;
-const cur=Number(pd[key]||pd.restantes?.[planSel]||0);
-if(cur>0){const up={};up[key]=cur-1;up[`restantes.${planSel}`]=cur-1;t.set(refPlanes,up,{merge:true});}
-}
-});
-await db.collection('config').doc(uid).collection('historial').add({accion:'aprobacion plan',plan:planSel,vence,quien:SUPERADMIN,ts:Date.now(),fecha:firebase.firestore.FieldValue.serverTimestamp()});
-toast('Aprobado +30d y restante descontado');$('modalSolicitud').classList.add('hidden');cargarSolicitudes();cargarLocales();
-});
-$('btnDescargarComp').addEventListener('click',()=>{
-const foto=$('modalSolFoto').src;if(!foto)return;
-const a=document.createElement('a');a.href=foto;a.download='comprobante-'+(selSolicitud?.uid||'').slice(0,6)+'.jpg';a.click();
-});
-$('btnWASol').addEventListener('click',()=>{
-const wa=selSolicitud?.waLocal||selSolicitud?.telefono||'';const num=wa.replace(/\D/g,'');
-const txt=`Hola ${selSolicitud?.localNombre||''} tu plan ${selSolicitud?.solicitudPlan||''} vence...`;
-window.open(`https://wa.me/54${num}?text=${encodeURIComponent(txt)}`,'_blank');
-});
-async function cargarPlanes(){
-const doc=await db.collection('config').doc('planes').get();
-if(!doc.exists)return;const d=doc.data();
-$('planBasicoPrecio').value=d.basicoPrecio||5000;$('planBasicoRest').value=d.restantes_basico||d.restantes?.basico||14;
-$('planMedioPrecio').value=d.medioPrecio||9000;$('planMedioRest').value=d.restantes_medio||d.restantes?.medio||10;
-$('planPremiumPrecio').value=d.premiumPrecio||15000;$('planPremiumRest').value=d.restantes_premium||d.restantes?.premium||6;
-$('planCasaPrecio').value=d.casaPrecio||20000;$('planCasaRest').value=d.restantes_casa||d.restantes?.casa||5;
-}
-$('btnGuardarPlanes').addEventListener('click',async()=>{
-await db.collection('config').doc('planes').set({
-basicoPrecio:Number($('planBasicoPrecio').value),medioPrecio:Number($('planMedioPrecio').value),premiumPrecio:Number($('planPremiumPrecio').value),casaPrecio:Number($('planCasaPrecio').value),
-restantes_basico:Number($('planBasicoRest').value),restantes_medio:Number($('planMedioRest').value),restantes_premium:Number($('planPremiumRest').value),restantes_casa:Number($('planCasaRest').value),
-restantes:{basico:Number($('planBasicoRest').value),medio:Number($('planMedioRest').value),premium:Number($('planPremiumRest').value),casa:Number($('planCasaRest').value)},
-updatedAt:firebase.firestore.FieldValue.serverTimestamp()
-},{merge:true});
-$('planesMsg').textContent='Guardado';toast('Planes guardados');
-});
-async function cargarCobrosBrand(){
-const c1=await db.collection('config').doc('cobros').get();if(c1.exists){const d=c1.data();$('cobAliasAdm').value=d.alias||'';$('cobCBUAdm').value=d.cbu||'';$('cobTitularAdm').value=d.titular||'';$('cobBancoAdm').value=d.banco||'';$('cobInstrAdm').value=d.instrucciones||'';}
-const c2=await db.collection('config').doc('branding').get();if(c2.exists){const d=c2.data();$('brandLogo').value=d.logo||'';$('brandColor').value=d.color||'#6a11cb';$('brandTitulo').value=d.titulo||'';$('brandMant').value=String(!!d.mantenimiento);}
-}
-$('btnGuardarCobrosAdm').addEventListener('click',async()=>{await db.collection('config').doc('cobros').set({alias:$('cobAliasAdm').value,cbu:$('cobCBUAdm').value,titular:$('cobTitularAdm').value,banco:$('cobBancoAdm').value,instrucciones:$('cobInstrAdm').value},{merge:true});toast('Cobros guardados')});
-$('btnGuardarBrand').addEventListener('click',async()=>{await db.collection('config').doc('branding').set({logo:$('brandLogo').value,color:$('brandColor').value,titulo:$('brandTitulo').value,mantenimiento:$('brandMant').value==='true'},{merge:true});toast('Branding guardado')});
-let cacheSoporte=[];
-async function cargarSoporteDios(){
-const ul=$('listaSoporteDios');const snap=await db.collection('soporte').orderBy('ts','desc').limit(100).get();
-cacheSoporte=[];ul.innerHTML='';
-snap.forEach(doc=>{cacheSoporte.push({id:doc.id,...doc.data()})});
-renderSoporteDios(cacheSoporte);
-}
-function renderSoporteDios(list){
-const fO=$('filtroOrigen').value;const fE=$('filtroEstadoSop').value;const fF=$('filtroFechaSop').value;
-const ul=$('listaSoporteDios');ul.innerHTML='';
-let fil=list;
-if(fO!=='todos')fil=fil.filter(x=>x.origen===fO);
-if(fE!=='todos')fil=fil.filter(x=> (x.estado||'pendiente')===fE);
-if(fF)fil=fil.filter(x=> (x.fechaProblema||'').startsWith(fF)||(x.fechaHoraProblema||'').startsWith(fF)||(x.fechaEnvio?.toDate?x.fechaEnvio.toDate().toISOString().slice(0,10):'').startsWith(fF));
-fil.forEach(s=>{
-const li=document.createElement('li');li.className='item';li.style.borderColor=s.origen==='cliente'?'#86efac':'#a855f7';
-const esCliente=s.origen==='cliente';
-li.innerHTML=`<div><span class="pill" style="background:${esCliente?'#166534':'#3a0f6e'}">${s.origen||''}</span> <b>${s.clienteNombre||s.localData?.localNombre||s.clienteData?.nombre||s.uid?.slice(0,6)||''}</b><div style="font-size:11px">${(s.msg||s.comentario||'').slice(0,80)} - ${s.fechaProblema||''} ${s.horaProblema||''} - WA:${s.wa||s.clienteData?.whats||''} Mail:${s.mail||s.email||''}</div></div><button class="btn small" data-sop="${s.id}">Detalle</button>`;
-ul.appendChild(li);
-});
-ul.querySelectorAll('[data-sop]').forEach(b=>b.addEventListener('click',()=>abrirModalSop(b.dataset.sop)));
-}
-function abrirModalSop(id){
-const s=cacheSoporte.find(x=>x.id===id);if(!s)return;selSoporte=s;
-$('modalSopTitulo').textContent=`Soporte ${s.origen} - ${s.tipo||s.tipoLocal||''}`;
-const datosR=s.datosReservaCompleto||s.reservaData||{};
-const datosL=s.datosLocalCompleto||s.localData||{};
-const perfil=s.perfilCompleto||s.clienteData||{};
-$('modalSopBody').innerHTML=`<div><b>Mensaje:</b> ${s.msg||s.comentario||''}<br><b>Origen:</b> ${s.origen}<br><b>UID Local:</b> ${s.uidLocal||s.uid||''}<br><b>ID Reserva:</b> ${s.idReserva||s.reservaId||''}<br><b>Fecha problema:</b> ${s.fechaHoraProblema||s.fechaProblema||''} ${s.horaProblema||''}<br><b>WA:</b> ${s.wa||perfil.whats||''} <b>Mail:</b> ${s.mail||s.email||perfil.email||''}<br><br><b>Reserva:</b> ${JSON.stringify(datosR).slice(0,500)}<br><br><b>Local:</b> ${JSON.stringify(datosL).slice(0,400)}<br><br><b>Cliente perfil:</b> ${JSON.stringify(perfil).slice(0,400)}</div>`;
-const foto=s.imagen||s.archivo||s.fotoBase64||'';
-if(foto&&foto.startsWith('data:')){$('modalSopFoto').src=foto;$('modalSopFoto').style.display='block';}else{$('modalSopFoto').style.display='none';}
-$('modalSoporte').classList.remove('hidden');
-}
-$('btnCerrarModalSop').addEventListener('click',()=>$('modalSoporte').classList.add('hidden'));
-$('btnFiltrarSop').addEventListener('click',()=>renderSoporteDios(cacheSoporte));
-$('btnMarcarResuelto').addEventListener('click',async()=>{if(!selSoporte)return;await db.collection('soporte').doc(selSoporte.id).update({estado:'resuelto',resueltoPor:SUPERADMIN,resueltoAt:firebase.firestore.FieldValue.serverTimestamp()});toast('Resuelto');$('modalSoporte').classList.add('hidden');cargarSoporteDios();});
-$('btnWASop').addEventListener('click',()=>{
-const wa=selSoporte?.wa||selSoporte?.clienteData?.whats||selSoporte?.telefono||'';const num=wa.replace(/\D/g,'');
-window.open(`https://wa.me/54${num}?text=${encodeURIComponent('Hola, soy soporte reservAR - sobre tu reclamo: '+(selSoporte?.msg||''))}`,'_blank');
-});
-$('btnBorrarSop').addEventListener('click',()=>$('confirmBorrarSop').classList.remove('hidden'));
-$('btnConfirmBorrarFinal').addEventListener('click',async()=>{
-if($('inputConfirmBorrar').value!=='ELIMINAR'){toast('Escribi ELIMINAR');return}
-if(!selSoporte)return;
-await db.collection('config').doc('historial_borrados').collection('soporte').doc(selSoporte.id).set({...selSoporte,borradoPor:SUPERADMIN,borradoAt:firebase.firestore.FieldValue.serverTimestamp()});
-await db.collection('soporte').doc(selSoporte.id).delete();
-toast('Borrado con backup');$('modalSoporte').classList.add('hidden');$('confirmBorrarSop').classList.add('hidden');cargarSoporteDios();
-});
+fOrigen.onchange=renderSoporte; fEstado.onchange=renderSoporte;
+window.verSoporte=async(id)=>{
+const d=await getDoc(doc(db,'soporte',id)); const s=d.data(); document.getElementById('modal').classList.remove('hidden');
+const wppNum=(s.telefono||'').replace(/\D/g,''); const msg=encodeURIComponent(`Hola ${s.nombre||''} soy de reservAR por tu reporte ${s.idReserva||''} - ${s.mensaje||''}`);
+document.getElementById('modalBody').innerHTML=`<h3>Soporte ${s.origen}</h3><small>${s.email}<br>Perfil:${s.perfil||''}<br>Reserva:${JSON.stringify(s.datosReserva||{}).slice(0,400)}<br>Local:${s.nombreLocal} Dire:${s.direccion}<br>Device:${s.deviceId} Huella:${s.huella}</small><br>${s.fotoBase64?`<img src="${s.fotoBase64}" class="comp">`:''}<br><a href="https://wa.me/${wppNum}?text=${msg}" target="_blank" class="btn" style="display:block;text-align:center;text-decoration:none;background:#25D366">Abrir WhatsApp</a><button class="btn" onclick="navigator.clipboard.writeText('${s.email}')">Copiar Mail</button><button class="btn" style="background:#2e7d32" onclick="resolverSoporte('${id}')">Marcar Resuelto</button><button class="btn" style="background:#c62828" onclick="eliminarSoporte('${id}')">ELIMINAR con backup</button>`;
+};
+window.resolverSoporte=async(id)=>{await updateDoc(doc(db,'soporte',id),{estado:'resuelto',resueltoPor:SUPER,resueltoEn:serverTimestamp()}); alert('Resuelto'); cargarTodo(); document.getElementById('modal').classList.add('hidden');};
+window.eliminarSoporte=async(id)=>{if(!confirm('ELIMINAR?')) return; const d=await getDoc(doc(db,'soporte',id)); await setDoc(doc(db,'config','historial_borrados',id),{...d.data(),borradoPor:SUPER,borradoEn:serverTimestamp()}); await deleteDoc(doc(db,'soporte',id)); alert('Eliminado con backup'); cargarTodo(); document.getElementById('modal').classList.add('hidden');};
+// Compresion foto 800px 0.6 base64 <900KB - sin Storage pago - para solicitudes y soporte
+window.comprimirFoto= (file)=> new Promise((res,rej)=>{const r=new FileReader(); r.onload=e=>{const img=new Image(); img.onload=()=>{const canvas=document.createElement('canvas'); let w=img.width,h=img.height; const max=800; if(w>max||h>max){if(w>h){h*=max/w; w=max}else{w*=max/h; h=max}} canvas.width=w; canvas.height=h; canvas.getContext('2d').drawImage(img,0,0,w,h); let b64=canvas.toDataURL('image/jpeg',0.6); if(b64.length>900*1024){b64=canvas.toDataURL('image/jpeg',0.4)} res(b64);}; img.onerror=rej; img.src=e.target.result;}; r.onerror=rej; r.readAsDataURL(file);});
 </script>
 </body>
 </html>
