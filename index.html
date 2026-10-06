@@ -3,243 +3,783 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>ADM Jalolito 10 TABS 0 FALLAS</title>
+<title>reservAR ADM</title>
 <style>
-:root{--vio:#6d28d9;--vio2:#8b5cf6;--bg:#0f0a1e;--card:#1e1b2e;--ok:#22c55e;--red:#ef4444;--yel:#f59e0b}
-*{box-sizing:border-box}body{margin:0;font-family:system-ui;background:var(--bg);color:#fff}
-header{padding:14px 18px;background:linear-gradient(90deg,var(--vio),var(--vio2));font-weight:800;display:flex;justify-content:space-between}
-.tabs{display:flex;overflow-x:auto;gap:6px;padding:10px;background:#151225;position:sticky;top:0;z-index:9}
-.tab{padding:8px 14px;border-radius:20px;background:var(--card);cursor:pointer;white-space:nowrap;border:1px solid #2a2550}
-.tab.act{background:var(--vio);color:#fff}
-.panel{display:none;padding:14px}.panel.act{display:block}
-.card{background:var(--card);border-radius:14px;padding:12px;margin:8px 0;border:1px solid #2a2550}
-.btn{padding:8px 14px;border-radius:10px;border:0;cursor:pointer;font-weight:700}
-  .btn-v{background:var(--vio);color:#fff}.btn-r{background:var(--red);color:#fff}.btn-g{background:var(--ok);color:#000}.btn-y{background:var(--yel);color:#000}
-.pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px}
-.red{color:var(--red)}.green{color:var(--ok)}
-input,select{padding:8px;border-radius:8px;border:1px solid #333;background:#0f0a1e;color:#fff;width:100%;margin:4px 0}
-img{max-width:100%;border-radius:10px}
+:root{
+--stroke:#ffffff20
+}
+*{
+box-sizing:border-box
+}
+body{
+margin:0;
+font-family:Inter,system-ui;
+color:#fff;
+background:linear-gradient(160deg,#6a11cb,#7b1fa2,#3a0f6e,#0a0933);
+background-attachment:fixed
+}
+.hidden{
+display:none!important
+}
+.screen{
+display:none
+}
+.screen.active{
+display:block
+}
+.wrap{
+max-width:1200px;
+margin:0 auto;
+padding:16px
+}
+.topbar{
+position:sticky;
+top:0;
+z-index:20;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:14px 18px;
+background:rgba(20,8,45,.9);
+border-bottom:1px solid var(--stroke)
+}
+.brand{
+font-weight:900
+}
+.tabs{
+display:flex;
+gap:8px;
+overflow-x:auto;
+padding:10px 2px
+}
+.tab{
+border:1px solid var(--stroke);
+background:#ffffff12;
+color:#e9e0ff;
+padding:10px 18px;
+border-radius:999px;
+cursor:pointer;
+font-weight:700;
+font-size:14px;
+white-space:nowrap
+}
+.tab.active{
+background:#fff;
+color:#3a0f6e
+}
+.btn{
+background:#a855f7;
+border:none;
+color:#fff;
+padding:.6rem.95rem;
+border-radius:12px;
+cursor:pointer;
+font-weight:800;
+font-size:14px
+}
+.btn.ghost{
+background:transparent;
+border:1px solid var(--stroke)
+}
+.btn.small{
+padding:.4rem.7rem;
+font-size:12px
+}
+.btn.full{
+width:100%
+}
+.card{
+background:#ffffff14;
+border:1px solid var(--stroke);
+border-radius:20px;
+padding:18px;
+margin-bottom:14px
+}
+.pill{
+padding:7px 12px;
+border-radius:999px;
+border:1px solid var(--stroke);
+background:#ffffff18;
+font-size:12px;
+font-weight:700
+}
+.pill.click{
+cursor:pointer
+}
+input,select,textarea{
+width:100%;
+padding:.65rem.8rem;
+border-radius:12px;
+border:1px solid #ffffff22;
+background:#1a1033cc;
+color:#fff
+}
+label{
+font-size:12px;
+color:#d9ccff;
+margin-bottom:6px;
+display:block
+}
+.list{
+list-style:none;
+padding:0;
+margin:0;
+display:flex;
+flex-direction:column;
+gap:10px
+}
+.item{
+padding:12px;
+border:1px solid var(--stroke);
+border-radius:14px;
+background:#ffffff0f;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:8px
+}
+.toast{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:#fff;
+color:#111;
+padding:12px 18px;
+border-radius:999px;
+font-weight:900;
+z-index:99
+}
 </style>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-firestore-compat.js"></script>
 </head>
 <body>
-<header><span>ADM reservar-cb70d - 10 TABS 0 FALLAS</span><span id="kpi"></span></header>
-<div class="tabs" id="tabs"></div>
-<div id="panels"></div>
-<script type="module">
-import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getFirestore, collection, doc, getDoc, getDocs, setDoc, updateDoc, query, where, Timestamp, runTransaction, serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-const firebaseConfig={apiKey:"AIzaSyC...",authDomain:"reservar-cb70d.firebaseapp.com",projectId:"reservar-cb70d"};
-const app=initializeApp(firebaseConfig);
-const db=getFirestore(app);
-const fmtFecha=d=>new Date(d).toLocaleDateString('es-AR');
-const tsToDate=ts=>ts?.toDate?ts.toDate():new Date(ts);
-function deptoNorm(s){return s.trim().normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();}
-function getVenceDate(data){return data.planVence?.toDate?data.planVence.toDate():(data.planVence?new Date(data.planVence):new Date(0));}
-function estaActivo(data,horasGracia=48){
-const vence=getVenceDate(data);
-const limite=new Date(vence.getTime()+horasGracia*3600*1000);
-return new Date()<limite&&data.planActivo!==false&&data.bloqueado!==true;
+<section id="auth" style="max-width:400px;margin:60px auto;background:#ffffff12;border:1px solid var(--stroke);border-radius:20px;padding:20px">
+<div class="brand" style="font-size:22px">reservAR ADM</div>
+<input id="email" value="jjrv.0093@gmail.com">
+<input id="password" type="password" placeholder="Contraseña" style="margin-top:8px">
+<p id="err" style="color:#fca5a5;min-height:18px"></p>
+<button id="loginBtn" class="btn full">Entrar</button>
+</section>
+  
+<section id="app" class="hidden">
+<div class="topbar">
+<div class="brand">reservAR ADM</div>
+<div style="display:flex;gap:8px">
+<span class="pill">ADM</span>
+<button id="logout" class="btn small ghost">Salir</button>
+</div>
+</div>
+<div class="wrap">
+<div class="tabs">
+<button class="tab active" data-s="dash">Inicio</button>
+<button class="tab" data-s="pagos" style="background:#facc15;color:#000">Pagos</button>
+<button class="tab" data-s="planes">Locales</button>
+<button class="tab" data-s="tarifas">Tarifas</button>
+<button class="tab" data-s="soporte" style="background:#a855f7;color:#fff">Soporte</button>
+<button class="tab" data-s="users">Usuarios</button>
+<button class="tab" data-s="ajustes">Ajustes</button>
+</div>
+<div id="dash" class="screen active">
+<div class="card">
+<h3 id="sal">Hola</h3>
+<div id="kpis" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+</div>
+<div class="card">
+<h3>Resumen</h3>
+<div id="resumen"></div>
+</div>
+</div>
+<div id="pagos" class="screen">
+<div class="card" style="border:2px solid #facc15">
+<h3>Solicitudes</h3>
+<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+<button id="btnPagPend" class="btn small" style="background:#facc15;color:#000" onclick="setFiltroPagos('pendiente')">Pendientes</button>
+<button id="btnPagAprob" class="btn small ghost" onclick="setFiltroPagos('aprobado')">Aprobados hoy</button>
+<button id="btnPagRech" class="btn small ghost" onclick="setFiltroPagos('rechazado')">Rechazados</button>
+<button class="btn small ghost" onclick="loadPagos()">Recargar</button>
+</div>
+<div id="pagosKpi" style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap"></div>
+<ul id="pagosList" class="list" style="margin-top:12px"></ul>
+</div>
+</div>
+<div id="planes" class="screen">
+<div class="card">
+<div style="display:flex;gap:8px">
+<input id="bus" placeholder="Buscar...">
+<button id="reload" class="btn small ghost">Recargar</button>
+<button class="btn small ghost" onclick="filtrarKpi('todos')">Todos</button>
+</div>
+<div id="grid" style="margin-top:14px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px"></div>
+</div>
+</div>
+<div id="tarifas" class="screen">
+<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+<div class="card">
+<b>Básico</b>
+<label>Nombre</label>
+<input id="pBaseNombre">
+<label>Limite</label>
+<input id="pBaseLim" type="number">
+<label>Precio</label>
+<input id="pBasePrecio" type="number">
+</div>
+<div class="card">
+<b>Medio</b>
+<label>Nombre</label>
+<input id="pMedioNombre">
+<label>Limite</label>
+<input id="pMedioLim" type="number">
+<label>Precio</label>
+<input id="pMedioPrecio" type="number">
+</div>
+<div class="card">
+<b>Premium</b>
+<label>Nombre</label>
+<input id="pPremNombre">
+<label>Limite</label>
+<input id="pPremLim" type="number">
+<label>Precio</label>
+<input id="pPremPrecio" type="number">
+</div>
+</div>
+<div class="card">
+<button id="btnGuardarTarifas" class="btn">Guardar</button>
+<span id="tarifaMsg" style="color:#86efac;margin-left:8px"></span>
+</div>
+</div>
+<div id="soporte" class="screen">
+<div class="card" style="border:2px solid #a855f7">
+<h3>Soporte</h3>
+<div style="display:flex;gap:6px;margin-bottom:10px">
+<button class="btn small ghost" onclick="loadSoporte('todos')">Todos</button>
+<button class="btn small" style="background:#a855f7" onclick="loadSoporte('local')">Locales</button>
+<button class="btn small" style="background:#22c55e" onclick="loadSoporte('cliente')">Clientes</button>
+</div>
+<ul id="sList" class="list"></ul>
+</div>
+</div>
+<div id="users" class="screen">
+<div class="card">
+<h3>Usuarios</h3>
+<div style="display:flex;gap:8px;margin-bottom:12px">
+<input id="busUsers" placeholder="Buscar...">
+<button id="reloadUsers" class="btn small ghost">Recargar</button>
+</div>
+<ul id="uList" class="list"></ul>
+</div>
+</div>
+<div id="ajustes" class="screen">
+<div class="card" style="border:2px solid #facc15">
+<h3>Datos de cobro</h3>
+<label>Alias</label>
+<input id="jonaAlias">
+<label>CBU</label>
+<input id="jonaCbu">
+<label>Titular</label>
+<input id="jonaTitular">
+<label>WhatsApp</label>
+<input id="jonaWsp">
+<label>Instrucciones</label>
+<textarea id="jonaInstr"></textarea>
+<button id="btnGuardarCobrosJona" class="btn" style="margin-top:10px">Guardar</button>
+<span id="msgCobrosJona" style="color:#86efac"></span>
+</div>
+<div class="card">
+<h3>Gracia</h3>
+<input id="horasPlan" type="number" value="48" style="max-width:200px">
+<button id="btnGuardarHoras" class="btn small" style="margin-top:8px">Guardar</button>
+<span id="ajMsg" style="color:#86efac"></span>
+</div>
+</div>
+</div>
+</section>
+<div id="userModal" style="position:fixed;inset:0;background:#0009;z-index:50;display:flex;align-items:center;justify-content:center;padding:16px" class="hidden">
+<div class="card" style="max-width:500px;width:100%;background:#1a1033">
+<h3 id="modalTitle">Ficha</h3>
+<div id="modalBody" style="font-size:13px;line-height:1.6"></div>
+<div id="modalPausas" style="margin-top:10px"></div>
+<div style="display:flex;gap:8px;margin-top:14px">
+<button id="modalClose" class="btn ghost">Cerrar</button>
+<button id="modalBloq" class="btn small ghost">Bloquear</button>
+<button id="modalDesPausas" class="btn small ghost" style="background:#f59e0b;color:#000">Quitar pausas</button>
+</div>
+</div>
+</div>
+<div id="toast" class="toast hidden"></div>
+<script>
+const firebaseConfig={
+apiKey:"AIzaSyC57wshaJ2EuIBoBdXv18opL4u_Vuw2bAQ",
+authDomain:"reservar-cb70d.firebaseapp.com",
+projectId:"reservar-cb70d",
+storageBucket:"reservar-cb70d.firebasestorage.app",
+messagingSenderId:"630908928696",
+appId:"1:630908928696:web:5e89f5f2b1cc2b240e6a4d"
+};
+firebase.initializeApp(firebaseConfig);
+const auth=firebase.auth();
+const db=firebase.firestore();
+const $=id=>document.getElementById(id);
+const toast=m=>{
+const t=$('toast');
+t.textContent=m;
+t.classList.remove('hidden');
+setTimeout(()=>t.classList.add('hidden'),3000);
+};
+$('loginBtn').onclick=async()=>{
+const e=$('email').value.trim();
+const p=$('password').value.trim();
+$('err').textContent='Conectando...';
+try{
+await auth.signInWithEmailAndPassword(e,p);
+$('err').textContent='';
+}catch(er){
+$('err').textContent=er.message;
+console.log(er);
 }
-function genWebUID(){return 'luz-'+Math.random().toString(36).substring(2,6);}
-async function crearReservaSegura(localId,servicioId,fechaHoraStr,celu,nombre){
-const localRef=doc(db,'config',localId);
-const localSnap=await getDoc(localRef);
-if(!localSnap.exists()) throw new Error('Local no existe');
-const localData=localSnap.data();
-if(!estaActivo(localData,48)){
-throw new Error('Local pausado por falta de pago - Jjrv093.uala');
-}
-if(localData.bloqueado===true) throw new Error('Local bloqueado REAL');
-const fechaRes=new Date(fechaHoraStr);
-const hoy0=new Date();hoy0.setHours(0,0,0,0);
-if(fechaRes<hoy0) throw new Error('No se puede reservar fecha pasada');
-const fechaSolo=fechaHoraStr.split('T')[0];
-const pausaRef=doc(db,'config',localId,'pausasFechas',fechaSolo);
-const pausaSnap=await getDoc(pausaRef);
-if(pausaSnap.exists()) throw new Error('Local pausado ese dia '+fechaSolo);
-const servicios=localData.servicios||[];
-const serv=servicios.find(s=>s.id===servicioId);
-if(!serv) throw new Error('Servicio ya no existe');
-const q=query(collection(db,'reservas'),where('localId','==',localId),where('celu','==',celu),where('estado','==','activa'));
-const resSnap=await getDocs(q);
-if(resSnap.size>=2) throw new Error('Limite 2 reservas');
-const id=Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-await setDoc(doc(db,'reservas',id),{
-id,localId,servicioId,servicioNombre:serv.nombre,
-fechaHora:fechaHoraStr,
-celu,nombre,estado:'activa',
-ts:serverTimestamp(),
-fecha:fmtFecha(new Date())
+};
+$('logout').onclick=()=>auth.signOut();
+document.querySelectorAll('.tab').forEach(t=>{
+t.onclick=()=>{
+document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+t.classList.add('active');
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+$(t.dataset.s).classList.add('active');
+if(t.dataset.s==='planes')renderLocalesFiltrados();
+if(t.dataset.s==='pagos')loadPagos();
+if(t.dataset.s==='soporte')loadSoporte('todos');
+if(t.dataset.s==='users')loadUsers();
+};
 });
-return id;
-}
-async function enviarSoporteSeguro(celu,uid,texto,origen='local'){
-if(celu){
-const uSnap=await getDoc(doc(db,'users',celu));
-if(uSnap.exists()&&uSnap.data().bloqueado===true) throw new Error('Usuario bloqueado REAL');
-}
-if(uid){
-const cSnap=await getDoc(doc(db,'config',uid));
-if(cSnap.exists()&&cSnap.data().bloqueado===true) throw new Error('Local bloqueado REAL');
-}
-const id=Date.now().toString(36);
-await setDoc(doc(db,'soporte',id),{
-id,celu,uid,texto,origen,
-ts:serverTimestamp(),
-fecha:new Date().toLocaleDateString('es-AR'),
-hora:new Date().toLocaleTimeString('es-AR'),
-leido:false
-});
-}
-async function aprobarPagoTransaccion(solicitudId,diasExtra){
-const solRef=doc(db,'solicitudes',solicitudId);
-await runTransaction(db,async(tx)=>{
-const solSnap=await tx.get(solRef);
-if(!solSnap.exists()) throw new Error('Solicitud no existe');
-const sol=solSnap.data();
-if(sol.estado!=='pendiente') throw new Error('Ya procesada');
-const localId=sol.uid;
-const configRef=doc(db,'config',localId);
-const configSnap=await tx.get(configRef);
-if(!configSnap.exists()) throw new Error('Config no existe');
-const cfg=configSnap.data();
-const plan=sol.plan||'basico';
-const promoMap={basico:'promo14',medio:'promo10',premium:'promo6',casa:'promoCasa'};
-const promoId=promoMap[plan]||'promo14';
-const promoRef=doc(db,'config','promos');
-const promoSnap=await tx.get(promoRef);
-const promos=promoSnap.exists()?promoSnap.data():{};
-const promo=promos[promoId]||{cupoTotal:14,cupoUsado:0};
-if(promo.cupoUsado>=promo.cupoTotal) throw new Error('SIN CUPO '+promoId);
-const venceVieja=getVenceDate(cfg);
-const hoy=new Date();
-const base=venceVieja>hoy?venceVieja:hoy;
-const venceNueva=new Date(base.getTime()+diasExtra*24*3600*1000);
-const precios={basico:5000,medio:7000,premium:10000,casa:2500};
-const precioReal=precios[plan]||5000;
-tx.update(configRef,{
-planVence:Timestamp.fromDate(venceNueva),
-planActivo:true,
-visible:true,
-estado:'activo',
-bloqueado:false,
-plan:plan
-});
-promos[promoId].cupoUsado=(promos[promoId].cupoUsado||0)+1;
-tx.set(promoRef,promos,{merge:true});
-tx.update(solRef,{
-estado:'aprobado',
-precioReal:precioReal,
-diasDados:diasExtra,
-aprobadoEn:serverTimestamp()
-});
-});
-}
-async function bloquearReal(celu,uid){
-if(celu) await setDoc(doc(db,'users',celu),{bloqueado:true,estado:'bloqueado'},{merge:true});
-if(uid) await setDoc(doc(db,'config',uid),{bloqueado:true,visible:false,planActivo:false,estado:'bloqueado'},{merge:true});
-}
-async function desbloquearReal(celu,uid){
-if(celu) await setDoc(doc(db,'users',celu),{bloqueado:false,estado:'activo'},{merge:true});
-if(uid) await setDoc(doc(db,'config',uid),{bloqueado:false,visible:true,planActivo:true,estado:'activo'},{merge:true});
-}
-async function desbloquearDesdeSoporte(celu,uid){
-await desbloquearReal(celu,uid);
-}
-function fotoConCache(url){
-if(!url) return '';
-return url+(url.includes('?')?'&':'?')+'v='+Date.now();
-}
-const TABS=[
-{id:'resumen',name:'1 RESUMEN'},
-{id:'pagos',name:'2 PAGOS'},
-{id:'planes',name:'3 PLANES'},
-{id:'tarifas',name:'4 TARIFAS'},
-{id:'soporte',name:'5 SOPORTE'},
-{id:'users',name:'6 USERS'},
-{id:'cobros',name:'7 COBROS'},
-{id:'config',name:'8 CONFIG'},
-{id:'pausas',name:'9 PAUSAS'},
-{id:'logs',name:'10 LOGS'}
-];
-const tabsEl=document.getElementById('tabs');
-const panelsEl=document.getElementById('panels');
-TABS.forEach((t,i)=>{
-const b=document.createElement('div');b.className='tab'+(i===0?' act':'');b.textContent=t.name;b.onclick=()=>activarTab(t.id);tabsEl.appendChild(b);
-const p=document.createElement('div');p.className='panel'+(i===0?' act':'');p.id='panel-'+t.id;p.innerHTML='<div class="card">Cargando '+t.name+'...</div>';panelsEl.appendChild(p);
-});
-function activarTab(id){
-document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('act',TABS[i].id===id));
-document.querySelectorAll('.panel').forEach(el=>el.classList.toggle('act',el.id==='panel-'+id));
-}
-async function loadResumen(){
-const allSnap=await getDocs(collection(db,'config'));
 let all=[];
-allSnap.forEach(d=>{if(!['promos','gastos','tarifas'].includes(d.id)) all.push({id:d.id,...d.data()});});
-const allSinEliminados=all.filter(l=>l.estado!=='eliminado');
-const activos=allSinEliminados.filter(l=>estaActivo(l,48));
-const vencidos=allSinEliminados.filter(l=>!estaActivo(l,48));
-document.getElementById('kpi').textContent='Total:'+allSinEliminados.length+' Act:'+activos.length+' Venc:'+vencidos.length;
-document.getElementById('panel-resumen').innerHTML='<div class="card">ADM 0 FALLAS - STACK 27/50 - TRANSACTION - BLOQUEO REAL</div>';
+let cfg={horasPlan:48};
+let selectedUid=null;
+let filtroKpiActual='todos';
+let filtroPagos='pendiente';
+</script>
+<script>
+auth.onAuthStateChanged(async u=>{
+if(!u){
+$('auth').classList.remove('hidden');
+$('app').classList.add('hidden');
+return;
 }
+if(u.email==='jjrv.0093@gmail.com'){
+$('auth').classList.add('hidden');
+$('app').classList.remove('hidden');
+$('sal').textContent='Hola '+u.email+' OWNER';
+try{
+const c=await db.collection('config').doc('adm').get();
+if(c.exists){
+cfg=c.data();
+$('horasPlan').value=cfg.horasPlan||48;
+}
+const pt=await db.collection('config').doc('planes').get();
+if(pt.exists){
+const d=pt.data();
+$('pBaseNombre').value=d.base?.nombre||'Básico';
+$('pBaseLim').value=d.base?.limite||100;
+$('pBasePrecio').value=d.base?.precio||5000;
+$('pMedioNombre').value=d.medio?.nombre||'Medio';
+$('pMedioLim').value=d.medio?.limite||300;
+$('pMedioPrecio').value=d.medio?.precio||9000;
+$('pPremNombre').value=d.premium?.nombre||'Premium';
+$('pPremLim').value=d.premium?.limite||999999;
+$('pPremPrecio').value=d.premium?.precio||15000;
+}
+const cob=await db.collection('config').doc('cobros').get();
+if(cob.exists){
+const cc=cob.data();
+$('jonaAlias').value=cc.alias||'';
+$('jonaCbu').value=cc.cbu||'';
+$('jonaTitular').value=cc.titular||'';
+$('jonaWsp').value=cc.whatsapp||cc.wsp||'';
+$('jonaInstr').value=cc.instrucciones||'';
+}
+}catch(e){
+toast(e.message);
+}
+load();
+loadPagos();
+return;
+}
+try{
+const udoc=await db.collection('users').doc(u.uid).get();
+if(!udoc.exists||udoc.data().rol!=='superadmin'){
+toast('No autorizado - falta rol superadmin');
+await auth.signOut();
+return;
+}
+}catch(e){
+toast(e.message);
+await auth.signOut();
+return;
+}
+$('auth').classList.add('hidden');
+$('app').classList.remove('hidden');
+$('sal').textContent='Hola '+u.email;
+load();
+loadPagos();
+});
+function getVenceDate(l){
+if(!l)return null;
+const pv=l.planVence||l;
+if(!pv)return null;
+try{
+if(pv.toDate)return pv.toDate();
+if(pv.seconds)return new Date(pv.seconds*1000);
+const d=new Date(pv);
+return isNaN(d.getTime())?null:d;
+}catch(e){
+return null;
+}
+}
+function estaActivo(l){
+if(!l)return false;
+if(l.bloqueado===true)return false;
+if(l.planActivo===false)return false;
+if(l.visible===false)return false;
+const v=getVenceDate(l);
+if(!v)return true;
+return (new Date()-v)/36e5<=(cfg.horasPlan||48);
+}
+function fmtVence(l){
+const d=getVenceDate(l);
+if(!d)return '-';
+return d.toLocaleDateString('es-AR');
+}
+function esc(t){
+if(!t)return '';
+return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function tsToDate(t){
+if(!t)return 0;
+if(t.toDate)return t.toDate().getTime();
+if(t.seconds)return t.seconds*1000;
+const d=new Date(t);
+return isNaN(d.getTime())?0:d.getTime();
+}
+function fmtFecha(ts){
+const ms=tsToDate(ts);
+if(!ms)return '-';
+const d=new Date(ms);
+return d.toLocaleDateString('es-AR')+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+}
+function grupoFecha(ts){
+const ms=tsToDate(ts);
+if(!ms)return 'SIN FECHA';
+const d=new Date(ms);
+const hoy=new Date();
+hoy.setHours(0,0,0,0);
+const ayer=new Date(hoy);
+ayer.setDate(hoy.getDate()-1);
+const fd=new Date(d);
+fd.setHours(0,0,0,0);
+if(fd.getTime()===hoy.getTime())return 'HOY';
+if(fd.getTime()===ayer.getTime())return 'AYER';
+const diff=(hoy-fd)/86400000;
+if(diff<7)return 'ESTA SEMANA';
+return 'ANTERIOR';
+}
+</script>
+<script>
+async function load(){
+try{
+const s=await db.collection('config').get();
+all=s.docs.filter(d=>!['cobros','planes','adm','branding'].includes(d.id)).map(d=>({id:d.id,...d.data()}));
+const activos=all.filter(estaActivo).length;
+$('kpis').innerHTML=`<span class="pill click" onclick="filtrarKpi('todos')" style="background:#ffffff22">Total ${all.length}</span><span class="pill click" onclick="filtrarKpi('activos')" style="background:#22c55e33">Activos ${activos}</span><span class="pill click" onclick="filtrarKpi('vencidos')" style="background:#ef444433">Vencidos ${all.length-activos}</span>`;
+$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span>`;
+renderLocalesFiltrados();
+}catch(e){
+toast(e.message);
+}
+}
+window.filtrarKpi=tipo=>{
+filtroKpiActual=tipo;
+document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+document.querySelector('[data-s="planes"]').classList.add('active');
+document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+$('planes').classList.add('active');
+renderLocalesFiltrados();
+};
+function renderLocalesFiltrados(){
+let lista=[...all];
+if(filtroKpiActual==='activos')lista=all.filter(estaActivo);
+if(filtroKpiActual==='vencidos')lista=all.filter(l=>!estaActivo(l));
+const g=$('grid');
+if(!g)return;
+g.innerHTML='';
+if(!lista.length){
+g.innerHTML=`<div class="card">Sin locales</div>`;
+return;
+}
+lista.forEach(l=>{
+const vence=fmtVence(l);
+const a=estaActivo(l);
+const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${esc(l.promoMotivo||'PROMO')} ${esc(l.promoHasta||vence)}</span>`:'';
+const trialBadge=l.trialUsado?`<span class="pill" style="background:#a855f733">Trial usado</span>`:`<span class="pill" style="background:#22c55e33">Trial</span>`;
+const logo=l.logoUrl?`<img src="${esc(l.logoUrl)}" style="width:40px;height:40px;border-radius:12px;object-fit:cover">`:'';
+const d=document.createElement('div');
+d.className='card';
+d.innerHTML=`<div style="display:flex;justify-content:space-between"><div style="display:flex;gap:8px;align-items:center">${logo}<b>${esc(l.nombre||l.localNombre||'Local')}</b></div><span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}${l.bloqueado?' BLOQ':''}</span></div><div style="font-size:12px;color:#cfc9e6;margin:8px 0">${esc(l.email||'')} - ${esc(l.plan||'')} ${promo} ${trialBadge}</div><div style="font-size:12px;margin-bottom:8px">Vence: ${esc(vence)}</div><div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button><button class="btn small ghost" onclick="darPromo('${l.id}',7)">+7</button><button class="btn small ghost" onclick="darPromo('${l.id}',15)">+15</button><button class="btn small ghost" onclick="darPromo('${l.id}',30)">+30</button><button class="btn small ghost" style="background:#fff;color:#000;font-weight:900" onclick="darCustom('${l.id}')">+N</button><button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;
+g.appendChild(d);
+});
+}
+window.setFiltroPagos=t=>{
+filtroPagos=t;
+$('btnPagPend').className=t==='pendiente'?'btn small':'btn small ghost';
+$('btnPagPend').style.background=t==='pendiente'?'#facc15':'';
+$('btnPagPend').style.color=t==='pendiente'?'#000':'';
+$('btnPagAprob').className=t==='aprobado'?'btn small':'btn small ghost';
+$('btnPagAprob').style.background=t==='aprobado'?'#22c55e':'';
+$('btnPagRech').className=t==='rechazado'?'btn small':'btn small ghost';
+$('btnPagRech').style.background=t==='rechazado'?'#ef4444':'';
+loadPagos();
+};
+</script>
+<script>
 async function loadPagos(){
-const snap=await getDocs(query(collection(db,'solicitudes'),where('estado','==','pendiente')));
-let html='<div class="card"><b>TAB 2 PAGOS</b></div>';
-snap.forEach(d=>{
-const s=d.data();
-html+='<div class="card">Plan:'+s.plan+' Celu:'+s.celu+' UID:'+s.uid.slice(0,6)+' Monto:'+s.monto+'<br><button class="btn btn-g" onclick="window.aprobar(\''+d.id+'\',7)">+7</button> <button class="btn btn-v" onclick="window.aprobar(\''+d.id+'\',30)">+30</button> <button class="btn btn-r" onclick="window.rechazar(\''+d.id+'\')">Rechazar</button></div>';
+const ul=$('pagosList');
+const kpi=$('pagosKpi');
+ul.innerHTML='<li class="item">Cargando...</li>';
+if(kpi)kpi.innerHTML='';
+try{
+const snap=await db.collection('solicitudes').where('estado','==',filtroPagos).limit(100).get();
+if(snap.empty){
+ul.innerHTML=`<li class="item">No hay ${esc(filtroPagos)}</li>`;
+return;
+}
+let docs=snap.docs.map(d=>({id:d.id,...d.data()}));
+docs.sort((a,b)=>tsToDate(b.ts)-tsToDate(a.ts));
+if(filtroPagos==='aprobado'){
+const hoy=new Date();
+hoy.setHours(0,0,0,0);
+docs=docs.filter(d=>tsToDate(d.aprobado_en||d.ts)>=hoy.getTime());
+}
+if(kpi){
+const grupos={};
+docs.forEach(d=>{
+const g=grupoFecha(d.ts);
+grupos[g]=(grupos[g]||0)+1;
 });
-document.getElementById('panel-pagos').innerHTML=html||'<div class="card">Sin pendientes</div>';
+kpi.innerHTML=Object.keys(grupos).map(g=>`<span class="pill">${g} ${grupos[g]}</span>`).join('')+`<span class="pill" style="background:#ffffff22">Total ${docs.length}</span>`;
 }
-window.aprobar=async(id,dias)=>{try{await aprobarPagoTransaccion(id,dias);alert('Aprobado +'+dias);loadPagos();loadResumen();}catch(e){alert(e.message);}};
-window.rechazar=async(id)=>{await updateDoc(doc(db,'solicitudes',id),{estado:'rechazado'});loadPagos();};
-async function loadPlanes(){
-const promosSnap=await getDoc(doc(db,'config','promos'));
-const promos=promosSnap.exists()?promosSnap.data():{};
-let html='<div class="card"><b>TAB 3 PLANES</b><br>';
-Object.entries(promos).forEach(([k,v])=>{html+=k+': '+v.cupoUsado+'/'+v.cupoTotal+'<br>';});
-html+='</div><div class="card"><input id="uidBlock" placeholder="uid"><input id="celuBlock" placeholder="celu"><br><button class="btn btn-r" onclick="bloquearReal(document.getElementById(\'celuBlock\').value,document.getElementById(\'uidBlock\').value)">Bloquear REAL</button> <button class="btn btn-g" onclick="desbloquearReal(document.getElementById(\'celuBlock\').value,document.getElementById(\'uidBlock\').value)">Desbloquear REAL</button></div>';
-document.getElementById('panel-planes').innerHTML=html;
+ul.innerHTML='';
+let ultimoGrupo='';
+for(const x of docs){
+const g=grupoFecha(x.ts);
+if(g!==ultimoGrupo){
+ultimoGrupo=g;
+const sep=document.createElement('li');
+sep.className='item';
+sep.style.background='#ffffff22';
+sep.style.justifyContent='center';
+sep.innerHTML=`<b>${g}</b>`;
+ul.appendChild(sep);
 }
-async function loadCobros(){
-const solSnap=await getDocs(collection(db,'solicitudes'));
-let totalReal=0,detalle={};
-solSnap.forEach(d=>{
-const s=d.data();
-if(s.estado==='aprobado'){
-const monto=Number(s.precioReal||s.monto||5000);
-totalReal+=monto;
-detalle[s.plan||'basico']=(detalle[s.plan||'basico']||0)+monto;
+let cfgExtra=all.find(a=>a.id===x.uid)||{};
+const comp=x.comprobante||'';
+const li=document.createElement('li');
+li.className='item';
+li.style.flexDirection='column';
+li.style.alignItems='flex-start';
+li.innerHTML=`<div style="width:100%"><b>${esc(x.nombreLocal||'Local')}</b> <span class="pill" style="background:#facc15;color:#000">${esc(x.plan||'')}</span><div style="font-size:12px">${esc(x.email||'')} - ${esc(fmtFecha(x.ts))}</div></div>${comp?`<img src="${comp}" style="width:100%;max-width:380px;border-radius:14px;margin-top:8px">`:''}<div style="display:flex;gap:6px;margin-top:10px">${filtroPagos==='pendiente'?'<button class="btn small" style="background:#22c55e">Aprobar</button><button class="btn small ghost">Rechazar</button>':''}</div>`;
+if(filtroPagos==='pendiente'){
+const btns=li.querySelectorAll('button');
+btns[0].onclick=()=>aprobarPago(x.id,x.uid,x.plan,btns[0]);
+btns[1].onclick=()=>rechazarPago(x.id,x.uid,btns[1]);
 }
+ul.appendChild(li);
+}
+}catch(e){
+$('pagosList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;
+}
+}
+async function aprobarPago(solicId,uid,plan,btn){
+if(btn){btn.textContent='Aprobando...';btn.disabled=true;}
+if(!confirm('Aprobar 30 dias?')){if(btn){btn.textContent='Aprobar';btn.disabled=false;}return;}
+const vence=new Date();
+vence.setDate(vence.getDate()+30);
+await db.collection('config').doc(uid).set({plan:plan||'Medio',planActivo:true,visible:true,bloqueado:false,planVence:firebase.firestore.Timestamp.fromDate(vence),plan_estado:'aprobado',trialUsado:true},{merge:true});
+await db.collection('solicitudes').doc(solicId).update({estado:'aprobado',aprobado_en:firebase.firestore.FieldValue.serverTimestamp()});
+toast('Aprobado');
+loadPagos();
+load();
+}
+async function rechazarPago(solicId,uid,btn){
+if(btn){btn.textContent='Rechazando...';btn.disabled=true;}
+if(!confirm('Rechazar?')){if(btn){btn.textContent='Rechazar';btn.disabled=false;}return;}
+await db.collection('config').doc(uid).set({planActivo:false,visible:false,plan_estado:'rechazado'},{merge:true});
+await db.collection('solicitudes').doc(solicId).update({estado:'rechazado',rechazado_en:firebase.firestore.FieldValue.serverTimestamp()});
+toast('Rechazado');
+loadPagos();
+load();
+}
+window.activar48=async id=>{
+const base=getVenceDate(all.find(a=>a.id===id));
+let vence=base&&base>new Date()?new Date(base):new Date();
+vence.setHours(vence.getHours()+48);
+await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(vence),planActivo:true,visible:true,bloqueado:false},{merge:true});
+toast('48hs');
+load();
+};
+window.darPromo=async(id,dias)=>{
+const motivo=prompt(`Dar ${dias} dias`,dias==30?'Gentileza':'Promo');
+if(motivo===null)return;
+let hasta=new Date();
+hasta.setDate(hasta.getDate()+dias);
+await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,bloqueado:false,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});
+toast(`${dias}d`);
+load();
+};
+window.darCustom=async id=>{
+const inp=prompt('Cuantos dias?');
+if(inp===null)return;
+const dias=Number(inp);
+if(isNaN(dias)||dias<=0){toast('Numero invalido');return;}
+let hasta=new Date();
+hasta.setDate(hasta.getDate()+dias);
+await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,bloqueado:false,promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:'Custom',trialUsado:true},{merge:true});
+toast(`${dias}d`);
+load();
+};
+</script>
+<script>
+window.verFicha=async id=>{
+try{
+const doc=await db.collection('config').doc(id).get();
+if(!doc.exists){toast('No existe');return;}
+const d=doc.data();
+selectedUid=id;
+$('modalTitle').textContent=d.localNombre||'Ficha';
+$('modalBody').innerHTML=`<div>Nombre: ${esc(d.localNombre||'-')}</div><div>Email: ${esc(d.email||'-')}</div><div>Plan: ${esc(d.plan||'-')}</div><div>Vence: ${esc(fmtVence(d))}</div><div>Bloqueado: ${d.bloqueado?'SI':'NO'}</div><div>UID: ${esc(id)}</div>`;
+let pausasHtml='';
+try{
+const pSnap=await db.collection('config').doc(id).collection('pausasFechas').get();
+pausasHtml=pSnap.empty?'Sin pausas':pSnap.docs.map(p=>esc(p.id)).join(', ');
+}catch(e){pausasHtml='Sin pausas';}
+$('modalPausas').innerHTML=`<div style="background:#00000044;border-radius:8px;padding:8px;font-size:11px">${pausasHtml}</div>`;
+$('userModal').classList.remove('hidden');
+}catch(e){toast(e.message);}
+};
+$('modalClose').onclick=()=>{$('userModal').classList.add('hidden');};
+$('modalBloq').onclick=async()=>{
+if(!selectedUid)return;
+if(!confirm('Bloquear?'))return;
+await db.collection('config').doc(selectedUid).set({bloqueado:true,planActivo:false,visible:false},{merge:true});
+toast('Bloqueado');
+$('userModal').classList.add('hidden');
+load();
+};
+$('modalDesPausas').onclick=async()=>{
+if(!selectedUid)return;
+if(!confirm('Quitar pausas?'))return;
+const snap=await db.collection('config').doc(selectedUid).collection('pausasFechas').get();
+for(const doc of snap.docs){await doc.ref.delete();}
+toast('Pausas quitadas');
+$('userModal').classList.add('hidden');
+};
+async function loadSoporte(tipo){
+const ul=$('sList');
+ul.innerHTML='<li class="item">Cargando...</li>';
+try{
+const snap=await db.collection('soporte').limit(150).get();
+let docs=snap.docs.map(d=>({id:d.id,...d.data()}));
+docs.sort((a,b)=>tsToDate(b.ts)-tsToDate(a.ts));
+if(tipo==='local')docs=docs.filter(d=>d.origen==='local');
+if(tipo==='cliente')docs=docs.filter(d=>d.origen==='cliente');
+ul.innerHTML='';
+docs.forEach(x=>{
+const esLocal=x.origen==='local';
+const li=document.createElement('li');
+li.className='item';
+li.style.flexDirection='column';
+li.style.alignItems='flex-start';
+li.style.border=esLocal?'1px solid #a855f7':'1px solid #22c55e';
+li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b style="color:${esLocal?'#a855f7':'#22c55e'}">${esLocal?'LOCAL':'CLIENTE'}</b><span class="pill">${esc(x.tipo||'')}</span></div><div style="font-size:12px;margin:6px 0">${esc(x.mensaje||'')}</div><div style="font-size:11px;color:#cfc9e6">Local: ${esc(x.nombreLocal||'')} - Cliente: ${esc(x.nombreCliente||'')}</div>${x.imagen?`<img src="${x.imagen}" style="max-width:200px;border-radius:10px;margin-top:6px">`:''}<div style="margin-top:8px"><button class="btn small ghost">Borrar</button></div>`;
+li.querySelector('button').onclick=()=>borrarSoporte(x.id);
+ul.appendChild(li);
 });
-const gastosSnap=await getDocs(collection(db,'config','gastos','lista'));
-let gastos=0;gastosSnap.forEach(d=>{gastos+=Number(d.data().monto||0);});
-const totalNeto=totalReal-gastos;
-document.getElementById('panel-cobros').innerHTML='<div class="card"><b>TAB 7 COBROS</b><br>Entradas: $'+totalReal+'<br>'+Object.entries(detalle).map(([k,v])=>k+':$'+v).join(' | ')+'<br>Gastos: $'+gastos+'<br><b>TOTAL: $'+totalNeto+'</b></div>';
+if(!docs.length)ul.innerHTML='<li class="item">Sin soporte</li>';
+}catch(e){$('sList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}
 }
-async function loadSoporte(){
-const snap=await getDocs(collection(db,'soporte'));
-let arr=[];snap.forEach(d=>arr.push(d.data()));
-arr.sort((a,b)=>(b.leido===false?1:0)-(a.leido===false?1:0)||(b.ts?.seconds||0)-(a.ts?.seconds||0));
-let html='<div class="card"><b>TAB 5 SOPORTE</b></div>';
-arr.slice(0,50).forEach(s=>{
-html+='<div class="card">'+(s.leido?'':'<span class="pill" style="background:var(--red)">NO LEIDO</span>')+' '+(s.fecha||'')+' '+(s.hora||'')+' '+(s.origen||'')+' '+(s.celu||'')+'<br>'+(s.texto||'')+'<br><button class="btn btn-g" onclick="desbloquearDesdeSoporte(\''+(s.celu||'')+'\',\''+(s.uid||'')+'\')">Desbloquear REAL</button> <button class="btn btn-r" onclick="bloquearReal(\''+(s.celu||'')+'\',\''+(s.uid||'')+'\')">Bloquear REAL</button></div>';
-});
-document.getElementById('panel-soporte').innerHTML=html;
-}
+window.borrarSoporte=async id=>{
+if(!confirm('Borrar?'))return;
+await db.collection('soporte').doc(id).delete();
+toast('Borrado');
+loadSoporte('todos');
+};
 async function loadUsers(){
-const snap=await getDocs(collection(db,'users'));
-let html='<div class="card"><b>TAB 6 USERS</b></div>';
-snap.forEach(d=>{const u=d.data();html+='<div class="card">'+d.id+' '+(u.bloqueado?'<span class=red>BLOQUEADO</span>':'<span class=green>ACTIVO</span>')+'<br><button class="btn btn-r" onclick="bloquearReal(\''+d.id+'\',\'\')">Bloquear</button> <button class="btn btn-g" onclick="desbloquearReal(\''+d.id+'\',\'\')">Desbloquear</button></div>';});
-document.getElementById('panel-users').innerHTML=html;
+const ul=$('uList');
+ul.innerHTML='<li class="item">Cargando...</li>';
+try{
+const snap=await db.collection('users').limit(200).get();
+ul.innerHTML='';
+snap.forEach(d=>{
+const x=d.data();
+const li=document.createElement('li');
+li.className='item';
+li.innerHTML=`<div><b>${esc(x.email||d.id)}</b><div style="font-size:11px">${esc(x.rol||'')} - ${esc(d.id)}</div></div><div style="display:flex;gap:6px"><button class="btn small ghost">Ver</button><button class="btn small ghost">Bloquear</button></div>`;
+const b=li.querySelectorAll('button');
+b[0].onclick=()=>verFicha(d.id);
+b[1].onclick=()=>bloquearUser(d.id);
+ul.appendChild(li);
+});
+}catch(e){$('uList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}
 }
-document.getElementById('panel-tarifas').innerHTML='<div class="card">TAB 4 TARIFAS</div>';
-document.getElementById('panel-config').innerHTML='<div class="card">TAB 8 CONFIG</div>';
-document.getElementById('panel-pausas').innerHTML='<div class="card">TAB 9 PAUSAS</div>';
-document.getElementById('panel-logs').innerHTML='<div class="card">TAB 10 LOGS - 0 FALLAS</div>';
-loadResumen();loadPagos();loadPlanes();loadCobros();loadSoporte();loadUsers();
-window.bloquearReal=bloquearReal;window.desbloquearReal=desbloquearReal;window.desbloquearDesdeSoporte=desbloquearDesdeSoporte;
-window.crearReservaSegura=crearReservaSegura;window.enviarSoporteSeguro=enviarSoporteSeguro;
+window.bloquearUser=async id=>{
+if(!confirm('Bloquear?'))return;
+await db.collection('config').doc(id).set({bloqueado:true,planActivo:false,visible:false},{merge:true});
+toast('Bloqueado');
+loadUsers();
+load();
+};
+$('reload').onclick=load;
+$('reloadUsers').onclick=loadUsers;
+</script>
+<script>
+$('bus').oninput=()=>{
+const q=$('bus').value.toLowerCase();
+Array.from($('grid').children).forEach(ch=>{
+ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'
+});
+};
+$('busUsers').oninput=()=>{
+const q=$('busUsers').value.toLowerCase();
+Array.from($('uList').children).forEach(ch=>{
+ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'
+});
+};
+$('btnGuardarTarifas').onclick=async()=>{
+try{
+const base={nombre:$('pBaseNombre').value.trim()||'Básico',limite:Number($('pBaseLim').value)||0,precio:Number($('pBasePrecio').value)||0};
+const medio={nombre:$('pMedioNombre').value.trim()||'Medio',limite:Number($('pMedioLim').value)||0,precio:Number($('pMedioPrecio').value)||0};
+const premium={nombre:$('pPremNombre').value.trim()||'Premium',limite:Number($('pPremLim').value)||0,precio:Number($('pPremPrecio').value)||0};
+$('tarifaMsg').textContent='Guardando...';
+await db.collection('config').doc('planes').set({base,medio,premium,updated:firebase.firestore.FieldValue.serverTimestamp()});
+$('tarifaMsg').textContent='Guardado';
+toast('Guardado');
+}catch(e){$('tarifaMsg').textContent='Error: '+e.message;}
+};
+$('btnGuardarCobrosJona').onclick=async()=>{
+try{
+await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value,cbu:$('jonaCbu').value,titular:$('jonaTitular').value,whatsapp:$('jonaWsp').value,instrucciones:$('jonaInstr').value},{merge:true});
+$('msgCobrosJona').textContent='Guardado';
+toast('Guardado');
+}catch(e){toast(e.message);}
+};
+$('btnGuardarHoras').onclick=async()=>{
+try{
+await db.collection('config').doc('adm').set({horasPlan:Number($('horasPlan').value||48)},{merge:true});
+$('ajMsg').textContent='Guardado';
+toast('Guardado');
+load();
+}catch(e){toast(e.message);}
+};
 </script>
 </body>
-</html>
+</htm
