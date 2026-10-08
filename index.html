@@ -44,7 +44,7 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 </section>
 <section id="app" class="hidden">
 <div class="topbar">
-<div class="brand">reservAR ADM</div>
+<div class="brand">reservAR ADM - FREE TIER &lt;100</div>
 <div style="display:flex;gap:8px">
 <span class="pill">ADM</span>
 <button id="logout" class="btn small ghost">Salir</button>
@@ -53,9 +53,9 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 <div class="wrap">
 <div class="tabs">
 <button class="tab active" data-s="dash">Inicio</button>
-<button class="tab" data-s="pagos" style="background:#facc15;color:#000">Pagos</button>
+<button class="tab" data-s="pagos" style="background:#facc15;color:#000">Pagos $50</button>
 <button class="tab" data-s="planes">Locales</button>
-<button class="tab" data-s="tarifas">Tarifas</button>
+<button class="tab" data-s="tarifas">Tarifas $50</button>
 <button class="tab" data-s="soporte" style="background:#a855f7;color:#fff">Soporte</button>
 <button class="tab" data-s="users">Usuarios</button>
 <button class="tab" data-s="cobros" style="background:#22c55e;color:#000">Cobros</button>
@@ -69,14 +69,14 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 <div id="kpis" style="display:flex;gap:8px;flex-wrap:wrap"></div>
 </div>
 <div class="card">
-<h3>Resumen</h3>
+<h3>Resumen Free Tier</h3>
 <div id="resumen"></div>
 <div id="kpiStack" style="margin-top:10px"></div>
 </div>
 </div>
 <div id="pagos" class="screen">
 <div class="card" style="border:2px solid #facc15">
-<h3>Solicitudes</h3>
+<h3>Solicitudes - Promo $50 tachado</h3>
 <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
 <button id="btnPagPend" class="btn small" style="background:#facc15;color:#000" onclick="setFiltroPagos('pendiente')">Pendientes</button>
 <button id="btnPagAprob" class="btn small ghost" onclick="setFiltroPagos('aprobado')">Aprobados hoy</button>
@@ -100,32 +100,39 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 <div id="tarifas" class="screen">
 <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px">
 <div class="card">
-<b>Básico</b>
+<b>Básico - Promo $50</b>
 <label>Nombre</label><input id="pBaseNombre">
+<label>Original tachado</label><input id="pBaseOrig" type="number" placeholder="5000">
+<label>Promo actual</label><input id="pBasePrecio" type="number" value="50">
 <label>Limite</label><input id="pBaseLim" type="number">
-<label>Precio</label><input id="pBasePrecio" type="number">
 </div>
 <div class="card">
-<b>Medio</b>
+<b>Medio - Promo $50</b>
 <label>Nombre</label><input id="pMedioNombre">
+<label>Original tachado</label><input id="pMedioOrig" type="number" placeholder="7000">
+<label>Promo actual</label><input id="pMedioPrecio" type="number" value="50">
 <label>Limite</label><input id="pMedioLim" type="number">
-<label>Precio</label><input id="pMedioPrecio" type="number">
 </div>
 <div class="card">
-<b>Premium</b>
+<b>Premium - Promo $50</b>
 <label>Nombre</label><input id="pPremNombre">
+<label>Original tachado</label><input id="pPremOrig" type="number" placeholder="10000">
+<label>Promo actual</label><input id="pPremPrecio" type="number" value="50">
 <label>Limite</label><input id="pPremLim" type="number">
-<label>Precio</label><input id="pPremPrecio" type="number">
 </div>
 <div class="card" style="border:2px solid #22c55e">
 <b>Casa</b>
 <label>Nombre</label><input id="pCasaNombre" value="Casa">
 <label>Limite</label><input id="pCasaLim" type="number" value="50">
-<label>Precio</label><input id="pCasaPrecio" type="number" value="2500">
+<label>Precio por uso</label><input id="pCasaPrecio" type="number" value="2500">
 </div>
 </div>
 <div class="card">
-<button id="btnGuardarTarifas" class="btn">Guardar</button>
+<h4>Cupos Promo $50 - 50 cupos</h4>
+<div style="display:flex;gap:8px"><label>Usados</label><input id="cupoUsado" type="number" value="29" style="max-width:100px"><label>Total</label><input id="cupoTotal" type="number" value="50" style="max-width:100px"><button id="btnGuardarCupos" class="btn small">Guardar cupos</button></div>
+</div>
+<div class="card">
+<button id="btnGuardarTarifas" class="btn">Guardar Tarifas con tachado $50</button>
 <span id="tarifaMsg" style="color:#86efac;margin-left:8px"></span>
 </div>
 </div>
@@ -152,7 +159,7 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 </div>
 <div id="cobros" class="screen">
 <div class="card" style="border:2px solid #22c55e">
-<h3>Cobros</h3>
+<h3>Cobros - Sincroniza alias con LOCAL</h3>
 <div id="cobrosKpi"></div>
 <div style="margin-top:10px"><button class="btn small" onclick="loadCobros()">Recargar Cobros</button></div>
 <ul id="cobrosList" class="list" style="margin-top:12px"></ul>
@@ -166,35 +173,35 @@ label{font-size:12px;color:#d9ccff;margin-bottom:6px;display:block}
 <div id="landing" class="screen">
 <div class="card" style="border:2px solid #38bdf8">
 <h3>Landing - Editor</h3>
-<label>Saludo Hero</label><input id="landSaludo" placeholder="Hola...">
 <label>Titulo</label><input id="landTitulo">
 <label>Subtitulo</label><textarea id="landSub"></textarea>
-<label>Texto Boton</label><input id="landBtnTexto">
 <label>Contacto</label><input id="landContacto">
 <label>Footer</label><textarea id="landFooter"></textarea>
+<label>Mantenimiento (true/false)</label><select id="landMant"><option value="false">No</option><option value="true">Si</option></select>
 <button id="btnGuardarLanding" class="btn" style="margin-top:10px;background:#38bdf8;color:#000">Guardar Landing</button>
 <span id="msgLanding" style="color:#86efac;margin-left:8px"></span>
 </div>
 </div>
 <div id="logs" class="screen">
 <div class="card">
-<h3>Logs</h3>
+<h3>Logs - Auditoría pagos</h3>
 <ul id="logsList" class="list"></ul>
 </div>
 </div>
 <div id="ajustes" class="screen">
 <div class="card" style="border:2px solid #facc15">
-<h3>Datos de cobro</h3>
-<label>Alias</label><input id="jonaAlias">
+<h3>Datos de cobro - Este alias lo ve LOCAL al instante</h3>
+<label>Alias</label><input id="jonaAlias" placeholder="alias.mp">
 <label>CBU</label><input id="jonaCbu">
 <label>Titular</label><input id="jonaTitular">
 <label>WhatsApp</label><input id="jonaWsp">
-<label>Instrucciones</label><textarea id="jonaInstr"></textarea>
-<button id="btnGuardarCobrosJona" class="btn" style="margin-top:10px">Guardar</button>
+<label>Email contacto landing</label><input id="jonaEmail">
+<label>Instrucciones cliente</label><textarea id="jonaInstr"></textarea>
+<button id="btnGuardarCobrosJona" class="btn" style="margin-top:10px">Guardar - Sincroniza con LOCAL</button>
 <span id="msgCobrosJona" style="color:#86efac"></span>
 </div>
 <div class="card">
-<h3>Gracia por vencimiento</h3>
+<h3>Gracia por vencimiento - Free tier</h3>
 <div style="font-size:12px;color:#cfc9e6;margin-bottom:6px">Al vencer, el local sigue activo 48hs, luego se bloquea hasta pagar. Sin pausas por fecha.</div>
 <input id="horasPlan" type="number" value="48" style="max-width:200px">
 <button id="btnGuardarHoras" class="btn small" style="margin-top:8px">Guardar</button>
@@ -233,28 +240,24 @@ function esc(t){if(!t)return '';return String(t).replace(/&/g,'&amp;').replace(/
 function tsToDate(t){if(!t)return 0;if(t.toDate)return t.toDate().getTime();if(t.seconds)return t.seconds*1000;const d=new Date(t);return isNaN(d.getTime())?0:d.getTime();}
 function fmtFecha(ts){const ms=tsToDate(ts);if(!ms)return '-';const d=new Date(ms);return d.toLocaleDateString('es-AR')+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});}
 function grupoFecha(ts){const ms=tsToDate(ts);if(!ms)return 'SIN FECHA';const d=new Date(ms);const hoy=new Date();hoy.setHours(0,0,0,0);const ayer=new Date(hoy);ayer.setDate(hoy.getDate()-1);const fd=new Date(d);fd.setHours(0,0,0,0);if(fd.getTime()===hoy.getTime())return 'HOY';if(fd.getTime()===ayer.getTime())return 'AYER';const diff=(hoy-fd)/86400000;if(diff<7)return 'ESTA SEMANA';return 'ANTERIOR';}
-function deptoNorm(s){if(!s)return '';return String(s).normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase().trim();}
 function fotoConCache(url){if(!url)return '';return url+(url.includes('?')?'&':'?')+'v='+Date.now();}
-function genWebUID(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8);}
-function getPrecioReal(plan){const p=deptoNorm(plan);if(p.includes('casa'))return 2500;if(p.includes('basic')||p.includes('basi'))return 5000;if(p.includes('medio'))return 7000;if(p.includes('premium')||p.includes('premi'))return 10000;return 5000;}
+function getPrecioReal(plan){const p=(plan||'').toLowerCase();if(p.includes('casa'))return 2500;if(p.includes('premium'))return 50;if(p.includes('medio'))return 50;if(p.includes('basic')||p.includes('basi'))return 50;return 50;}
 </script>
 <script>
 auth.onAuthStateChanged(async u=>{
 if(!u){$('auth').classList.remove('hidden');$('app').classList.add('hidden');return;}
-if(u.email==='jjrv.0093@gmail.com'){$('auth').classList.add('hidden');$('app').classList.remove('hidden');$('sal').textContent='Hola '+u.email+' OWNER';try{const c=await db.collection('config').doc('adm').get();if(c.exists){cfg=c.data();$('horasPlan').value=cfg.horasPlan||48;}const pt=await db.collection('config').doc('planes').get();if(pt.exists){const d=pt.data();$('pBaseNombre').value=d.base?.nombre||'Básico';$('pBaseLim').value=d.base?.limite||100;$('pBasePrecio').value=d.base?.precio||5000;$('pMedioNombre').value=d.medio?.nombre||'Medio';$('pMedioLim').value=d.medio?.limite||300;$('pMedioPrecio').value=d.medio?.precio||9000;$('pPremNombre').value=d.premium?.nombre||'Premium';$('pPremLim').value=d.premium?.limite||999999;$('pPremPrecio').value=d.premium?.precio||15000;$('pCasaNombre').value=d.casa?.nombre||'Casa';$('pCasaLim').value=d.casa?.limite||50;$('pCasaPrecio').value=d.casa?.precio||2500;}const cob=await db.collection('config').doc('cobros').get();if(cob.exists){const cc=cob.data();$('jonaAlias').value=cc.alias||'';$('jonaCbu').value=cc.cbu||'';$('jonaTitular').value=cc.titular||'';$('jonaWsp').value=cc.whatsapp||cc.wsp||'';$('jonaInstr').value=cc.instrucciones||'';}const land=await db.collection('config').doc('landing').get();if(land.exists){const L=land.data();$('landSaludo').value=L.saludo||'';$('landTitulo').value=L.titulo||'';$('landSub').value=L.sub||'';$('landBtnTexto').value=L.btnTexto||'';$('landContacto').value=L.contacto||'';$('landFooter').value=L.footer||'';}}catch(e){toast(e.message);}load();loadPagos();return;}
-try{const udoc=await db.collection('users').doc(u.uid).get();if(!udoc.exists||udoc.data().rol!=='superadmin'){toast('No autorizado - falta rol superadmin');await auth.signOut();return;}}catch(e){toast(e.message);await auth.signOut();return;}
-$('auth').classList.add('hidden');$('app').classList.remove('hidden');$('sal').textContent='Hola '+u.email;load();loadPagos();
+if(u.email!=='jjrv.0093@gmail.com'){try{const udoc=await db.collection('users').doc(u.uid).get();if(!udoc.exists||udoc.data().rol!=='superadmin'){toast('No autorizado');await auth.signOut();return;}}catch(e){toast(e.message);await auth.signOut();return;}}
+$('auth').classList.add('hidden');$('app').classList.remove('hidden');$('sal').textContent='Hola '+u.email+' OWNER';try{const c=await db.collection('config').doc('adm').get();if(c.exists){cfg=c.data();$('horasPlan').value=cfg.horasPlan||48;}const pt=await db.collection('config').doc('planes').get();if(pt.exists){const d=pt.data();$('pBaseNombre').value=d.base?.nombre||'Básico';$('pBaseOrig').value=d.base?.original||5000;$('pBaseLim').value=d.base?.limite||100;$('pBasePrecio').value=d.base?.precio||50;$('pMedioNombre').value=d.medio?.nombre||'Medio';$('pMedioOrig').value=d.medio?.original||7000;$('pMedioLim').value=d.medio?.limite||300;$('pMedioPrecio').value=d.medio?.precio||50;$('pPremNombre').value=d.premium?.nombre||'Premium';$('pPremOrig').value=d.premium?.original||10000;$('pPremLim').value=d.premium?.limite||999999;$('pPremPrecio').value=d.premium?.precio||50;$('pCasaNombre').value=d.casa?.nombre||'Casa';$('pCasaLim').value=d.casa?.limite||50;$('pCasaPrecio').value=d.casa?.precio||2500;}const cob=await db.collection('config').doc('cobros').get();if(cob.exists){const cc=cob.data();$('jonaAlias').value=cc.alias||'';$('jonaCbu').value=cc.cbu||'';$('jonaTitular').value=cc.titular||'';$('jonaWsp').value=cc.whatsapp||cc.wsp||'';$('jonaEmail').value=cc.email||'';$('jonaInstr').value=cc.instrucciones||'';}const land=await db.collection('config').doc('landing').get();if(land.exists){const L=land.data();$('landTitulo').value=L.titulo||L.heroTitle||'';$('landSub').value=L.sub||L.heroSub||'';$('landContacto').value=L.contacto||'';$('landFooter').value=L.footer||'';$('landMant').value=String(L.mantenimiento||false);}const promo=await db.collection('config').doc('promos').get();if(promo.exists){const pp=promo.data();if(pp.promo10){$('cupoUsado').value=pp.promo10.cupoUsado||29;$('cupoTotal').value=pp.promo10.cupoTotal||50;}}}catch(e){toast(e.message);}load();loadPagos();
 });
-async function load(){try{const s=await db.collection('config').get();all=s.docs.filter(d=>!['cobros','planes','adm','branding','promos','gastos','landing'].includes(d.id)).map(d=>({id:d.id,...d.data()}));const activos=all.filter(estaActivo).length;const vencidos=all.length-activos;let stackV=0;try{const admSnap=await db.collection('config').doc('adm').get();if(admSnap.exists){stackV=admSnap.data().stack||0;}}catch(e){}$('kpis').innerHTML=`<span class="pill click" onclick="filtrarKpi('todos')" style="background:#ffffff22">Total ${all.length}</span><span class="pill click" onclick="filtrarKpi('activos')" style="background:#22c55e33">Activos ${activos}</span><span class="pill click" onclick="filtrarKpi('vencidos')" style="background:#ef444433">Vencidos ${vencidos}</span>`;$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span><span class="pill" style="background:#22c55e22">Stack ${stackV}/50</span>`;renderLocalesFiltrados();}catch(e){toast(e.message);}}
+async function load(){try{const s=await db.collection('config').get();all=s.docs.filter(d=>!['cobros','planes','adm','branding','promos','gastos','landing','logs'].includes(d.id)).map(d=>({id:d.id,...d.data()}));const activos=all.filter(estaActivo).length;const vencidos=all.length-activos;$('kpis').innerHTML=`<span class="pill click" onclick="filtrarKpi('todos')" style="background:#ffffff22">Total ${all.length}/100</span><span class="pill click" onclick="filtrarKpi('activos')" style="background:#22c55e33">Activos ${activos}</span><span class="pill click" onclick="filtrarKpi('vencidos')" style="background:#ef444433">Vencidos ${vencidos}</span>`;$('resumen').innerHTML=`<span class="pill">Gracia ${cfg.horasPlan||48}hs</span><span class="pill" style="background:#facc15;color:#000">Promo $50 ${$('cupoUsado').value||29}/${$('cupoTotal').value||50}</span>`;renderLocalesFiltrados();}catch(e){toast(e.message);}}
 window.filtrarKpi=tipo=>{filtroKpiActual=tipo;document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelector('[data-s="planes"]').classList.add('active');document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));$('planes').classList.add('active');renderLocalesFiltrados();};
-function renderLocalesFiltrados(){let lista=[...all];if(filtroKpiActual==='activos')lista=all.filter(estaActivo);if(filtroKpiActual==='vencidos')lista=all.filter(l=>!estaActivo(l));const g=$('grid');if(!g)return;g.innerHTML='';if(!lista.length){g.innerHTML=`<div class="card">Sin locales</div>`;return;}lista.forEach(l=>{const vence=fmtVence(l);const a=estaActivo(l);const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${esc(l.promoMotivo||'PROMO')} ${esc(l.promoHasta||vence)}</span>`:'';
-const trialBadge=l.trialUsado===false||l.trialUsado===undefined?`<span class="pill" style="background:#22c55e33">Trial 7d</span>`:l.trialUsado?`<span class="pill" style="background:#a855f733">Trial usado</span>`:`<span class="pill" style="background:#22c55e33">Trial</span>`;
-const logo=l.logoUrl?`<img src="${esc(fotoConCache(l.logoUrl))}" style="width:40px;height:40px;border-radius:12px;object-fit:cover">`:'';const d=document.createElement('div');d.className='card';d.innerHTML=`<div style="display:flex;justify-content:space-between"><div style="display:flex;gap:8px;align-items:center">${logo}<b>${esc(l.nombre||l.localNombre||'Local')}</b></div><span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}${l.bloqueado?' BLOQ':''}</span></div><div style="font-size:12px;color:#cfc9e6;margin:8px 0">${esc(l.email||'')} - ${esc(l.plan||'')} ${promo} ${trialBadge}</div><div style="font-size:12px;margin-bottom:8px">Vence: ${esc(vence)}</div><div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button><button class="btn small ghost" onclick="darPromo('${l.id}',7)">+7</button><button class="btn small ghost" onclick="darPromo('${l.id}',15)">+15</button><button class="btn small ghost" onclick="darPromo('${l.id}',30)">+30</button><button class="btn small ghost" style="background:#fff;color:#000;font-weight:900" onclick="darCustom('${l.id}')">+N</button><button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;g.appendChild(d);});}
+function renderLocalesFiltrados(){let lista=[...all];if(filtroKpiActual==='activos')lista=all.filter(estaActivo);if(filtroKpiActual==='vencidos')lista=all.filter(l=>!estaActivo(l));const g=$('grid');if(!g)return;g.innerHTML='';if(!lista.length){g.innerHTML=`<div class="card">Sin locales - Free tier ok</div>`;return;}lista.forEach(l=>{const vence=fmtVence(l);const a=estaActivo(l);const promo=l.promoGratis?`<span class="pill" style="background:#facc1533;color:#000">${esc(l.promoMotivo||'PROMO')}</span>`:'';
+const logo=l.foto||l.logoUrl?`<img src="${esc(fotoConCache(l.foto||l.logoUrl))}" style="width:40px;height:40px;border-radius:12px;object-fit:cover">`:'';const d=document.createElement('div');d.className='card';d.innerHTML=`<div style="display:flex;justify-content:space-between"><div style="display:flex;gap:8px;align-items:center">${logo}<b>${esc(l.localNombre||l.nombre||'Local')}</b></div><span class="pill" style="background:${a?'#22c55e33':'#ef444433'}">${a?'ACTIVO':'VENCIDO'}${l.bloqueado?' BLOQ':''}</span></div><div style="font-size:12px;color:#cfc9e6;margin:8px 0">${esc(l.email||'')} - ${esc(l.plan||'')} ${promo}</div><div style="font-size:12px;margin-bottom:8px">Vence: ${esc(vence)} Usos:${l.usosMes||0}</div><div style="display:flex;flex-wrap:wrap;gap:6px"><button class="btn small" onclick="activar48('${l.id}')">48hs</button><button class="btn small ghost" onclick="darPromo('${l.id}',7)">+7</button><button class="btn small ghost" onclick="darPromo('${l.id}',15)">+15</button><button class="btn small ghost" onclick="darPromo('${l.id}',30)">+30</button><button class="btn small ghost" onclick="verFicha('${l.id}')">Ver</button></div>`;g.appendChild(d);});}
 window.setFiltroPagos=t=>{filtroPagos=t;$('btnPagPend').className=t==='pendiente'?'btn small':'btn small ghost';$('btnPagPend').style.background=t==='pendiente'?'#facc15':'';$('btnPagPend').style.color=t==='pendiente'?'#000':'';$('btnPagAprob').className=t==='aprobado'?'btn small':'btn small ghost';$('btnPagAprob').style.background=t==='aprobado'?'#22c55e':'';$('btnPagRech').className=t==='rechazado'?'btn small':'btn small ghost';$('btnPagRech').style.background=t==='rechazado'?'#ef4444':'';loadPagos();};
 </script>
 <script>
 async function loadPagos(){
-const ul=$('pagosList');const kpi=$('pagosKpi');ul.innerHTML='<li class="item">Cargando...</li>';if(kpi)kpi.innerHTML='';try{const snap=await db.collection('solicitudes').where('estado','==',filtroPagos).limit(100).get();if(snap.empty){ul.innerHTML=`<li class="item">No hay ${esc(filtroPagos)}</li>`;return;}let docs=snap.docs.map(d=>({id:d.id,...d.data()}));docs.sort((a,b)=>tsToDate(b.ts)-tsToDate(a.ts));if(filtroPagos==='aprobado'){const hoy=new Date();hoy.setHours(0,0,0,0);docs=docs.filter(d=>tsToDate(d.aprobado_en||d.aprobadoEn||d.ts)>=hoy.getTime());}if(kpi){const grupos={};docs.forEach(d=>{const g=grupoFecha(d.ts);grupos[g]=(grupos[g]||0)+1;});kpi.innerHTML=Object.keys(grupos).map(g=>`<span class="pill">${g} ${grupos[g]}</span>`).join('')+`<span class="pill" style="background:#ffffff22">Total ${docs.length}</span>`;}ul.innerHTML='';let ultimoGrupo='';for(const x of docs){const g=grupoFecha(x.ts);if(g!==ultimoGrupo){ultimoGrupo=g;const sep=document.createElement('li');sep.className='item';sep.style.background='#ffffff22';sep.style.justifyContent='center';sep.innerHTML=`<b>${g}</b>`;ul.appendChild(sep);}const comp=x.comprobante||'';const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.innerHTML=`<div style="width:100%"><b>${esc(x.nombreLocal||x.localNombre||'Local')}</b> <span class="pill" style="background:#facc15;color:#000">${esc(x.plan||'')}</span><div style="font-size:12px">${esc(x.email||'')} - ${esc(fmtFecha(x.ts))} - $${x.precioReal||x.monto||''}</div></div>${comp?`<img src="${comp}" style="width:100%;max-width:380px;border-radius:14px;margin-top:8px">`:''}<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">${filtroPagos==='pendiente'?'<button class="btn small" style="background:#22c55e">Aprobar 30d</button><button class="btn small ghost" style="background:#fff;color:#000">Aprobar 7d Trial</button><button class="btn small ghost">Rechazar</button>':''}</div>`;if(filtroPagos==='pendiente'){const btns=li.querySelectorAll('button');btns[0].onclick=()=>aprobarPagoTransaccion(x.id,30,btns[0]);btns[1].onclick=()=>aprobarPagoTransaccion(x.id,7,btns[1]);btns[2].onclick=()=>rechazarPago(x.id,x.uid,btns[2]);}ul.appendChild(li);}}catch(e){$('pagosList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}}
+const ul=$('pagosList');const kpi=$('pagosKpi');ul.innerHTML='<li class="item">Cargando...</li>';if(kpi)kpi.innerHTML='';try{const snap=await db.collection('solicitudes').where('estado','==',filtroPagos).limit(80).get();if(snap.empty){ul.innerHTML=`<li class="item">No hay ${esc(filtroPagos)}</li>`;return;}let docs=snap.docs.map(d=>({id:d.id,...d.data()}));docs.sort((a,b)=>tsToDate(b.ts)-tsToDate(a.ts));if(filtroPagos==='aprobado'){const hoy=new Date();hoy.setHours(0,0,0,0);docs=docs.filter(d=>tsToDate(d.aprobado_en||d.aprobadoEn||d.ts)>=hoy.getTime());}if(kpi){const grupos={};docs.forEach(d=>{const g=grupoFecha(d.ts);grupos[g]=(grupos[g]||0)+1;});kpi.innerHTML=Object.keys(grupos).map(g=>`<span class="pill">${g} ${grupos[g]}</span>`).join('')+`<span class="pill" style="background:#ffffff22">Total ${docs.length}</span>`;}ul.innerHTML='';let ultimoGrupo='';for(const x of docs){const g=grupoFecha(x.ts);if(g!==ultimoGrupo){ultimoGrupo=g;const sep=document.createElement('li');sep.className='item';sep.style.background='#ffffff22';sep.style.justifyContent='center';sep.innerHTML=`<b>${g}</b>`;ul.appendChild(sep);}const comp=x.comprobante||'';const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.innerHTML=`<div style="width:100%"><b>${esc(x.nombreLocal||x.localNombre||'Local')}</b> <span class="pill" style="background:#facc15;color:#000">${esc(x.plan||'')}</span> <span class="pill" style="background:#22c55e;color:#000">$${x.monto||50}</span><div style="font-size:12px">${esc(x.email||'')} - ${esc(fmtFecha(x.ts))} - Original $${x.original||''} Promo $${x.monto||50}</div></div>${comp?`<img src="${comp}" style="width:100%;max-width:380px;border-radius:14px;margin-top:8px">`:''}<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">${filtroPagos==='pendiente'?'<button class="btn small" style="background:#22c55e">Aprobar $50 30d</button><button class="btn small ghost" style="background:#fff;color:#000">Aprobar 7d Trial</button><button class="btn small ghost">Rechazar</button>':''}</div>`;if(filtroPagos==='pendiente'){const btns=li.querySelectorAll('button');btns[0].onclick=()=>aprobarPagoTransaccion(x.id,30,btns[0]);btns[1].onclick=()=>aprobarPagoTransaccion(x.id,7,btns[1]);btns[2].onclick=()=>rechazarPago(x.id,x.uid,btns[2]);}ul.appendChild(li);}}catch(e){$('pagosList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}}
 async function aprobarPagoTransaccion(solicId,diasExtra,btn){
 if(btn){btn.textContent='Aprobando...';btn.disabled=true;}
 try{
@@ -268,118 +271,63 @@ const uid=sol.uid;
 const cfgRef=db.collection('config').doc(uid);
 const cfgSnap=await tx.get(cfgRef);
 if(!cfgSnap.exists)throw new Error('Local no existe');
-const localData=cfgSnap.data();
 const promoRef=db.collection('config').doc('promos');
 const promoSnap=await tx.get(promoRef);
-let promos=promoSnap.exists?promoSnap.data():{promo14:{cupoTotal:14,cupoUsado:0},promo10:{cupoTotal:10,cupoUsado:0},promo6:{cupoTotal:6,cupoUsado:0},promoCasa:{cupoTotal:100,cupoUsado:0}};
-let promoKey=null;
-if(diasExtra===7)promoKey='promo14';
-else if(diasExtra===30)promoKey='promo10';
-if(promoKey&&promos[promoKey]){if(promos[promoKey].cupoUsado>=promos[promoKey].cupoTotal)throw new Error('SIN CUPO '+promoKey);}
-let venceVieja=getVenceDate(localData);
+let promos=promoSnap.exists?promoSnap.data():{promo10:{cupoTotal:50,cupoUsado:29}};
+if(promos.promo10 && promos.promo10.cupoUsado>=promos.promo10.cupoTotal && diasExtra===30)throw new Error('SIN CUPO PROMO $50 - 50/50');
+let venceVieja=getVenceDate(cfgSnap.data());
 let baseDate=new Date();
 if(venceVieja&&venceVieja>baseDate)baseDate=new Date(venceVieja);
 let venceNueva=new Date(baseDate);
 venceNueva.setDate(venceNueva.getDate()+diasExtra);
-const precio=getPrecioReal(sol.plan||localData.plan);
-tx.set(cfgRef,{plan:sol.plan||localData.plan||'Medio',planActivo:true,visible:true,bloqueado:false,estado:'activo',planVence:firebase.firestore.Timestamp.fromDate(venceNueva),plan_estado:'aprobado',trialUsado:true,promoGratis:diasExtra!==30?true:false,promoMotivo:diasExtra===7?'Trial 7 días':diasExtra===30?'Aprobado 30d':'Custom',promoHasta:venceNueva.toLocaleDateString('es-AR')},{merge:true});
-if(promoKey&&promos[promoKey]){promos[promoKey].cupoUsado=(promos[promoKey].cupoUsado||0)+1;tx.set(promoRef,promos,{merge:true});}
-tx.update(solRef,{estado:'aprobado',precioReal:precio,monto:precio,diasDados:diasExtra,aprobado_en:firebase.firestore.FieldValue.serverTimestamp(),aprobadoEn:firebase.firestore.FieldValue.serverTimestamp()});
+tx.set(cfgRef,{plan:sol.plan||cfgSnap.data().plan||'Medio',planActivo:true,visible:true,bloqueado:false,estado:'activo',planVence:firebase.firestore.Timestamp.fromDate(venceNueva),plan_estado:'aprobado',trialUsado:true,promoGratis:false},{merge:true});
+if(promos.promo10 && diasExtra===30){promos.promo10.cupoUsado=(promos.promo10.cupoUsado||0)+1;tx.set(promoRef,promos,{merge:true});}
+tx.update(solRef,{estado:'aprobado',precioReal:50,monto:50,original:sol.original||5000,diasDados:diasExtra,aprobado_en:firebase.firestore.FieldValue.serverTimestamp()});
 const logRef=db.collection('config').doc('logs').collection('lista').doc();
-tx.set(logRef,{tipo:'aprobacion',solicId,uid,plan:sol.plan,dias:diasExtra,precio,timestamp:firebase.firestore.FieldValue.serverTimestamp(),fecha:fmtFecha(new Date())});
+tx.set(logRef,{tipo:'aprobacion $50',solicId,uid,plan:sol.plan,dias:diasExtra,precio:50,timestamp:firebase.firestore.FieldValue.serverTimestamp(),fecha:fmtFecha(new Date())});
 });
-toast('Aprobado '+diasExtra+'d');
+toast('Aprobado $50 '+diasExtra+'d');
 await loadPagos();await load();await loadCobros();
-}catch(e){toast('Error: '+e.message);if(btn){btn.textContent='Error';btn.disabled=false;setTimeout(()=>{btn.textContent=diasExtra===7?'Aprobar 7d Trial':'Aprobar 30d';btn.disabled=false;},2000);}return;}
+}catch(e){toast('Error: '+e.message);if(btn){btn.textContent='Error';btn.disabled=false;setTimeout(()=>{btn.textContent=diasExtra===7?'Aprobar 7d Trial':'Aprobar $50 30d';btn.disabled=false;},2000);}return;}
 }
 async function rechazarPago(solicId,uid,btn){
 if(btn){btn.textContent='Rechazando...';btn.disabled=true;}
 if(!confirm('Rechazar?')){if(btn){btn.textContent='Rechazar';btn.disabled=false;}return;}
 await db.collection('config').doc(uid).set({planActivo:false,visible:false,plan_estado:'rechazado',estado:'rechazado'},{merge:true});
 await db.collection('solicitudes').doc(solicId).update({estado:'rechazado',rechazado_en:firebase.firestore.FieldValue.serverTimestamp()});
-const logRef=db.collection('config').doc('logs').collection('lista').doc();
-await logRef.set({tipo:'rechazo',solicId,uid,timestamp:firebase.firestore.FieldValue.serverTimestamp(),fecha:fmtFecha(new Date())});
 toast('Rechazado');loadPagos();load();
 }
 window.activar48=async id=>{const base=getVenceDate(all.find(a=>a.id===id));let vence=base&&base>new Date()?new Date(base):new Date();vence.setHours(vence.getHours()+48);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(vence),planActivo:true,visible:true,bloqueado:false,estado:'activo'},{merge:true});toast('48hs');load();};
-window.darPromo=async(id,dias)=>{const motivo=prompt(`Dar ${dias} dias`,dias==30?'Gentileza':'Promo');if(motivo===null)return;let hasta=new Date();const base=getVenceDate(all.find(a=>a.id===id));let start=base&&base>new Date()?new Date(base):new Date();hasta=new Date(start);hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,bloqueado:false,estado:'activo',promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:motivo,trialUsado:true},{merge:true});toast(`${dias}d`);load();};
-window.darCustom=async id=>{const inp=prompt('Cuantos dias?');if(inp===null)return;const dias=Number(inp);if(isNaN(dias)||dias<=0){toast('Numero invalido');return;}let hasta=new Date();const base=getVenceDate(all.find(a=>a.id===id));let start=base&&base>new Date()?new Date(base):new Date();hasta=new Date(start);hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,bloqueado:false,estado:'activo',promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:'Custom',trialUsado:true},{merge:true});toast(`${dias}d`);load();};
-async function crearReservaSegura(localId,celu,fechaISO,servicioId){
-const localRef=db.collection('config').doc(localId);
-const localSnap=await localRef.get();
-if(!localSnap.exists)throw new Error('Local no existe');
-const localData=localSnap.data();
-if(!estaActivo(localData))throw new Error('Local pausado por falta de pago - gracia 48hs vencida');
-if(localData.bloqueado===true)throw new Error('Local bloqueado');
-const hoy=new Date();hoy.setHours(0,0,0,0);
-const f=new Date(fechaISO);f.setHours(0,0,0,0);
-if(f<hoy)throw new Error('Fecha pasada');
-const fechaSolo=fechaISO.split('T')[0];
-if(servicioId){const servs=localData.servicios||[];if(!servs.find(s=>s.id===servicioId||s.nombre===servicioId))throw new Error('Servicio no existe');}
-const q=await db.collection('reservas').where('localId','==',localId).where('celu','==',celu).where('estado','in',['activa','pendiente']).get();
-if(q.size>=2)throw new Error('Limite 2 reservas');
-const ref=db.collection('reservas').doc();
-await ref.set({localId,celu,fecha:fechaISO,fechaSolo,servicioId:servicioId||null,estado:'activa',ts:firebase.firestore.FieldValue.serverTimestamp()});
-return ref.id;
-}
-async function enviarSoporteSeguro(payload){
-const celu=payload.celu||payload.telefono||'';
-const uid=payload.uid||payload.localId||'';
-if(celu){const u=await db.collection('users').doc(celu).get();if(u.exists&&u.data().bloqueado===true)throw new Error('Usuario bloqueado');}
-if(uid){const c=await db.collection('config').doc(uid).get();if(c.exists&&c.data().bloqueado===true)throw new Error('Local bloqueado');}
-const ref=db.collection('soporte').doc();
-await ref.set({...payload,leido:false,ts:firebase.firestore.FieldValue.serverTimestamp(),hora:fmtFecha(new Date())});
-return ref.id;
-}
-async function bloquear(celu,uid){
-const batch=db.batch();
-if(uid){batch.set(db.collection('config').doc(uid),{bloqueado:true,planActivo:false,visible:false,estado:'bloqueado'},{merge:true});}
-if(celu){batch.set(db.collection('users').doc(celu),{bloqueado:true,estado:'bloqueado'},{merge:true});}
-if(!celu&&uid){batch.set(db.collection('users').doc(uid),{bloqueado:true,estado:'bloqueado'},{merge:true});}
-await batch.commit();
-const logRef=db.collection('config').doc('logs').collection('lista').doc();
-await logRef.set({tipo:'bloqueo',uid,celu,timestamp:firebase.firestore.FieldValue.serverTimestamp(),fecha:fmtFecha(new Date())});
-}
-async function desbloquear(celu,uid){
-const batch=db.batch();
-if(uid){batch.set(db.collection('config').doc(uid),{bloqueado:false,planActivo:true,visible:true,estado:'activo'},{merge:true});}
-if(celu){batch.set(db.collection('users').doc(celu),{bloqueado:false,estado:'activo'},{merge:true});}
-if(!celu&&uid){batch.set(db.collection('users').doc(uid),{bloqueado:false,estado:'activo'},{merge:true});}
-await batch.commit();
-const logRef=db.collection('config').doc('logs').collection('lista').doc();
-await logRef.set({tipo:'desbloqueo',uid,celu,timestamp:firebase.firestore.FieldValue.serverTimestamp(),fecha:fmtFecha(new Date())});
-}
-async function desbloquearDesdeSoporte(celu,uid){return desbloquear(celu,uid);}
+window.darPromo=async(id,dias)=>{let hasta=new Date();const base=getVenceDate(all.find(a=>a.id===id));let start=base&&base>new Date()?new Date(base):new Date();hasta=new Date(start);hasta.setDate(hasta.getDate()+dias);await db.collection('config').doc(id).set({planVence:firebase.firestore.Timestamp.fromDate(hasta),planActivo:true,visible:true,bloqueado:false,estado:'activo',promoGratis:true,promoHasta:hasta.toLocaleDateString('es-AR'),promoMotivo:'Promo '+dias+'d',trialUsado:true},{merge:true});toast(`${dias}d`);load();};
 window.verFicha=async id=>{
 try{
 const doc=await db.collection('config').doc(id).get();
 if(!doc.exists){toast('No existe');return;}
 const d=doc.data();selectedUid=id;
 $('modalTitle').textContent=d.localNombre||d.nombre||'Ficha';
-$('modalBody').innerHTML=`<div>Nombre: ${esc(d.localNombre||d.nombre||'-')}</div><div>Email: ${esc(d.email||'-')}</div><div>Plan: ${esc(d.plan||'-')}</div><div>Vence: ${esc(fmtVence(d))}</div><div>Bloqueado: ${d.bloqueado?'SI':'NO'}</div><div>Trial: ${d.trialUsado?'usado':'7 dias gratis'}</div><div>UID: ${esc(id)}</div><div>Logo: ${d.logoUrl?`<img src="${esc(fotoConCache(d.logoUrl))}" style="width:60px;border-radius:8px">`:'-'}</div>`;
+$('modalBody').innerHTML=`<div>Nombre: ${esc(d.localNombre||d.nombre||'-')}</div><div>Email: ${esc(d.email||'-')}</div><div>Plan: ${esc(d.plan||'-')}</div><div>Vence: ${esc(fmtVence(d))}</div><div>Bloqueado: ${d.bloqueado?'SI':'NO'}</div><div>Usos: ${d.usosMes||0}</div><div>UID: ${esc(id)}</div>`;
 $('userModal').classList.remove('hidden');
 }catch(e){toast(e.message);}
 };
 $('modalClose').onclick=()=>{$('userModal').classList.add('hidden');};
-$('modalBloq').onclick=async()=>{if(!selectedUid)return;if(!confirm('Bloquear?'))return;await bloquear(null,selectedUid);toast('Bloqueado');$('userModal').classList.add('hidden');load();};
-$('modalDesbloq').onclick=async()=>{if(!selectedUid)return;if(!confirm('Desbloquear?'))return;await desbloquear(null,selectedUid);toast('Desbloqueado');$('userModal').classList.add('hidden');load();};
+$('modalBloq').onclick=async()=>{if(!selectedUid)return;if(!confirm('Bloquear?'))return;await db.collection('config').doc(selectedUid).set({bloqueado:true,planActivo:false,visible:false,estado:'bloqueado'},{merge:true});toast('Bloqueado');$('userModal').classList.add('hidden');load();};
+$('modalDesbloq').onclick=async()=>{if(!selectedUid)return;if(!confirm('Desbloquear?'))return;await db.collection('config').doc(selectedUid).set({bloqueado:false,planActivo:true,visible:true,estado:'activo'},{merge:true});toast('Desbloqueado');$('userModal').classList.add('hidden');load();};
 async function loadSoporte(tipo){
-const ul=$('sList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('soporte').limit(150).get();let docs=snap.docs.map(d=>({id:d.id,...d.data()}));docs.sort((a,b)=>tsToDate(b.ts)-tsToDate(a.ts));if(tipo==='local')docs=docs.filter(d=>d.origen==='local');if(tipo==='cliente')docs=docs.filter(d=>d.origen==='cliente');ul.innerHTML='';docs.forEach(x=>{const esLocal=x.origen==='local';const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.style.border=esLocal?'1px solid #a855f7':'1px solid #22c55e';li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b style="color:${esLocal?'#a855f7':'#22c55e'}">${esLocal?'LOCAL':'CLIENTE'}</b><span class="pill" style="background:${x.leido?'#ffffff11':'#facc1533'}">${x.leido?'LEIDO':'NO LEIDO'}</span></div><div style="font-size:12px;margin:6px 0">${esc(x.mensaje||x.texto||'')}</div><div style="font-size:11px;color:#cfc9e6">Local: ${esc(x.nombreLocal||x.localNombre||'')} - Cliente: ${esc(x.nombreCliente||'')} - ${esc(fmtFecha(x.ts))}</div>${x.imagen?`<img src="${x.imagen}" style="max-width:200px;border-radius:10px;margin-top:6px">`:''}<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn small ghost btnBorrar">Borrar</button><button class="btn small ghost btnLeer" style="background:#22c55e;color:#000">${x.leido?'Marcar no leido':'Marcar leido'}</button><button class="btn small ghost btnDesb" style="background:#f59e0b;color:#000">Desbloquear</button></div>`;li.querySelector('.btnBorrar').onclick=()=>borrarSoporte(x.id);li.querySelector('.btnLeer').onclick=async()=>{await db.collection('soporte').doc(x.id).update({leido:!x.leido});loadSoporte(tipo);};li.querySelector('.btnDesb').onclick=async()=>{await desbloquearDesdeSoporte(x.celu||x.telefono,x.uid||x.localId);toast('Desbloqueado');};ul.appendChild(li);});if(!docs.length)ul.innerHTML='<li class="item">Sin soporte</li>';}catch(e){$('sList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}}
-window.borrarSoporte=async id=>{if(!confirm('Borrar?'))return;await db.collection('soporte').doc(id).delete();toast('Borrado');loadSoporte('todos');};
+const ul=$('sList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('soporte').limit(100).get();let docs=snap.docs.map(d=>({id:d.id,...d.data()}));docs.sort((a,b)=>tsToDate(b.ts)-tsToDate(a.ts));if(tipo==='local')docs=docs.filter(d=>d.origen==='local');if(tipo==='cliente')docs=docs.filter(d=>d.origen==='cliente');ul.innerHTML='';docs.forEach(x=>{const esLocal=x.origen==='local';const li=document.createElement('li');li.className='item';li.style.flexDirection='column';li.style.alignItems='flex-start';li.style.border=esLocal?'1px solid #a855f7':'1px solid #22c55e';li.innerHTML=`<div style="width:100%;display:flex;justify-content:space-between"><b style="color:${esLocal?'#a855f7':'#22c55e'}">${esLocal?'LOCAL':'CLIENTE'}</b><span class="pill" style="background:${x.leido?'#ffffff11':'#facc1533'}">${x.leido?'LEIDO':'NO LEIDO'}</span></div><div style="font-size:12px;margin:6px 0">${esc(x.mensaje||x.texto||'')}</div><div style="font-size:11px;color:#cfc9e6">Local: ${esc(x.nombreLocal||'')} - Cliente: ${esc(x.nombreCliente||'')} - ${esc(fmtFecha(x.ts))}</div>${x.imagen?`<img src="${x.imagen}" style="max-width:200px;border-radius:10px;margin-top:6px">`:''}<div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap"><button class="btn small ghost btnBorrar">Borrar</button><button class="btn small ghost btnLeer" style="background:#22c55e;color:#000">${x.leido?'Marcar no leido':'Marcar leido'}</button></div>`;li.querySelector('.btnBorrar').onclick=async()=>{await db.collection('soporte').doc(x.id).delete();loadSoporte(tipo);};li.querySelector('.btnLeer').onclick=async()=>{await db.collection('soporte').doc(x.id).update({leido:!x.leido});loadSoporte(tipo);};ul.appendChild(li);});if(!docs.length)ul.innerHTML='<li class="item">Sin soporte</li>';}catch(e){$('sList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}}
 async function loadUsers(){
-const ul=$('uList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('users').limit(200).get();ul.innerHTML='';snap.forEach(d=>{const x=d.data();const li=document.createElement('li');li.className='item';li.innerHTML=`<div><b>${esc(x.email||d.id)}</b><div style="font-size:11px">${esc(x.rol||'')} - ${esc(d.id)} ${x.bloqueado?'BLOQ':''}</div></div><div style="display:flex;gap:6px;flex-wrap:wrap"><button class="btn small ghost btnVer">Ver</button><button class="btn small ghost btnBloq">${x.bloqueado?'Desbloq':'Bloquear'}</button></div>`;const b=li.querySelectorAll('button');b[0].onclick=()=>verFicha(d.id);b[1].onclick=async()=>{if(x.bloqueado){await desbloquear(d.id,d.id);}else{await bloquear(d.id,d.id);}loadUsers();load();};ul.appendChild(li);});}catch(e){$('uList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}}
-window.bloquearUser=async id=>{if(!confirm('Bloquear?'))return;await bloquear(id,id);toast('Bloqueado');loadUsers();load();};
+const ul=$('uList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('users').limit(100).get();ul.innerHTML='';snap.forEach(d=>{const x=d.data();const li=document.createElement('li');li.className='item';li.innerHTML=`<div><b>${esc(x.email||d.id)}</b><div style="font-size:11px">${esc(x.rol||'')} - ${esc(d.id)} ${x.bloqueado?'BLOQ':''}</div></div><div style="display:flex;gap:6px"><button class="btn small ghost btnVer">Ver</button><button class="btn small ghost btnBloq">${x.bloqueado?'Desbloq':'Bloquear'}</button></div>`;const b=li.querySelectorAll('button');b[0].onclick=()=>verFicha(d.id);b[1].onclick=async()=>{await db.collection('config').doc(d.id).set({bloqueado:!x.bloqueado,planActivo:!x.bloqueado,visible:!x.bloqueado},{merge:true});loadUsers();load();};ul.appendChild(li);});}catch(e){$('uList').innerHTML=`<li class="item">Error: ${esc(e.message)}</li>`;}}
 async function loadCobros(){
-const kpi=$('cobrosKpi');const ul=$('cobrosList');if(kpi)kpi.innerHTML='Cargando...';ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('solicitudes').where('estado','==','aprobado').get();let total=0;let porPlan={};snap.forEach(d=>{const x=d.data();const m=Number(x.precioReal||x.monto||0);total+=m;const pl=x.plan||'Otro';porPlan[pl]=(porPlan[pl]||0)+m;});let gastosTotal=0;let gastos=[];try{const gSnap=await db.collection('config').doc('gastos').collection('lista').get();gSnap.forEach(g=>{const gd=g.data();gastos.push({id:g.id,...gd});gastosTotal+=Number(gd.monto||0);});}catch(e){}const neto=total-gastosTotal;if(kpi){kpi.innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" style="background:#22c55e33">Entradas $${total}</span><span class="pill" style="background:#ef444433">Gastos $${gastosTotal}</span><span class="pill" style="background:#fff;color:#000">NETO $${neto}</span>${Object.keys(porPlan).map(p=>`<span class="pill">${p} $${porPlan[p]}</span>`).join('')}</div>`;}ul.innerHTML='';snap.docs.sort((a,b)=>tsToDate(b.data().aprobado_en||b.data().ts)-tsToDate(a.data().aprobado_en||a.data().ts)).slice(0,80).forEach(d=>{const x=d.data();const li=document.createElement('li');li.className='item';li.innerHTML=`<div><b>${esc(x.nombreLocal||'Local')}</b> - ${esc(x.plan||'')} - $${x.precioReal||x.monto||0}<div style="font-size:11px">${esc(fmtFecha(x.aprobado_en||x.ts))}</div></div>`;ul.appendChild(li);});const gList=$('gastosList');if(gList){gList.innerHTML='';gastos.forEach(g=>{const li=document.createElement('li');li.className='item';li.innerHTML=`<div>${esc(g.concepto||'Gasto')} - $${g.monto}</div><button class="btn small ghost">Borrar</button>`;li.querySelector('button').onclick=async()=>{await db.collection('config').doc('gastos').collection('lista').doc(g.id).delete();loadCobros();};gList.appendChild(li);});}}catch(e){$('cobrosList').innerHTML=`<li class="item">Error ${esc(e.message)}</li>`;}}
-async function loadLogs(){const ul=$('logsList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('config').doc('logs').collection('lista').orderBy('timestamp','desc').limit(100).get();ul.innerHTML='';if(snap.empty){ul.innerHTML='<li class="item">Sin logs</li>';return;}snap.forEach(d=>{const x=d.data();const li=document.createElement('li');li.className='item';li.innerHTML=`<div><b style="text-transform:uppercase">${esc(x.tipo||'')}</b> - ${esc(x.fecha||fmtFecha(x.timestamp))}<div style="font-size:11px">${esc(x.uid||'')} ${esc(x.celu||'')} ${x.dias?x.dias+'d':''} $${x.precio||''}</div></div>`;ul.appendChild(li);});}catch(e){ul.innerHTML=`<li class="item">Error ${esc(e.message)} - crea coleccion config/logs/lista</li>`;}}
+const kpi=$('cobrosKpi');const ul=$('cobrosList');if(kpi)kpi.innerHTML='Cargando...';ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('solicitudes').where('estado','==','aprobado').get();let total=0;let porPlan={};snap.forEach(d=>{const x=d.data();const m=Number(x.precioReal||x.monto||50);total+=m;const pl=x.plan||'Otro';porPlan[pl]=(porPlan[pl]||0)+m;});let gastosTotal=0;let gastos=[];try{const gSnap=await db.collection('config').doc('gastos').collection('lista').get();gSnap.forEach(g=>{const gd=g.data();gastos.push({id:g.id,...gd});gastosTotal+=Number(gd.monto||0);});}catch(e){}const neto=total-gastosTotal;if(kpi){kpi.innerHTML=`<div style="display:flex;gap:8px;flex-wrap:wrap"><span class="pill" style="background:#22c55e33">Entradas $${total} (todo $50 promo)</span><span class="pill" style="background:#ef444433">Gastos $${gastosTotal}</span><span class="pill" style="background:#fff;color:#000">NETO $${neto}</span></div>`;}ul.innerHTML='';snap.docs.sort((a,b)=>tsToDate(b.data().aprobado_en||b.data().ts)-tsToDate(a.data().aprobado_en||a.data().ts)).slice(0,80).forEach(d=>{const x=d.data();const li=document.createElement('li');li.className='item';li.innerHTML=`<div><b>${esc(x.nombreLocal||'Local')}</b> - ${esc(x.plan||'')} - $${x.precioReal||50}<div style="font-size:11px">${esc(fmtFecha(x.aprobado_en||x.ts))}</div></div>`;ul.appendChild(li);});const gList=$('gastosList');if(gList){gList.innerHTML='';gastos.forEach(g=>{const li=document.createElement('li');li.className='item';li.innerHTML=`<div>${esc(g.concepto||'Gasto')} - $${g.monto}</div><button class="btn small ghost">Borrar</button>`;li.querySelector('button').onclick=async()=>{await db.collection('config').doc('gastos').collection('lista').doc(g.id).delete();loadCobros();};gList.appendChild(li);});}}catch(e){$('cobrosList').innerHTML=`<li class="item">Error ${esc(e.message)}</li>`;}}
+async function loadLogs(){const ul=$('logsList');ul.innerHTML='<li class="item">Cargando...</li>';try{const snap=await db.collection('config').doc('logs').collection('lista').orderBy('timestamp','desc').limit(100).get();ul.innerHTML='';if(snap.empty){ul.innerHTML='<li class="item">Sin logs</li>';return;}snap.forEach(d=>{const x=d.data();const li=document.createElement('li');li.className='item';li.innerHTML=`<div><b style="text-transform:uppercase">${esc(x.tipo||'')}</b> - ${esc(x.fecha||fmtFecha(x.timestamp))}<div style="font-size:11px">${esc(x.uid||'')} $${x.precio||50} ${x.dias?x.dias+'d':''}</div></div>`;ul.appendChild(li);});}catch(e){ul.innerHTML=`<li class="item">Error ${esc(e.message)}</li>`;}}
 $('reload').onclick=load;$('reloadUsers').onclick=loadUsers;
 $('bus').oninput=()=>{const q=$('bus').value.toLowerCase();Array.from($('grid').children).forEach(ch=>{ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'});};
 $('busUsers').oninput=()=>{const q=$('busUsers').value.toLowerCase();Array.from($('uList').children).forEach(ch=>{ch.style.display=ch.textContent.toLowerCase().includes(q)?'':'none'});};
-$('btnGuardarTarifas').onclick=async()=>{try{const base={nombre:$('pBaseNombre').value.trim()||'Básico',limite:Number($('pBaseLim').value)||0,precio:Number($('pBasePrecio').value)||0};const medio={nombre:$('pMedioNombre').value.trim()||'Medio',limite:Number($('pMedioLim').value)||0,precio:Number($('pMedioPrecio').value)||0};const premium={nombre:$('pPremNombre').value.trim()||'Premium',limite:Number($('pPremLim').value)||0,precio:Number($('pPremPrecio').value)||0};const casa={nombre:$('pCasaNombre').value.trim()||'Casa',limite:Number($('pCasaLim').value)||0,precio:Number($('pCasaPrecio').value)||0};$('tarifaMsg').textContent='Guardando...';await db.collection('config').doc('planes').set({base,medio,premium,casa,updated:firebase.firestore.FieldValue.serverTimestamp()});$('tarifaMsg').textContent='Guardado';toast('Guardado');}catch(e){$('tarifaMsg').textContent='Error: '+e.message;}};
-$('btnGuardarCobrosJona').onclick=async()=>{try{await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value,cbu:$('jonaCbu').value,titular:$('jonaTitular').value,whatsapp:$('jonaWsp').value,instrucciones:$('jonaInstr').value},{merge:true});$('msgCobrosJona').textContent='Guardado';toast('Guardado');}catch(e){toast(e.message);}};
+$('btnGuardarTarifas').onclick=async()=>{try{const base={nombre:$('pBaseNombre').value.trim()||'Básico',original:Number($('pBaseOrig').value)||5000,precio:Number($('pBasePrecio').value)||50,limite:Number($('pBaseLim').value)||100};const medio={nombre:$('pMedioNombre').value.trim()||'Medio',original:Number($('pMedioOrig').value)||7000,precio:Number($('pMedioPrecio').value)||50,limite:Number($('pMedioLim').value)||300};const premium={nombre:$('pPremNombre').value.trim()||'Premium',original:Number($('pPremOrig').value)||10000,precio:Number($('pPremPrecio').value)||50,limite:Number($('pPremLim').value)||999999};const casa={nombre:$('pCasaNombre').value.trim()||'Casa',limite:Number($('pCasaLim').value)||50,precio:Number($('pCasaPrecio').value)||2500};$('tarifaMsg').textContent='Guardando...';await db.collection('config').doc('planes').set({base,medio,premium,casa,updated:firebase.firestore.FieldValue.serverTimestamp()});$('tarifaMsg').textContent='Guardado con promo $50 y tachado';toast('Guardado $50');}catch(e){$('tarifaMsg').textContent='Error: '+e.message;}};
+$('btnGuardarCupos').onclick=async()=>{try{await db.collection('config').doc('promos').set({promo10:{cupoUsado:Number($('cupoUsado').value||29),cupoTotal:Number($('cupoTotal').value||50)},updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});toast('Cupos guardados - INDEX actualiza');}catch(e){toast(e.message);}};
+$('btnGuardarCobrosJona').onclick=async()=>{try{await db.collection('config').doc('cobros').set({alias:$('jonaAlias').value,cbu:$('jonaCbu').value,titular:$('jonaTitular').value,whatsapp:$('jonaWsp').value,email:$('jonaEmail').value,instrucciones:$('jonaInstr').value,updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});$('msgCobrosJona').textContent='Guardado - LOCAL lo ve al instante';toast('Guardado - sincronizado con LOCAL');}catch(e){toast(e.message);}};
 $('btnGuardarHoras').onclick=async()=>{try{await db.collection('config').doc('adm').set({horasPlan:Number($('horasPlan').value||48)},{merge:true});cfg.horasPlan=Number($('horasPlan').value||48);$('ajMsg').textContent='Guardado';toast('Guardado');load();}catch(e){toast(e.message);}};
-$('btnGuardarLanding').onclick=async()=>{try{await db.collection('config').doc('landing').set({saludo:$('landSaludo').value,titulo:$('landTitulo').value,sub:$('landSub').value,btnTexto:$('landBtnTexto').value,contacto:$('landContacto').value,footer:$('landFooter').value,updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});$('msgLanding').textContent='Guardado';toast('Landing guardada');}catch(e){toast(e.message);}};
+$('btnGuardarLanding').onclick=async()=>{try{await db.collection('config').doc('landing').set({titulo:$('landTitulo').value,sub:$('landSub').value,contacto:$('landContacto').value,footer:$('landFooter').value,mantenimiento:$('landMant').value==='true',updated:firebase.firestore.FieldValue.serverTimestamp()},{merge:true});$('msgLanding').textContent='Guardado';toast('Landing guardada');}catch(e){toast(e.message);}};
 $('btnAddGasto').onclick=async()=>{const concepto=$('gastoConcepto').value.trim();const monto=Number($('gastoMonto').value);if(!concepto||!monto){toast('Concepto y monto');return;}await db.collection('config').doc('gastos').collection('lista').doc().set({concepto,monto,ts:firebase.firestore.FieldValue.serverTimestamp()});$('gastoConcepto').value='';$('gastoMonto').value='';loadCobros();};
 </script>
 </body>
-</html> 
+</html>
